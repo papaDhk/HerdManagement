@@ -1,0 +1,79 @@
+﻿@page "/species/{specieId:int}"
+
+@using Applicattion.Data.DTO.SpecieBreed
+@using HerdManagement.Infrastructure.Persistence.Repository
+@using Applicattion.Data.DTO.SpecieBreed.Assembler
+@using HerdManagement.Domain.SpecieBreed.Entities
+@using Syncfusion.Blazor.Grids
+@using HerdManagement.Domain.SpecieBreed.Repository
+
+@inject ISpecieRepository specieRepository
+@inject IBreedRepository breedRepository
+@inject NavigationManager navigationManager
+
+<h1>@pageTitle</h1>
+@if (breedDTOs == null)
+{
+    <p><em>En cours de chargement...</em></p>
+}
+else
+{
+    <SfGrid DataSource="@breedDTOs" AllowSorting="true" AllowFiltering="true" Toolbar="@ToolbarItems" TValue="BreedDTO">
+        <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true"></GridEditSettings>
+        <GridEvents OnActionBegin="OnBeginHandlerAsync" CommandClicked="OnDetailButtonClicked" TValue="BreedDTO"></GridEvents>
+        <GridColumns>
+            <GridColumn Field=@nameof(BreedDTO.Label)>
+            </GridColumn>
+            <GridColumn>
+                <GridCommandColumns>
+                    <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-edit", CssClass = "e-flat" })"></GridCommandColumn>
+                    <GridCommandColumn Type="CommandButtonType.Save" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-update", CssClass = "e-flat" })"></GridCommandColumn>
+                    <GridCommandColumn Type="CommandButtonType.Cancel" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-cancel-icon", CssClass = "e-flat" })"></GridCommandColumn>
+                    <GridCommandColumn ButtonOption="@(new CommandButtonOptions() { Content = "Details", CssClass = "e-flat" })"></GridCommandColumn>
+                </GridCommandColumns>
+            </GridColumn>
+        </GridColumns>
+    </SfGrid>
+}
+
+@code {
+    [Parameter]
+    public int specieId { get; set; }
+    private string pageTitle;
+    private Specie specie;
+    private List<BreedDTO> breedDTOs;
+    private List<String> specieLabels;
+    private SpecieDTO selectedSpecie;
+    protected override async Task OnInitializedAsync()
+    {
+        specie = await specieRepository.GetSpecieById(specieId);
+        pageTitle = $"Especes animales/{specie.Label}";
+        IEnumerable<Breed> breeds = await breedRepository.GetBreedsBySpecie(specieId);
+        breedDTOs = breeds.ToBreedDTOList().ToList();
+    }
+
+    public string[] ToolbarItems = new string[] { "Add", "Edit", "Update", "Cancel" };
+
+    private async Task OnBeginHandlerAsync(ActionEventArgs<BreedDTO> Args)
+    {
+        if (Args.Action == "Add")
+        {
+            BreedDTO newBreedDTO = Args.Data;
+            newBreedDTO.Specie = specie.ToSpecieDTO();
+            Breed createdBreed = await breedRepository.CreateBreed(newBreedDTO.ToBreed());
+        }
+        else if (Args.Action == "Edit")
+        {
+            BreedDTO newBreedDTO = Args.Data;
+            int result = await breedRepository.UpdateBreed(newBreedDTO.ToBreed());
+        }
+    }
+
+    private void OnDetailButtonClicked(CommandClickEventArgs<BreedDTO> args)
+    {
+        if (args.CommandColumn.ButtonOption.Content == "Details")
+        {
+            navigationManager.NavigateTo($"breeds/{args.RowData.Id}");
+        }
+    }
+}

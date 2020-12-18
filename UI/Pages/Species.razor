@@ -1,0 +1,81 @@
+﻿@page "/species"
+
+@using Applicattion.Data.DTO.SpecieBreed
+@using HerdManagement.Infrastructure.Persistence.Repository
+@using Applicattion.Data.DTO.SpecieBreed.Assembler
+@using HerdManagement.Domain.SpecieBreed.Entities
+@using Syncfusion.Blazor.Grids
+@using HerdManagement.Domain.SpecieBreed.Repository
+
+@inject ISpecieRepository specieRepository
+@inject NavigationManager navigationManager
+
+<nav class="navbar navbar-light mb-3 horizontal-nav-bar">
+    <h4>Espéces animales</h4>
+</nav>
+
+@if (specieDTOs == null)
+{
+    <img src="images/dog-alone.gif" class="rounded mx-auto d-block img-fluid" />
+}
+else
+{
+    <SfGrid DataSource="@specieDTOs" AllowSorting="true" AllowFiltering="true" Toolbar="@ToolbarItems">
+        <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true"></GridEditSettings>
+        <GridEvents OnActionBegin="OnBeginHandlerAsync" CommandClicked="OnDetailButtonClicked" TValue="SpecieDTO"></GridEvents>
+        <GridColumns>
+            <GridColumn Field=@nameof(SpecieDTO.Label)>
+            </GridColumn>
+            <GridColumn Field=@nameof(SpecieDTO.PregnancyDurationInDays)>
+            </GridColumn>
+            <GridColumn Field=@nameof(SpecieDTO.MinimumTimeSpanBetweenCalvingAndHeatInDays)>
+            </GridColumn>
+            <GridColumn Field=@nameof(SpecieDTO.ChildhoodDurationInDays)>
+            </GridColumn>
+            <GridColumn HeaderText="Actions">
+                <GridCommandColumns>
+                    <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-edit", CssClass = "e-flat" })"></GridCommandColumn>
+                    <GridCommandColumn Type="CommandButtonType.Save" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-update", CssClass = "e-flat" })"></GridCommandColumn>
+                    <GridCommandColumn Type="CommandButtonType.Cancel" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-cancel-icon", CssClass = "e-flat" })"></GridCommandColumn>
+                    <GridCommandColumn ButtonOption="@(new CommandButtonOptions() { Content = "Details", CssClass = "e-flat" })"></GridCommandColumn>
+                </GridCommandColumns>
+            </GridColumn>
+        </GridColumns>
+    </SfGrid>
+}
+
+@code {
+    private List<SpecieDTO> specieDTOs;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(10000);
+        IEnumerable<Specie> species = await specieRepository.GetAllSpecies();
+
+        specieDTOs = species.ToSpecieDTOList().ToList();
+    }
+
+    public string[] ToolbarItems = new string[] { "Add" };
+
+    private async Task OnBeginHandlerAsync(ActionEventArgs<SpecieDTO> Args)
+    {
+        if (Args.Action == "Add")
+        {
+            SpecieDTO newSpecieDTO = Args.Data;
+            Specie createdSpecie = await specieRepository.CreateSpecie(newSpecieDTO.ToSpecie());
+        }
+        else if (Args.Action == "Edit")
+        {
+            SpecieDTO newSpecieDTO = Args.Data;
+            int result = await specieRepository.UpdateSpecie(newSpecieDTO.ToSpecie());
+        }
+    }
+
+    private void OnDetailButtonClicked(CommandClickEventArgs<SpecieDTO> args)
+    {
+        if (args.CommandColumn.ButtonOption.Content == "Details")
+        {
+            navigationManager.NavigateTo($"species/{args.RowData.Id}");
+        }
+    }
+}

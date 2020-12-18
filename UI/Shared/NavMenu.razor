@@ -1,0 +1,41 @@
+﻿<div class="top-row pl-4 navbar navbar-dark">
+    <a class="navbar-brand" href="">HM</a>
+    <button class="navbar-toggler" @onclick="ToggleNavMenu">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</div>
+
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <NavLink class="nav-link nav-link-content" href="" Match=NavLinkMatch.All>
+                <img src="https://img.icons8.com/pastel-glyph/64/ffffff/home.png" />
+                <p class="nav-title">Accueil</p>
+            </NavLink>
+        </li>
+        <li class="nav-item">
+            <NavLink class="nav-link nav-link-content" href="animals">
+                <img src="https://img.icons8.com/bubbles/50/000000/incubator2.png" />
+                <p class="nav-title">Animaux</p>
+            </NavLink>
+        </li>
+        <li class="nav-item">
+            <NavLink class="nav-link nav-link-content" href="species">
+                <img src="https://img.icons8.com/bubbles/50/000000/incubator2.png" />
+                <p class="nav-title">Especes</p>
+            </NavLink>
+        </li>
+
+    </ul>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

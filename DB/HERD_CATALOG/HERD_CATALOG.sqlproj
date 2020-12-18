@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Name>HERD_CATALOG</Name>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>4.1</ProjectVersion>
+    <ProjectGuid>{74141022-fd27-4660-987f-f1a424cee6bf}</ProjectGuid>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.SqlAzureV12DatabaseSchemaProvider</DSP>
+    <OutputType>Database</OutputType>
+    <RootPath>
+    </RootPath>
+    <RootNamespace>HERD_CATALOG</RootNamespace>
+    <AssemblyName>HERD_CATALOG</AssemblyName>
+    <ModelCollation>1036,CI</ModelCollation>
+    <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
+    <DeployToDatabase>True</DeployToDatabase>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetLanguage>CS</TargetLanguage>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <SqlServerVerification>False</SqlServerVerification>
+    <IncludeCompositeObjects>True</IncludeCompositeObjects>
+    <TargetDatabaseSet>True</TargetDatabaseSet>
+    <DefaultCollation>French_CI_AS</DefaultCollation>
+    <DefaultFilegroup>PRIMARY</DefaultFilegroup>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+    <!-- Default to the v11.0 targets path if the targets file for the current VS version is not found -->
+    <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
+    <VisualStudioVersion Condition="'$(SSDTExists)' == ''">11.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Condition="'$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <ItemGroup>
+    <Folder Include="Properties" />
+    <Folder Include="dbo\" />
+    <Folder Include="dbo\Tables\" />
+    <Folder Include="dbo\Stored Procedures\" />
+    <Folder Include="dbo\Stored Procedures\Specie" />
+    <Folder Include="dbo\Stored Procedures\Breed" />
+    <Folder Include="dbo\Stored Procedures\Herd" />
+    <Folder Include="dbo\Stored Procedures\MeasurementUnit" />
+    <Folder Include="dbo\Tables\SpecieBreed" />
+    <Folder Include="dbo\Tables\Herd" />
+    <Folder Include="dbo\Tables\Reproduction" />
+    <Folder Include="dbo\Tables\Common" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="dbo\Stored Procedures\Breed\DeleteBreed.sql" />
+    <Build Include="dbo\Stored Procedures\Breed\GetAllBreeds.sql" />
+    <Build Include="dbo\Stored Procedures\Breed\GetBreedById.sql" />
+    <Build Include="dbo\Stored Procedures\Breed\GetBreedsByLabel.sql" />
+    <Build Include="dbo\Stored Procedures\Breed\GetBreedsBySpecie.sql" />
+    <Build Include="dbo\Stored Procedures\Breed\UpdateBreed.sql" />
+    <Build Include="dbo\Stored Procedures\Breed\InsertNewBreed.sql" />
+    <Build Include="dbo\Stored Procedures\Herd\DeleteHerd.sql" />
+    <Build Include="dbo\Stored Procedures\Herd\GetAllHerds.sql" />
+    <Build Include="dbo\Stored Procedures\Herd\GetHerdById.sql" />
+    <Build Include="dbo\Stored Procedures\Herd\GetHerdByName.sql" />
+    <Build Include="dbo\Stored Procedures\Herd\InsertNewHerd.sql" />
+    <Build Include="dbo\Stored Procedures\Herd\UpdateHerd.sql" />
+    <Build Include="dbo\Stored Procedures\Specie\UpdateSpecie.sql" />
+    <Build Include="dbo\Stored Procedures\Specie\DeleteSpecie.sql" />
+    <Build Include="dbo\Stored Procedures\Specie\GetAllSpecies.sql" />
+    <Build Include="dbo\Stored Procedures\Specie\GetSpecieById.sql" />
+    <Build Include="dbo\Stored Procedures\Specie\GetSpecieByLabel.sql" />
+    <Build Include="dbo\Stored Procedures\Specie\InsertNewSpecie.sql" />
+    <Build Include="dbo\Tables\SpecieBreed\Breed.sql" />
+    <Build Include="dbo\Tables\SpecieBreed\Herd.sql" />
+    <Build Include="dbo\Tables\SpecieBreed\Specie.sql" />
+    <Build Include="dbo\Tables\Reproduction\ReproductionState.sql" />
+    <Build Include="dbo\Tables\Reproduction\Animal.sql" />
+    <Build Include="dbo\Tables\Common\MeasurementUnit.sql" />
+    <Build Include="dbo\Stored Procedures\MeasurementUnit\InsertNewMeasurementUnit.sql" />
+    <Build Include="dbo\Stored Procedures\MeasurementUnit\UpdateMeasurementUnit.sql" />
+    <Build Include="dbo\Stored Procedures\MeasurementUnit\GetMeasurementUnitByLabel.sql" />
+    <Build Include="dbo\Stored Procedures\MeasurementUnit\GetMeasurementUnitById.sql" />
+    <Build Include="dbo\Stored Procedures\MeasurementUnit\GetAllMeasurementUnits.sql" />
+    <Build Include="dbo\Stored Procedures\MeasurementUnit\DeleteMeasurementUnit.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="dbo\Tables\Reproduction\Calving.sql" />
+    <Build Include="dbo\Tables\Reproduction\Reproduction.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="HERD_CATALOG.refactorlog" />
+  </ItemGroup>
+</Project>

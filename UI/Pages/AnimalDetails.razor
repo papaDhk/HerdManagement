@@ -1,0 +1,183 @@
+﻿@page "/animals/{AnimalHerdName}/{animalNumber:int}/{animalName}"
+
+@using Applicattion.Data.DTO.SpecieBreed
+@using HerdManagement.Infrastructure.Persistence.Repository
+@using Applicattion.Data.DTO.Reproduction
+@using HerdManagement.Domain.SpecieBreed.Entities
+@using HerdManagement.Domain.Reproduction.Entities
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.DropDowns
+@using Applicattion.Data.DTO.SpecieBreed.Assembler
+@using HerdManagement.Domain.SpecieBreed.Repository
+
+@inject ISpecieRepository specieRepository
+@inject NavigationManager navigationManager
+@inject IAnimalRepository animalRepository
+@inject IBreedRepository breedRepository
+
+<nav class="navbar navbar-light mb-3 horizontal-nav-bar justify-content-between">
+    <h6>Troupeaux / @AnimalHerdName / @AnimalName</h6>
+    <span class="oi oi-plus" aria-hidden="true" data-toggle="modal" data-target="#animalModalForm"></span>
+</nav>
+
+@if (currentMale == null || breedDTOs == null)
+{
+    <img src="images/dog-alone.gif" class="rounded mx-auto d-block img-fluid" />
+}
+else
+{
+    <nav>
+        <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+            <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Profil</a>
+            <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Caracteristiques</a>
+            <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Reproduction</a>
+            <a class="nav-item nav-link" id="nav-alinentation-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Alimentation</a>
+        </div>
+    </nav>
+    <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+
+            <div class="row">
+                <div class="col-4">
+                    @{
+                        var imageUrl = string.Empty;
+                        if (currentMale.Picture != null && currentMale.Picture.Length > 0)
+                        {
+                            imageUrl = $"data:image/png;base64,{Convert.ToBase64String(currentMale.Picture)}";
+                        }
+                    }
+                    <img src=@imageUrl alt="profilePicture" class="img-thumbnail">
+                </div>
+                <EditForm Model="@currentMale" OnValidSubmit="SaveAnimalAsync" class="col-8">
+                    <DataAnnotationsValidator />
+                    <div class="form-group row">
+                        <label for="name" class="col-3 col-form-label">
+                            Nom
+                        </label>
+                        <div class="col-sm-9">
+                            <InputText id="name" class="form-control" placeholder="Nom du troupeau" @bind-Value="currentMale.Name" disabled=@isNoEditable />
+                            <ValidationMessage For="@(() => currentMale.Name)" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="specie" class="col-3 col-form-label">
+                            Espece
+                        </label>
+                        <div class="col-9">
+                            <InputSelect id="breed" @bind-Value="currentMale.Breed.Id" disabled class="form-control">
+                                @foreach (var breed in breedDTOs)
+                                 {
+                                    <option value="@breed.Id">@breed.Label</option>
+                                 }
+                            </InputSelect>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="number" class="col-3 col-form-label">
+                            Numero
+                        </label>
+                        <div class="col-sm-9">
+                            <InputNumber id="number" class="form-control" placeholder="numero de l'animal" @bind-Value="currentMale.Number" disabled=@isNoEditable />
+                            <ValidationMessage For="@(() => currentMale.Number)" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="birthDate" class="col-3 col-form-label">
+                            Date de naissance
+                        </label>
+                        <div class="col-sm-9">
+                            <InputDate id="birthDate" class="form-control" placeholder="Date de naissance" @bind-Value="currentMale.BirthDate" disabled=@isNoEditable />
+                            <ValidationMessage For="@(() => currentMale.BirthDate)" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="picture" class="col-3 col-form-label">
+                            Photo
+                        </label>
+                        <div class="col-sm-9">
+                            <InputFile id="picture" class="form-control" OnChange="@OnInputFileChange" disabled=@isNoEditable />
+                        </div>
+                    </div>
+
+                    @if (isNoEditable)
+                    {
+                        <button @onclick="@MakeEditable" type="button" class="btn btn-secondary">Modifier</button>
+                    }
+                    else
+                    {
+                        <button @onclick="@MakeNoEditable" type="button" class="btn btn-secondary">Annuler</button>
+                        <button @onclick="@SaveAnimalAsync" type="button" class="btn btn-secondary">Enregistrer</button>
+                    }
+
+                </EditForm>
+            </div>          
+        </div>
+        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">...</div>
+        <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">...</div>
+        <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-alinentation-tab">...</div>
+    </div>
+}
+
+
+@code {
+
+    [Parameter]
+    public int AnimalNumber { get; set; }
+
+    [Parameter]
+    public string AnimalName { get; set; }
+
+    [Parameter]
+    public string AnimalHerdName { get; set; }
+
+    public bool isNoEditable = true;
+
+    //[Parameter]
+    //public string AnimalCaterory { get; set; }
+
+    private List<BreedDTO> breedDTOs;
+
+    private Male currentMale;
+
+    protected async override Task OnInitializedAsync()
+    {
+        currentMale = animalRepository.GetMaleByNumber(AnimalNumber);
+
+        breedDTOs = await breedRepository.GetAllBreeds().ContinueWith(breeds => breeds.Result.ToBreedDTOList().ToList());
+
+
+    }
+
+    private async Task OnInputFileChange(InputFileChangeEventArgs e)
+    {
+        var maxAllowedFiles = 1;
+        var format = "image/png";
+
+        foreach (var imageFile in e.GetMultipleFiles(maxAllowedFiles))
+        {
+            var resizedImageFile = await imageFile.RequestImageFileAsync(format,
+                100, 100);
+            var buffer = new byte[resizedImageFile.Size];
+            await resizedImageFile.OpenReadStream().ReadAsync(buffer);
+            currentMale.Picture = buffer;
+        }
+
+    }
+
+    private async Task SaveAnimalAsync()
+    {
+        currentMale = await animalRepository.UpdateMaleAsync(currentMale);
+
+        MakeNoEditable();
+    }
+
+    private void MakeEditable()
+    {
+        isNoEditable = false;
+    }
+
+    private void MakeNoEditable()
+    {
+        isNoEditable = true;
+    }
+}

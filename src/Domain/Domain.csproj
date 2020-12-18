@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>HerdManagement.Domain</RootNamespace>
+    <AssemblyName>HerdManagement.Domain</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Feeding\ValueObjects\**" />
+    <Compile Remove="Herd\ValueObjects\**" />
+    <EmbeddedResource Remove="Feeding\ValueObjects\**" />
+    <EmbeddedResource Remove="Herd\ValueObjects\**" />
+    <None Remove="Feeding\ValueObjects\**" />
+    <None Remove="Herd\ValueObjects\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Feeding\Entities\" />
+    <Folder Include="Feeding\Enumerations\" />
+    <Folder Include="Feeding\Exceptions\" />
+    <Folder Include="Feeding\Repository\" />
+    <Folder Include="Feeding\Service\" />
+    <Folder Include="Herd\Exceptions\" />
+    <Folder Include="Herd\Enumerations\" />
+    <Folder Include="Herd\Service\" />
+    <Folder Include="Reproduction\Exceptions\" />
+    <Folder Include="Reproduction\Repository\" />
+    <Folder Include="Reproduction\Service\" />
+    <Folder Include="Reproduction\ValueObjects\" />
+    <Folder Include="SpecieBreed\Exceptions\" />
+    <Folder Include="Herd\Repository\" />
+    <Folder Include="SpecieBreed\Service\" />
+    <Folder Include="User\Entities\" />
+    <Folder Include="User\Exceptions\" />
+    <Folder Include="User\Repository\" />
+    <Folder Include="User\Service\" />
+    <Folder Include="User\ValueObjects\" />
+  </ItemGroup>
+
+</Project>

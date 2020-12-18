@@ -1,0 +1,31 @@
+﻿@page "/breeds/{breedId:int}"
+
+@using Applicattion.Data.DTO.SpecieBreed
+@using HerdManagement.Infrastructure.Persistence.Repository
+@using Applicattion.Data.DTO.SpecieBreed.Assembler
+@using HerdManagement.Domain.SpecieBreed.Entities
+@using Syncfusion.Blazor.Grids
+@using Newtonsoft.Json
+@using Syncfusion.Blazor
+@using Syncfusion.Blazor.DropDowns
+@using System.Linq
+
+@inject BreedRepository breedRepository
+@inject SpecieRepository specieRepository
+
+
+<h1>@pageTitle</h1>
+
+
+
+@code {
+    [Parameter]
+    public int breedId { get; set; }
+    private string pageTitle;
+    private Breed breed;
+    protected override async Task OnInitializedAsync()
+    {
+        breed = await breedRepository.GetBreedById(breedId);
+        pageTitle = $"Race:{breed.Specie.Label}/{breed.Label}";
+    }
+}

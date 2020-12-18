@@ -1,0 +1,156 @@
+﻿@page "/"
+
+@inject IHerdRepository herdRepository
+@inject ISpecieRepository specieRepository
+@inject ISpecieBreedService specieBreedService
+
+<nav class="navbar navbar-light mb-3 horizontal-nav-bar justify-content-between">
+    <h6>Troupeaux</h6>
+    <span class="oi oi-plus" aria-hidden="true" data-toggle="modal" data-target="#herdModalForm"></span>
+</nav>
+
+@if (herdDTOs == null)
+{
+    <img src="images/dog-alone.gif" class="rounded mx-auto d-block img-fluid" />
+}
+else
+{
+    <div class="control-section">
+        <div class="row">
+
+            @foreach (var herd in herdDTOs)
+            {
+                <div class="col-sm-5 col-md-2 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">@herd.Name</h5>
+                            <p class="card-text">Troupeau avec des animaux de l'espece @herd.Specie.Label</p>
+                            <NavLink href="@{"herds/" + @herd.Id.ToString() + "/" + herd.Name}" Match="NavLinkMatch.All" class="btn btn-primary mx-auto">Gerer</NavLink>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <div class="modal fade" id="herdModalForm" tabindex="-1" role="dialog" aria-labelledby="Creer un nouveau troupeau" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="herdModalFormLabel">Creer un nouveau troupeau</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="ClearModalForm">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <EditForm Model="@herdCreationDTO" OnValidSubmit="SaveHerdAsync">
+                            <div class="modal-body">
+
+                                <DataAnnotationsValidator />
+                                <div class="form-group row">
+                                    <label for="name" class="col-3 col-form-label">
+                                        Nom
+                                    </label>
+                                    <div class="col-sm-9">
+                                        <InputText id="name" class="form-control" placeholder="Nom du troupeau" @bind-Value="herdCreationDTO.Name" />
+                                        <ValidationMessage For="@(() => herdCreationDTO.Name)" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="specie" class="col-3 col-form-label">
+                                        Espece
+                                    </label>
+                                    <div class="col-9">
+                                        <InputSelect id="specie" @bind-Value="herdCreationDTO.SpecieId" class="form-control">
+                                            @foreach (var specie in specieDTOs)
+                                                {
+                                                <option value="@specie.Id">@specie.Label</option>
+                                                }
+                                        </InputSelect>
+                                        <ValidationMessage For="@(() => herdCreationDTO.SpecieId)" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="description" class="col-3 col-form-label">
+                                        Description
+                                    </label>
+                                    <div class="col-sm-9">
+                                        <InputTextArea id="description" class="form-control" placeholder="Description"
+                                                       @bind-Value="herdCreationDTO.Description" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="ClearModalForm">Close</button>
+                                <button type="submit" class="btn btn-primary">Enregistrer</button>
+                            </div>
+                        </EditForm>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+}
+
+@code {
+    private List<HerdDTO> herdDTOs;
+    private List<SpecieDTO> specieDTOs;
+    private List<String> specieLabels;
+    private SpecieDTO selectedSpecie;
+    private string selectedColor;
+    private string SpecieId = "";
+    private HerdCreationDTO herdCreationDTO = new HerdCreationDTO();
+
+    protected override async Task OnInitializedAsync()
+    {
+        IEnumerable<Herd> herds = await herdRepository.GetAllHerds();
+
+        herdDTOs = herds.ToHerdDTOList().ToList();
+
+        IEnumerable<Specie> species = await specieRepository.GetAllSpecies();
+
+        specieDTOs = species.ToSpecieDTOList().ToList();
+
+    }
+
+    public string[] ToolbarItems = new string[] { "Add", "Edit", "Update", "Cancel" };
+
+    private async Task OnBeginHandlerAsync(ActionEventArgs<HerdDTO> Args)
+    {
+        if (Args.Action == "Add")
+        {
+            HerdDTO newHerdDTO = Args.Data;
+            newHerdDTO.Specie = selectedSpecie;
+            newHerdDTO.Color = selectedColor;
+            Herd createdHerd = await herdRepository.CreateHerd(newHerdDTO.ToHerd());
+        }
+        else if (Args.Action == "Edit")
+        {
+            HerdDTO newHerdDTO = Args.Data;
+            newHerdDTO.Specie = selectedSpecie;
+            newHerdDTO.Color = selectedColor;
+            int result = await herdRepository.UpdateHerd(newHerdDTO.ToHerd());
+        }
+    }
+
+    private void OnValueChange(Syncfusion.Blazor.DropDowns.ChangeEventArgs<int, SpecieDTO> args)
+    {
+        selectedSpecie = args.ItemData;
+    }
+
+    private async Task SaveHerdAsync()
+    {
+
+        Response<Herd> response = await specieBreedService.CreateHerd(herdCreationDTO);
+        if (response.IsOperationSuccessfull)
+        {
+            ClearModalForm();
+            herdDTOs.Add(response.Core.ToHerdDTO());
+        }
+    }
+
+
+    private void ClearModalForm()
+    {
+        herdCreationDTO = new HerdCreationDTO();
+    }
+}
