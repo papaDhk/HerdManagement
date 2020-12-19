@@ -49,7 +49,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        await Task.Delay(10000);
         IEnumerable<Specie> species = await specieRepository.GetAllSpecies();
 
         specieDTOs = species.ToSpecieDTOList().ToList();

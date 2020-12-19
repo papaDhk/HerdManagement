@@ -5,7 +5,7 @@ using System.Text;
 
 namespace HerdManagement.Domain.Reproduction.Entities
 {
-    public abstract class YoungAnimal : Animal
+    public class YoungAnimal : Animal
     {
     }
 }

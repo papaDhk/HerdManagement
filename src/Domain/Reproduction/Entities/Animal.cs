@@ -33,5 +33,10 @@ namespace HerdManagement.Domain.Reproduction.Entities
         {
             return Id.GetHashCode() ^ Number.GetHashCode();
         }
+
+        public int AgeInDays => DateTime.UtcNow.Subtract(BirthDate).Days;
+
+        public bool IsAdult => Breed.Specie.ChildhoodDurationInDays < AgeInDays;
+
     }
 }

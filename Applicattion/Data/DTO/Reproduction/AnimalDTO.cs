@@ -26,6 +26,9 @@ namespace Applicattion.Data.DTO.Reproduction
 
         public PresenceStatusEnum PresenceStatus { get; set; }
 
+        [Required]
+        public SexEnum Sex { get; set; }
+
         public DateTime DeathDate { get; set; }
 
         public BreedDTO Breed
@@ -44,6 +47,7 @@ namespace Applicattion.Data.DTO.Reproduction
         [Required]
         public int HerdId;
 
+        public int AgeInDays => DateTime.UtcNow.Subtract(BirthDate).Days;
         
     }
 }

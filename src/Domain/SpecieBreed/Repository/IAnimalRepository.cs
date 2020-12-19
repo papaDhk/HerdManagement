@@ -16,7 +16,13 @@ namespace HerdManagement.Domain.SpecieBreed.Repository
         Male GetMaleByNumber(int maleNumber);
         IEnumerable<Male> GetMales();
         IEnumerable<Male> GetMalesByHerdId(int herdId);
+        IEnumerable<Female> GetFemalesByHerdId(int herdId);
         Task<Female> UpdateFemaleAsync(Female female);
         Task<Male> UpdateMaleAsync(Male male);
+        Task<YoungAnimal> AddNewYoungAnimalAsync(YoungAnimal youngAnimal);
+        IEnumerable<YoungAnimal> GetYoungAnimals();
+        IEnumerable<YoungAnimal> GetYoungAnimalsByHerdId(int herdId);
+        YoungAnimal GetYoungAnimalByNumber(int youngAnimalNumber);
+        Task<YoungAnimal> UpdateYoungAnimalAsync(YoungAnimal youngAnimal);
     }
 }

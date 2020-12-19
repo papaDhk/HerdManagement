@@ -198,7 +198,7 @@ namespace HerdManagement.Domain.Reproduction.ValueObjects
                 case ReproductionStateEnum.Initial when date > ActualState.Date:
                     return new Reproduction(Female, Male, date, Type, States.Append(new ReproductionState(ReproductionStateEnum.Gestating, date)), Commentary);
 
-                case ReproductionStateEnum.Gestating when date.Subtract(ActualState.Date) >= Female.Breed.Specie.PregnancyDuration:
+                case ReproductionStateEnum.Gestating when date.Subtract(ActualState.Date) >= TimeSpan.FromDays(Female.Breed.Specie.PregnancyDurationInDays):
                     return new Reproduction(Female, Male, date, Type, States.Append(new ReproductionState(ReproductionStateEnum.Complete, date)), Commentary);
 
                 case ReproductionStateEnum.Complete:

@@ -42,6 +42,7 @@ namespace Applicattion.Data.DTO.Reproduction.Assembler
                     Number = animalDTO.Number,
                     DeathDate = animalDTO.DeathDate,
                     Herd = animalDTO.Herd.ToHerd(),
+                    Breed = new Breed { Id = animalDTO.BreedId },
                     Picture = animalDTO.Picture,
                     PresenceStatus = animalDTO.PresenceStatus,
                     Weight = animalDTO.Weight
@@ -53,11 +54,11 @@ namespace Applicattion.Data.DTO.Reproduction.Assembler
             }
         }
 
-        public static YoungFemale YoungFemale(this AnimalDTO animalDTO)
+        public static YoungAnimal ToYoungAnimal(this AnimalDTO animalDTO)
         {
             if (animalDTO != null)
             {
-                return new YoungFemale
+                return new YoungAnimal
                 {
                     Name = animalDTO.Name,
                     BirthDate = animalDTO.BirthDate,
@@ -65,6 +66,7 @@ namespace Applicattion.Data.DTO.Reproduction.Assembler
                     Number = animalDTO.Number,
                     DeathDate = animalDTO.DeathDate,
                     Herd = animalDTO.Herd.ToHerd(),
+                    Breed = new Breed { Id = animalDTO.BreedId },
                     Picture = animalDTO.Picture,
                     PresenceStatus = animalDTO.PresenceStatus,
                     Weight = animalDTO.Weight
@@ -72,31 +74,9 @@ namespace Applicattion.Data.DTO.Reproduction.Assembler
             }
             else
             {
-                return new YoungFemale();
+                return new YoungAnimal();
             }
         }
-        
-        public static YoungMale YoungMale(this AnimalDTO animalDTO)
-        {
-            if (animalDTO != null)
-            {
-                return new YoungMale
-                {
-                    Name = animalDTO.Name,
-                    BirthDate = animalDTO.BirthDate,
-                    Bought = animalDTO.Bought,
-                    Number = animalDTO.Number,
-                    DeathDate = animalDTO.DeathDate,
-                    Herd = animalDTO.Herd.ToHerd(),
-                    Picture = animalDTO.Picture,
-                    PresenceStatus = animalDTO.PresenceStatus,
-                    Weight = animalDTO.Weight
-                };
-            }
-            else
-            {
-                return new YoungMale();
-            }
-        }
+              
     }
 }

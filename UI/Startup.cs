@@ -41,6 +41,7 @@ namespace UI
             services.AddSingleton<IHerdRepository,HerdRepository>();
             services.AddSingleton<IAnimalRepository,AnimalRepository>();
             services.AddSingleton<ISpecieBreedService, SpecieBreedService>();
+            services.AddSingleton<IReproductionService, ReproductionService>();
 
             services.AddSyncfusionBlazor();
         }

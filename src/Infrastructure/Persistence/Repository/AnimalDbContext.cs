@@ -19,9 +19,7 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
 
         public virtual DbSet<Female> Females { get; set; }
 
-        public virtual DbSet<YoungFemale> YoungFemales { get; set; }
-
-        public virtual DbSet<YoungMale> YoungMales { get; set; }
+        public virtual DbSet<YoungAnimal> YoungAnimals { get; set; }
 
         public virtual DbSet<ReproductionState> ReproductionStates { get; set; } 
 

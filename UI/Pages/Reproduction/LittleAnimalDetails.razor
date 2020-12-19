@@ -1,4 +1,4 @@
-﻿@page "/animals/{AnimalHerdName}/{animalNumber:int}/{animalName}"
+﻿@page "/animals/little/{AnimalHerdName}/{animalNumber:int}/{animalName}"
 
 @using Applicattion.Data.DTO.SpecieBreed
 @using HerdManagement.Infrastructure.Persistence.Repository
@@ -20,7 +20,7 @@
     <span class="oi oi-plus" aria-hidden="true" data-toggle="modal" data-target="#animalModalForm"></span>
 </nav>
 
-@if (currentMale == null || breedDTOs == null)
+@if (currentYoungAnimal == null || breedDTOs == null)
 {
     <img src="images/dog-alone.gif" class="rounded mx-auto d-block img-fluid" />
 }
@@ -34,41 +34,41 @@ else
             <a class="nav-item nav-link" id="nav-alinentation-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Alimentation</a>
         </div>
     </nav>
-    <div class="tab-content" id="nav-tabContent">
+    <div class="tab-content mt-5" id="nav-tabContent">
         <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
 
             <div class="row">
-                <div class="col-4">
+                <div class="col-3">
                     @{
                         var imageUrl = string.Empty;
-                        if (currentMale.Picture != null && currentMale.Picture.Length > 0)
+                        if (currentYoungAnimal.Picture != null && currentYoungAnimal.Picture.Length > 0)
                         {
-                            imageUrl = $"data:image/png;base64,{Convert.ToBase64String(currentMale.Picture)}";
+                            imageUrl = $"data:image/png;base64,{Convert.ToBase64String(currentYoungAnimal.Picture)}";
                         }
                     }
                     <img src=@imageUrl alt="profilePicture" class="img-thumbnail">
                 </div>
-                <EditForm Model="@currentMale" OnValidSubmit="SaveAnimalAsync" class="col-8">
+                <EditForm Model="@currentYoungAnimal" OnValidSubmit="SaveAnimalAsync" class="col-9">
                     <DataAnnotationsValidator />
                     <div class="form-group row">
                         <label for="name" class="col-3 col-form-label">
                             Nom
                         </label>
                         <div class="col-sm-9">
-                            <InputText id="name" class="form-control" placeholder="Nom du troupeau" @bind-Value="currentMale.Name" disabled=@isNoEditable />
-                            <ValidationMessage For="@(() => currentMale.Name)" />
+                            <InputText id="name" class="form-control" placeholder="Nom du troupeau" @bind-Value="currentYoungAnimal.Name" disabled=@isNoEditable />
+                            <ValidationMessage For="@(() => currentYoungAnimal.Name)" />
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="specie" class="col-3 col-form-label">
-                            Espece
+                            Race
                         </label>
                         <div class="col-9">
-                            <InputSelect id="breed" @bind-Value="currentMale.Breed.Id" disabled class="form-control">
+                            <InputSelect id="breed" @bind-Value="currentYoungAnimal.Breed.Id" disabled class="form-control">
                                 @foreach (var breed in breedDTOs)
-                                 {
+                                    {
                                     <option value="@breed.Id">@breed.Label</option>
-                                 }
+                                    }
                             </InputSelect>
                         </div>
                     </div>
@@ -77,8 +77,8 @@ else
                             Numero
                         </label>
                         <div class="col-sm-9">
-                            <InputNumber id="number" class="form-control" placeholder="numero de l'animal" @bind-Value="currentMale.Number" disabled=@isNoEditable />
-                            <ValidationMessage For="@(() => currentMale.Number)" />
+                            <InputNumber id="number" class="form-control" placeholder="numero de l'animal" @bind-Value="currentYoungAnimal.Number" disabled=@isNoEditable />
+                            <ValidationMessage For="@(() => currentYoungAnimal.Number)" />
                         </div>
                     </div>
                     <div class="form-group row">
@@ -86,18 +86,22 @@ else
                             Date de naissance
                         </label>
                         <div class="col-sm-9">
-                            <InputDate id="birthDate" class="form-control" placeholder="Date de naissance" @bind-Value="currentMale.BirthDate" disabled=@isNoEditable />
-                            <ValidationMessage For="@(() => currentMale.BirthDate)" />
+                            <InputDate id="birthDate" class="form-control" placeholder="Date de naissance" @bind-Value="currentYoungAnimal.BirthDate" disabled=@isNoEditable />
+                            <ValidationMessage For="@(() => currentYoungAnimal.BirthDate)" />
                         </div>
                     </div>
-                    <div class="form-group row">
-                        <label for="picture" class="col-3 col-form-label">
-                            Photo
-                        </label>
-                        <div class="col-sm-9">
-                            <InputFile id="picture" class="form-control" OnChange="@OnInputFileChange" disabled=@isNoEditable />
+                    @if (isNoEditable == false)
+                    {
+                        <div class="form-group row">
+                            <label for="picture" class="col-3 col-form-label">
+                                Photo
+                            </label>
+                            <div class="col-sm-9">
+                                <InputFile id="picture" class="form-control" OnChange="@OnInputFileChange" disabled=@isNoEditable />
+                            </div>
                         </div>
-                    </div>
+                    }
+
 
                     @if (isNoEditable)
                     {
@@ -110,7 +114,7 @@ else
                     }
 
                 </EditForm>
-            </div>          
+            </div>
         </div>
         <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">...</div>
         <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">...</div>
@@ -137,14 +141,13 @@ else
 
     private List<BreedDTO> breedDTOs;
 
-    private Male currentMale;
+    private YoungAnimal currentYoungAnimal;
 
     protected async override Task OnInitializedAsync()
     {
-        currentMale = animalRepository.GetMaleByNumber(AnimalNumber);
+        currentYoungAnimal = animalRepository.GetYoungAnimalByNumber(AnimalNumber);
 
         breedDTOs = await breedRepository.GetAllBreeds().ContinueWith(breeds => breeds.Result.ToBreedDTOList().ToList());
-
 
     }
 
@@ -159,14 +162,14 @@ else
                 100, 100);
             var buffer = new byte[resizedImageFile.Size];
             await resizedImageFile.OpenReadStream().ReadAsync(buffer);
-            currentMale.Picture = buffer;
+            currentYoungAnimal.Picture = buffer;
         }
 
     }
 
     private async Task SaveAnimalAsync()
     {
-        currentMale = await animalRepository.UpdateMaleAsync(currentMale);
+        currentYoungAnimal = await animalRepository.UpdateYoungAnimalAsync(currentYoungAnimal);
 
         MakeNoEditable();
     }
