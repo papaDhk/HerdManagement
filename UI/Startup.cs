@@ -33,15 +33,15 @@ namespace UI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<AnimalDbContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("HERD_CATALOG"), options => options.MigrationsAssembly("UI")),ServiceLifetime.Singleton);
+            options.UseSqlServer(Configuration.GetConnectionString("HERD_CATALOG"), options => options.MigrationsAssembly("UI")),ServiceLifetime.Transient);
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSingleton<ISpecieRepository,SpecieRepository>();
-            services.AddSingleton<IBreedRepository,BreedRepository>();
-            services.AddSingleton<IHerdRepository,HerdRepository>();
-            services.AddSingleton<IAnimalRepository,AnimalRepository>();
-            services.AddSingleton<ISpecieBreedService, SpecieBreedService>();
-            services.AddSingleton<IReproductionService, ReproductionService>();
+            services.AddTransient<ISpecieRepository,SpecieRepository>();
+            services.AddTransient<IBreedRepository,BreedRepository>();
+            services.AddTransient<IHerdRepository,HerdRepository>();
+            services.AddTransient<IAnimalRepository,AnimalRepository>();
+            services.AddTransient<ISpecieBreedService, SpecieBreedService>();
+            services.AddTransient<IReproductionService, ReproductionService>();
 
             services.AddSyncfusionBlazor();
         }

@@ -189,7 +189,7 @@ else
 
             animals.AddRange(youngAnimals.Cast<Animal>());
 
-            breedDTOs = await breedRepository.GetAllBreeds().ContinueWith(breeds => breeds.Result.ToBreedDTOList().ToList());
+            breedDTOs = await breedRepository.GetBreedsBySpecie(currentHerd.Specie.Id).ContinueWith(breeds => breeds.Result.ToBreedDTOList().ToList());
         }
 
         private async Task OnInputFileChange(InputFileChangeEventArgs e)

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HerdManagement.Infrastructure.Persistence.Utils;
 
 namespace HerdManagement.Infrastructure.Persistence.Repository
 {
@@ -27,9 +28,15 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
 
             _ = await _animalDbContext.SaveChangesAsync();
 
-            _animalDbContext.Entry(female).State = EntityState.Detached;
+            _animalDbContext.UntrackEntities();
 
-            return await Task.FromResult(savedFemale.Entity);
+            //_animalDbContext.Entry(female).State = EntityState.Detached;
+
+            //_animalDbContext.Entry(female.Herd).State = EntityState.Detached;
+
+            return GetFemaleByNumber(female.Number);
+
+            //return await Task.FromResult(savedFemale.Entity);
         }
 
         public async Task<Female> UpdateFemaleAsync(Female female)
@@ -38,9 +45,11 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
 
             _ = await _animalDbContext.SaveChangesAsync();
 
-            _animalDbContext.Entry(female).State = EntityState.Detached;
+            _animalDbContext.UntrackEntities();
 
-            return await Task.FromResult(female);
+            //_animalDbContext.Entry(female).State = EntityState.Detached;
+
+            return GetFemaleByNumber(female.Number);
         }
 
         public IEnumerable<Female> GetFemales()
@@ -58,9 +67,12 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
 
         public Female GetFemaleByNumber(int femaleNumber)
         {
-            return _animalDbContext.Females.Include(female => female.Breed).Where(female => female.Number == femaleNumber).FirstOrDefault();
+            return _animalDbContext.Females
+                   .Include(female => female.Breed)
+                   .ThenInclude(breed => breed.Specie)                  
+                   .Where(female => female.Number == femaleNumber)
+                   .FirstOrDefault();
         }
-
 
         //Males
 
@@ -70,9 +82,15 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
 
             _ = await _animalDbContext.SaveChangesAsync();
 
-            _animalDbContext.Entry(male).State = EntityState.Detached;
+            _animalDbContext.UntrackEntities();
 
-            return await Task.FromResult(savedMale.Entity);
+            //_animalDbContext.Entry(male).State = EntityState.Detached;
+
+            //_animalDbContext.Entry(male.Herd).State = EntityState.Detached;
+
+            //await _animalDbContext.Entry(male).Reference(male => male.Breed).LoadAsync();
+
+            return GetMaleByNumber(male.Number);
         }
 
 
@@ -82,9 +100,13 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
 
             _ = await _animalDbContext.SaveChangesAsync();
 
-            _animalDbContext.Entry(male).State = EntityState.Detached;
+            _animalDbContext.UntrackEntities();
 
-            return await Task.FromResult(male);
+            //_animalDbContext.Entry(male).State = EntityState.Detached;
+
+            //return await Task.FromResult(male);
+
+            return GetMaleByNumber(male.Number);
         }
 
         public IEnumerable<Male> GetMales()
@@ -102,7 +124,11 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
 
         public Male GetMaleByNumber(int maleNumber)
         {
-            return _animalDbContext.Males.Include(male => male.Breed).Where(male => male.Number == maleNumber).FirstOrDefault();
+            return _animalDbContext.Males
+                   .Include(male => male.Breed)
+                   .ThenInclude(breed => breed.Specie)
+                   .Where(male => male.Number == maleNumber)
+                   .FirstOrDefault();
         }
 
 
@@ -114,9 +140,13 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
 
             _ = await _animalDbContext.SaveChangesAsync();
 
-            _animalDbContext.Entry(youngAnimal).State = EntityState.Detached;
+            _animalDbContext.UntrackEntities();
 
-            return await Task.FromResult(savedYoungAnimal.Entity);
+            //_animalDbContext.Entry(youngAnimal).State = EntityState.Detached;
+
+            //_animalDbContext.Entry(youngAnimal.Herd).State = EntityState.Detached;
+
+            return GetYoungAnimalByNumber(youngAnimal.Number);
         }
 
         public async Task<YoungAnimal> UpdateYoungAnimalAsync(YoungAnimal youngAnimal)
@@ -125,14 +155,20 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
 
             _ = await _animalDbContext.SaveChangesAsync();
 
-            _animalDbContext.Entry(youngAnimal).State = EntityState.Detached;
+            _animalDbContext.UntrackEntities();
 
-            return await Task.FromResult(youngAnimal);
+            return GetYoungAnimalByNumber(youngAnimal.Number);
+
+            //_animalDbContext.Entry(youngAnimal).State = EntityState.Detached;
+
+            //return await Task.FromResult(youngAnimal);
         }
 
         public IEnumerable<YoungAnimal> GetYoungAnimals()
         {
-            return _animalDbContext.YoungAnimals;
+            return _animalDbContext.YoungAnimals
+                   .Include(youngAnimal => youngAnimal.Breed)
+                   .ThenInclude(breed => breed.Specie);
         }
 
         public IEnumerable<YoungAnimal> GetYoungAnimalsByHerdId(int herdId)
@@ -145,7 +181,11 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
 
         public YoungAnimal GetYoungAnimalByNumber(int youngAnimalNumber)
         {
-            return _animalDbContext.YoungAnimals.Include(youngAnimal => youngAnimal.Breed).Where(youngAnimal => youngAnimal.Number == youngAnimalNumber).FirstOrDefault();
+            return _animalDbContext.YoungAnimals
+                   .Include(youngAnimal => youngAnimal.Breed)
+                   .ThenInclude(youngAnimal => youngAnimal.Specie)
+                   .Where(youngAnimal => youngAnimal.Number == youngAnimalNumber)
+                   .FirstOrDefault();
         }
 
     }
