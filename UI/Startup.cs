@@ -16,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 using HerdManagement.Domain.SpecieBreed.Service;
 using Applicattion.Services;
 using HerdManagement.Domain.SpecieBreed.Repository;
+using HerdManagement.Domain.Reproduction.Repository;
 
 namespace UI
 {
@@ -42,6 +43,7 @@ namespace UI
             services.AddTransient<IAnimalRepository,AnimalRepository>();
             services.AddTransient<ISpecieBreedService, SpecieBreedService>();
             services.AddTransient<IReproductionService, ReproductionService>();
+            services.AddTransient<IReproductionRepository, ReproductionRepository>();
 
             services.AddSyncfusionBlazor();
         }

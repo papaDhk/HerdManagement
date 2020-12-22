@@ -1,5 +1,4 @@
 ﻿using HerdManagement.Domain.Reproduction.Entities;
-using HerdManagement.Domain.SpecieBreed.Repository;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -7,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HerdManagement.Infrastructure.Persistence.Utils;
+using HerdManagement.Domain.Reproduction.Repository;
 
 namespace HerdManagement.Infrastructure.Persistence.Repository
 {

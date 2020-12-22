@@ -15,7 +15,7 @@ namespace HerdManagement.Domain.Reproduction.Entities
         public virtual SexEnum Sex { get; set; }
         public virtual DateTime BirthDate { get; set; }
         public virtual byte[] Picture { get; set; }
-        public virtual bool Bought { get; set; }
+        public virtual AnimalOrigin Origin { get; set; }
         public virtual uint Weight { get; set; }
         public virtual PresenceStatusEnum PresenceStatus { get; set; }
         public virtual DateTime DeathDate { get; set; }
@@ -42,5 +42,18 @@ namespace HerdManagement.Domain.Reproduction.Entities
 
         public bool IsAdult => Breed.Specie.ChildhoodDurationInDays < AgeInDays;
 
+        public override string ToString()
+        {
+            return $"{Number} - {Name} - {Breed.Label}";
+        }
+
+    }
+
+    public enum AnimalOrigin
+    {
+        Bought,
+        Donated,
+        Found,
+        BornInFarm
     }
 }

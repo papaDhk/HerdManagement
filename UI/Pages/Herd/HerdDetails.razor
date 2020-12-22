@@ -78,7 +78,7 @@ else
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="specie" class="col-3 col-form-label">
+                            <label for="breed" class="col-3 col-form-label">
                                 Race
                             </label>
                             <div class="col-9">
@@ -107,9 +107,9 @@ else
                             <div class="col-9">
                                 <InputSelect id="sex" @bind-Value="animalDTO.Sex" class="form-control">
                                     @foreach (var sex in Enum.GetValues(typeof(SexEnum)))
-                                     {
+                                        {
                                         <option value="@sex">@sex</option>
-                                     }
+                                        }
                                 </InputSelect>
                                 <ValidationMessage For="@(() => animalDTO.Sex)" />
                             </div>
@@ -123,6 +123,56 @@ else
                                 <ValidationMessage For="@(() => animalDTO.BirthDate)" />
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <label for="origin" class="col-3 col-form-label">
+                                Origines
+                            </label>
+                            <div class="col-9">
+                                <InputSelect id="origin" @bind-Value="@newAnimalOrigin" class="form-control">
+
+                                    @foreach (var origin in Enum.GetValues(typeof(AnimalOrigin)))
+                                        {
+                                        <option value="@origin">@origin</option>
+                                        }
+                                </InputSelect>
+                                <ValidationMessage For="@(() => animalDTO.Origin)" />
+                            </div>
+                        </div>
+
+                        @if (newAnimalOrigin == AnimalOrigin.BornInFarm.ToString())
+                         {
+                            <div class="form-group row">
+                                <label for="mother" class="col-3 col-form-label">
+                                    Mere
+                                </label>
+                                <div class="col-9">
+                                    <InputSelect id="mother" @bind-Value="@animalDTO.MotherId" class="form-control" placeholder="Quelles sont les origines">
+
+                                        @foreach (var female in females)
+                                                {
+                                            <option value="@female.Id">@female.ToString()</option>
+                                                }
+                                    </InputSelect>
+                                    <ValidationMessage For="@(() => animalDTO.MotherId)" />
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="father" class="col-3 col-form-label">
+                                    Pere
+                                </label>
+                                <div class="col-9">
+                                    <InputSelect id="father" @bind-Value="@animalDTO.FatherId" class="form-control">
+                                        @foreach (var male in males)
+                                                {
+                                            <option value="@male.Id">@male.ToString()</option>
+                                                }
+                                    </InputSelect>
+                                    <ValidationMessage For="@(() => animalDTO.FatherId)" />
+                                </div>
+                            </div>
+                         }
+
                         <div class="form-group row">
                             <label for="picture" class="col-3 col-form-label">
                                 Photo
@@ -144,11 +194,11 @@ else
 
 
     @code {
-        [Parameter]
-        public int herdId { get; set; }
+            [Parameter]
+            public int herdId { get; set; }
 
-        [Parameter]
-        public string herdName { get; set; }
+            [Parameter]
+            public string herdName { get; set; }
 
         private HerdDTO currentHerd;
 
@@ -169,6 +219,8 @@ else
         private AnimalDTO animalDTO = new AnimalDTO { BirthDate = DateTime.UtcNow };
 
         public string[] ToolbarItems = new string[] { "Search" };
+
+        private string newAnimalOrigin = "";
 
 
 
@@ -214,6 +266,8 @@ else
 
         private async Task SaveAnimalAsync()
         {
+            animalDTO.Origin = (AnimalOrigin)Enum.Parse(typeof(AnimalOrigin), newAnimalOrigin);
+
             var newAnimal = await reproductionService.AddNewAnimalAsync(animalDTO);
 
             animals.Add(newAnimal);

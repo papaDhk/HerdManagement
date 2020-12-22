@@ -14,14 +14,15 @@ namespace Applicattion.Data.DTO.Reproduction.Assembler
                 {
                     Name = animalDTO.Name,
                     BirthDate = animalDTO.BirthDate,
-                    Bought = animalDTO.Bought,
+                    Origin = animalDTO.Origin,
                     Number = animalDTO.Number,
                     DeathDate = animalDTO.DeathDate,
                     Herd = animalDTO.Herd.ToHerd(),
                     Breed = new Breed { Id = animalDTO.BreedId },
                     Picture = animalDTO.Picture,
                     PresenceStatus = animalDTO.PresenceStatus,
-                    Weight = animalDTO.Weight
+                    Weight = animalDTO.Weight,
+                    FromCalving = animalDTO.FromCalving
                 };
             }
             else
@@ -38,14 +39,15 @@ namespace Applicattion.Data.DTO.Reproduction.Assembler
                 {
                     Name = animalDTO.Name,
                     BirthDate = animalDTO.BirthDate,
-                    Bought = animalDTO.Bought,
+                    Origin = animalDTO.Origin,
                     Number = animalDTO.Number,
                     DeathDate = animalDTO.DeathDate,
                     Herd = animalDTO.Herd.ToHerd(),
                     Breed = new Breed { Id = animalDTO.BreedId },
                     Picture = animalDTO.Picture,
                     PresenceStatus = animalDTO.PresenceStatus,
-                    Weight = animalDTO.Weight
+                    Weight = animalDTO.Weight,
+                    FromCalving = animalDTO.FromCalving
                 };
             }
             else
@@ -62,14 +64,15 @@ namespace Applicattion.Data.DTO.Reproduction.Assembler
                 {
                     Name = animalDTO.Name,
                     BirthDate = animalDTO.BirthDate,
-                    Bought = animalDTO.Bought,
+                    Origin = animalDTO.Origin,
                     Number = animalDTO.Number,
                     DeathDate = animalDTO.DeathDate,
                     Herd = animalDTO.Herd.ToHerd(),
                     Breed = new Breed { Id = animalDTO.BreedId },
                     Picture = animalDTO.Picture,
                     PresenceStatus = animalDTO.PresenceStatus,
-                    Weight = animalDTO.Weight
+                    Weight = animalDTO.Weight,
+                    FromCalving = animalDTO.FromCalving
                 };
             }
             else

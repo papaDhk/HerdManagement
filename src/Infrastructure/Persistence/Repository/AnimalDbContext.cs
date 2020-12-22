@@ -1,11 +1,6 @@
 ﻿using HerdManagement.Domain.Reproduction.Entities;
 using HerdManagement.Domain.Reproduction.ValueObjects;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HerdManagement.Infrastructure.Persistence.Repository
 {
@@ -24,6 +19,8 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
         public virtual DbSet<ReproductionState> ReproductionStates { get; set; }
 
         public virtual DbSet<Reproduction> Reproductions { get; set; }
+
+        public virtual DbSet<Calving> Calvings { get; set; }
 
 
 

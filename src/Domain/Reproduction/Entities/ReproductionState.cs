@@ -11,6 +11,8 @@ namespace HerdManagement.Domain.Reproduction.ValueObjects
 
         }
 
+        public int ReproductionId { get; set; }
+
         public ReproductionStateEnum State { get; protected set; }
 
         public DateTime Date { get; protected set; }

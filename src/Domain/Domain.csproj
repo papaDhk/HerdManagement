@@ -25,7 +25,6 @@
     <Folder Include="Herd\Enumerations\" />
     <Folder Include="Herd\Service\" />
     <Folder Include="Reproduction\Exceptions\" />
-    <Folder Include="Reproduction\Repository\" />
     <Folder Include="Reproduction\Service\" />
     <Folder Include="Reproduction\ValueObjects\" />
     <Folder Include="SpecieBreed\Exceptions\" />

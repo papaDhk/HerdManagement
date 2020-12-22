@@ -13,10 +13,10 @@ namespace HerdManagement.Domain.Reproduction.Entities
 
         }
 
-        public DateTime Date { get; protected set; }
-        public Reproduction Reproduction { get; protected set; }
-        public uint NumberOfNewborn { get; protected set; }
-        public string Commentary { get; protected set; }
+        public DateTime Date { get;  set; }
+        public Reproduction Reproduction { get;  set; }
+        public uint NumberOfNewborn { get;  set; }
+        public string Commentary { get;  set; }
         public int ReproductionId { get; set; }
 
         public List<YoungAnimal> YoungAnimals { get; set; }

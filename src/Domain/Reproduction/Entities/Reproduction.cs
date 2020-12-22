@@ -20,7 +20,9 @@ namespace HerdManagement.Domain.Reproduction.Entities
                                                             ReproductionTypeEnum.Artificial,
                                                             ReproductionStateEnum.Initial);
         public Female Female { get; set; }
+        public int FemaleId { get; set; }
         public Male Male { get; set; }
+        public int MaleId { get; set; }
         public DateTime Date { get; protected set; }
         public ReproductionTypeEnum Type { get; protected set; }
         public IEnumerable<ReproductionState> States { get; } = new List<ReproductionState>();

@@ -1,5 +1,6 @@
 ﻿using Applicattion.Data.DTO.Herd;
 using Applicattion.Data.DTO.SpecieBreed;
+using HerdManagement.Domain.Reproduction.Entities;
 using HerdManagement.Domain.Reproduction.Enumerations;
 using System;
 using System.ComponentModel.DataAnnotations;
@@ -20,7 +21,7 @@ namespace Applicattion.Data.DTO.Reproduction
         public byte[] Picture { get; set; }
 
         [Required]
-        public bool Bought { get; set; }
+        public AnimalOrigin Origin { get; set; }
 
         public uint Weight { get; set; }
 
@@ -47,7 +48,17 @@ namespace Applicattion.Data.DTO.Reproduction
         [Required]
         public int HerdId;
 
+        public Calving FromCalving { get; set; }
+
         public int AgeInDays => DateTime.UtcNow.Subtract(BirthDate).Days;
-        
+
+        public int FatherId { get; set; }
+
+        public int MotherId { get; set; }
+
+        public override string ToString()
+        {
+            return $"{Number} - {Name} - {Breed.Label}";
+        }
     }
 }

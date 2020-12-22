@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HerdManagement.Domain.SpecieBreed.Repository
+namespace HerdManagement.Domain.Reproduction.Repository
 {
     public interface IAnimalRepository
     {

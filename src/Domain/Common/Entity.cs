@@ -20,10 +20,6 @@ namespace HerdManagement.Domain.Common
             return EqualsCore(entityToCompareWith);
         }
 
-        public static bool operator ==(Entity<T> a, Entity<T> b) => a.Equals(b);
-
-        public static bool operator !=(Entity<T> a, Entity<T> b) => !(a == b);
-
         public override int GetHashCode() => GetHashCodeCore();
 
         protected abstract bool EqualsCore(T obj);
