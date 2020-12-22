@@ -12,6 +12,6 @@ namespace HerdManagement.Domain.Reproduction.Entities
         /// <value>
         /// The reproductions.
         /// </value>
-        public List<ValueObjects.Reproduction> reproductions { get; } = new List<ValueObjects.Reproduction>();
+        public List<Reproduction> Reproductions { get; set; } 
     }
 }

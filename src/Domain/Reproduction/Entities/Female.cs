@@ -21,7 +21,7 @@ namespace HerdManagement.Domain.Reproduction.Entities
         /// <summary>
         /// Different female's calvings
         /// </summary>
-        public IEnumerable<ValueObjects.Calving> Calvings { get; } = new List<ValueObjects.Calving>();
+        public IEnumerable<Calving> Calvings { get; } = new List<Calving>();
 
         /// <summary>
         /// Indicates wether this female can be mated or not at the given date
@@ -43,12 +43,10 @@ namespace HerdManagement.Domain.Reproduction.Entities
         /// <param name="status"></param>
         /// <param name="commentary"></param>
         /// <returns>A correct reproduction object with initial state if possible. Otherwise return a default one</returns>
-        public ValueObjects.Reproduction HasBeenMated(Male male, DateTime date,ReproductionTypeEnum type,
+        public Reproduction HasBeenMated(Male male, DateTime date,ReproductionTypeEnum type,
                                                       ReproductionStateEnum status,string commentary)
         {
-            return ValueObjects.Reproduction.Initialize(this, male, date, type, status, commentary);
+            return Reproduction.Initialize(this, male, date, type, status, commentary);
         }
-
-
     }
 }

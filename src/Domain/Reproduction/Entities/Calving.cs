@@ -1,8 +1,9 @@
 ﻿using HerdManagement.Domain.Common;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace HerdManagement.Domain.Reproduction.ValueObjects
+namespace HerdManagement.Domain.Reproduction.Entities
 {
     [Table("Calvings")]
     public class Calving : Entity<Calving>
@@ -16,6 +17,9 @@ namespace HerdManagement.Domain.Reproduction.ValueObjects
         public Reproduction Reproduction { get; protected set; }
         public uint NumberOfNewborn { get; protected set; }
         public string Commentary { get; protected set; }
+        public int ReproductionId { get; set; }
+
+        public List<YoungAnimal> YoungAnimals { get; set; }
 
         /// <summary>
         /// Expresses equality of two Calving objects.

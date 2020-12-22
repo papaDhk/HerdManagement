@@ -24,6 +24,10 @@ namespace HerdManagement.Domain.Reproduction.Entities
         public virtual string BreedCharacteristics { get; set; }
         public virtual string SpecieCharacteristics { get; set; }
 
+        public int? CalivingId { get; set; }
+
+        public Calving FromCalving { get; set; }
+
         protected override bool EqualsCore(Animal animalToCompareWith)
         {
             return Id == animalToCompareWith.Id && Number == animalToCompareWith.Number;

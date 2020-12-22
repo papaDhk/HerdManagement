@@ -26,11 +26,11 @@ namespace HerdManagement.Domain.Reproduction.Entities
         /// <param name="status">The status.</param>
         /// <param name="commentary">The commentary.</param>
         /// <returns>A Reproduction object with initial state</returns>
-        public ValueObjects.Reproduction HasMated(Female female, DateTime date,
+        public Reproduction HasMated(Female female, DateTime date,
                                               ReproductionTypeEnum type, ReproductionStateEnum status,
                                               string commentary)
         {   
-            return ValueObjects.Reproduction.Initialize(female, this, date, type, status, commentary);
+            return Reproduction.Initialize(female, this, date, type, status, commentary);
         }
     }
 }
