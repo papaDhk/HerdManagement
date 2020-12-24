@@ -5,6 +5,6 @@ namespace HerdManagement.Domain.Reproduction.Repository
 {
     public interface IReproductionRepository
     {
-        Calving GetCalvingByParentsIdsdAndDate(int femaleId, int maleId, DateTime datetime);
+        Calving GetCalvingByParentsIdsAndDate(int femaleId, int maleId, DateTime datetime);
     }
 }

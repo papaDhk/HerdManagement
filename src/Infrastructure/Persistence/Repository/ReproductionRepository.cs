@@ -20,7 +20,7 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
             _animalDbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
-        public Calving GetCalvingByParentsIdsdAndDate(int femaleId, int maleId, DateTime datetime)
+        public Calving GetCalvingByParentsIdsAndDate(int femaleId, int maleId, DateTime datetime)
         {
             var calving = _animalDbContext.Calvings
                 .Select(calving => calving)

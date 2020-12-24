@@ -12,6 +12,8 @@ namespace HerdManagement.Domain.Reproduction.Entities
         /// <value>
         /// The reproductions.
         /// </value>
-        public List<Reproduction> Reproductions { get; set; } 
+        public List<Reproduction> Reproductions { get; set; }
+
+        public abstract bool CanBeParentOfAnimalBornIn(DateTime dateTime);
     }
 }

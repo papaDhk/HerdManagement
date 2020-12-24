@@ -47,8 +47,10 @@ else
         </GridColumn>
         <GridColumn Field=@nameof(Animal.Weight)>
         </GridColumn>
+        <GridColumn Field=@nameof(Animal.AgeInString)>
+        </GridColumn>
         <GridColumn>
-            <Template>              
+            <Template>
                 <NavLink href=@GetProfilePageUrl((Animal)context) class="btn btn-primary btn-sm">Details</NavLink>
             </Template>
         </GridColumn>
@@ -140,7 +142,7 @@ else
                         </div>
 
                         @if (newAnimalOrigin == AnimalOrigin.BornInFarm.ToString())
-                         {
+                        {
                             <div class="form-group row">
                                 <label for="mother" class="col-3 col-form-label">
                                     Mere
@@ -154,6 +156,10 @@ else
                                                 }
                                     </InputSelect>
                                     <ValidationMessage For="@(() => animalDTO.MotherId)" />
+                                    @if (@canNotBeMother)
+                                    {
+                                        <div class="validation-message">The Name field is required.</div>
+                                    }
                                 </div>
                             </div>
 
@@ -169,19 +175,28 @@ else
                                                 }
                                     </InputSelect>
                                     <ValidationMessage For="@(() => animalDTO.FatherId)" />
+                                    @if (@canNotBeFather)
+                                    {
+                                        <div class="validation-message">The Name field is required.</div>
+                                    }
+
                                 </div>
                             </div>
-                         }
+                        }
 
                         <div class="form-group row">
                             <label for="picture" class="col-3 col-form-label">
                                 Photo
                             </label>
                             <div class="col-sm-9">
-                                <InputFile id="picture" class="form-control" OnChange="@OnInputFileChange" />
+                                <SfUploader  >
+                                    <UploaderEvents ValueChange="OnChange"></UploaderEvents>
+                                </SfUploader>
                             </div>
                         </div>
                     </div>
+                    
+
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="ClearModalForm">Close</button>
                         <button type="submit" class="btn btn-primary">Enregistrer</button>
@@ -194,11 +209,11 @@ else
 
 
     @code {
-            [Parameter]
-            public int herdId { get; set; }
+        [Parameter]
+        public int herdId { get; set; }
 
-            [Parameter]
-            public string herdName { get; set; }
+        [Parameter]
+        public string herdName { get; set; }
 
         private HerdDTO currentHerd;
 
@@ -221,6 +236,10 @@ else
         public string[] ToolbarItems = new string[] { "Search" };
 
         private string newAnimalOrigin = "";
+
+        private bool canNotBeFather;
+
+        private bool canNotBeMother;
 
 
 
@@ -293,5 +312,25 @@ else
             {
                 return $"/animals/little/{currentHerd.Name}/{animal.Number}/{animal.Name}";
             }
+        }
+
+        private void OnChange(UploadChangeEventArgs args)
+        {
+            foreach (var file in args.Files)
+            {
+                animalDTO.Picture = file.Stream.ToArray();
+            }
+        }
+
+        private void CanBeFather(ChangedEventArgs changedEventArgs)
+        {
+            int selectedFatherId = int.Parse(changedEventArgs.Value);
+            canNotBeFather = !reproductionService.CanBeFatherOfAnimalBornIn(selectedFatherId, animalDTO.BirthDate);
+        }
+
+        private void CanBeMother(ChangedEventArgs changedEventArgs)
+        {
+            int selectedMotherId = int.Parse(changedEventArgs.Value);
+            canNotBeMother = !reproductionService.CanBeMotherOfAnimalBornIn(selectedMotherId, animalDTO.BirthDate);
         }
     }

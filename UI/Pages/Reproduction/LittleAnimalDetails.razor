@@ -90,6 +90,54 @@ else
                             <ValidationMessage For="@(() => currentYoungAnimal.BirthDate)" />
                         </div>
                     </div>
+
+                    <div class="form-group row">
+                        <label for="origin" class="col-3 col-form-label">
+                            Origines
+                        </label>
+                        <div class="col-9">
+                            <InputSelect id="origin" @bind-Value="@currentYoungAnimal.Origin" class="form-control" disabled=@isNoEditable>
+
+                                @foreach (var origin in Enum.GetValues(typeof(AnimalOrigin)))
+                                    {
+                                    <option value="@origin">@origin</option>
+                                    }
+                            </InputSelect>
+                            <ValidationMessage For="@(() => currentYoungAnimal.Origin)" />
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="mother" class="col-3 col-form-label">
+                            Mere
+                        </label>
+                        <div class="col-9">
+                            <InputSelect id="mother" @bind-Value="@motherId" class="form-control" placeholder="Quelles sont les origines" disabled=@isNoEditable>
+
+                                @foreach (var female in females)
+                                    {
+                                    <option value="@female.Id">@female.ToString()</option>
+                                    }
+                            </InputSelect>
+                            @*<ValidationMessage For="@(() => currentYoungAnimal.MotherId)" />*@
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="father" class="col-3 col-form-label">
+                            Pere
+                        </label>
+                        <div class="col-9">
+                            <InputSelect id="father" @bind-Value="@fatherId" class="form-control" disabled=@isNoEditable>
+                                @foreach (var male in males)
+                                    {
+                                    <option value="@male.Id">@male.ToString()</option>
+                                    }
+                            </InputSelect>
+                            @*<ValidationMessage For="@(() => currentYoungAnimal.FatherId)" />*@
+                        </div>
+                    </div>
+
                     @if (isNoEditable == false)
                     {
                         <div class="form-group row">
@@ -97,7 +145,9 @@ else
                                 Photo
                             </label>
                             <div class="col-sm-9">
-                                <InputFile id="picture" class="form-control" OnChange="@OnInputFileChange" disabled=@isNoEditable />
+                                <SfUploader>
+                                    <UploaderEvents ValueChange="OnChange"></UploaderEvents>
+                                </SfUploader>
                             </div>
                         </div>
                     }
@@ -136,8 +186,13 @@ else
 
     public bool isNoEditable = true;
 
-    //[Parameter]
-    //public string AnimalCaterory { get; set; }
+    private List<Male> males;
+
+    private List<Female> females;
+
+    private int fatherId;
+
+    private int motherId;
 
     private List<BreedDTO> breedDTOs;
 
@@ -149,6 +204,9 @@ else
 
         breedDTOs = await breedRepository.GetAllBreeds().ContinueWith(breeds => breeds.Result.ToBreedDTOList().ToList());
 
+        males = animalRepository.GetMalesByHerdId(currentYoungAnimal.Herd.Id).ToList();
+
+        females = animalRepository.GetFemalesByHerdId(currentYoungAnimal.Herd.Id).ToList();
     }
 
     private async Task OnInputFileChange(InputFileChangeEventArgs e)
@@ -182,5 +240,13 @@ else
     private void MakeNoEditable()
     {
         isNoEditable = true;
+    }
+
+    private void OnChange(UploadChangeEventArgs args)
+    {
+        foreach (var file in args.Files)
+        {
+            currentYoungAnimal.Picture = file.Stream.ToArray();
+        }
     }
 }

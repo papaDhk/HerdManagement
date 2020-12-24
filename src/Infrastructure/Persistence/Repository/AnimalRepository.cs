@@ -68,9 +68,20 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
         public Female GetFemaleByNumber(int femaleNumber)
         {
             return _animalDbContext.Females
+                    .Include(female => female.Herd)
                    .Include(female => female.Breed)
                    .ThenInclude(breed => breed.Specie)                  
                    .Where(female => female.Number == femaleNumber)
+                   .FirstOrDefault();
+        }
+
+        public Female GetFemaleById(int femaleId)
+        {
+            return _animalDbContext.Females
+                    .Include(female => female.Herd)
+                   .Include(female => female.Breed)
+                   .ThenInclude(breed => breed.Specie)
+                   .Where(female => female.Id == femaleId)
                    .FirstOrDefault();
         }
 
@@ -125,9 +136,20 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
         public Male GetMaleByNumber(int maleNumber)
         {
             return _animalDbContext.Males
+                   .Include(male => male.Herd)
                    .Include(male => male.Breed)
                    .ThenInclude(breed => breed.Specie)
                    .Where(male => male.Number == maleNumber)
+                   .FirstOrDefault();
+        }
+
+        public Male GetMaleById(int maleId)
+        {
+            return _animalDbContext.Males
+                   .Include(male => male.Herd)
+                   .Include(male => male.Breed)
+                   .ThenInclude(breed => breed.Specie)
+                   .Where(male => male.Id == maleId)
                    .FirstOrDefault();
         }
 
@@ -182,11 +204,23 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
         public YoungAnimal GetYoungAnimalByNumber(int youngAnimalNumber)
         {
             return _animalDbContext.YoungAnimals
+                   .Include(youngAnimal => youngAnimal.Herd)
                    .Include(youngAnimal => youngAnimal.Breed)
                    .ThenInclude(youngAnimal => youngAnimal.Specie)
                    .Where(youngAnimal => youngAnimal.Number == youngAnimalNumber)
                    .FirstOrDefault();
         }
+
+        public YoungAnimal GetYoungAnimalById(int youngAnimalId)
+        {
+            return _animalDbContext.YoungAnimals
+                   .Include(youngAnimal => youngAnimal.Herd)
+                   .Include(youngAnimal => youngAnimal.Breed)
+                   .ThenInclude(youngAnimal => youngAnimal.Specie)
+                   .Where(youngAnimal => youngAnimal.Id == youngAnimalId)
+                   .FirstOrDefault();
+        }
+
 
     }
 }

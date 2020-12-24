@@ -1,4 +1,5 @@
 ﻿using HerdManagement.Domain.Common;
+using HerdManagement.Domain.Common.Utils;
 using HerdManagement.Domain.Reproduction.Enumerations;
 using HerdManagement.Domain.SpecieBreed.Entities;
 using HerdManagement.Domain.SpecieBreed.ValueObjects;
@@ -40,13 +41,16 @@ namespace HerdManagement.Domain.Reproduction.Entities
 
         public int AgeInDays => DateTime.UtcNow.Subtract(BirthDate).Days;
 
+        public string AgeInString => BirthDate.GetAge(DateTime.UtcNow);
+
         public bool IsAdult => Breed.Specie.ChildhoodDurationInDays < AgeInDays;
+
+        public bool WasAdult(DateTime dateTime) => Breed.Specie.ChildhoodDurationInDays < DateTime.UtcNow.Subtract(dateTime).Days;
 
         public override string ToString()
         {
             return $"{Number} - {Name} - {Breed.Label}";
-        }
-
+        }     
     }
 
     public enum AnimalOrigin

@@ -29,9 +29,16 @@ namespace HerdManagement.Domain.Reproduction.Entities
         /// <param name="date"></param>
         /// <returns>true if this female is able to be mated at the given date. False otherwise</returns>
         public bool CanBeMated(DateTime date)
-        {
+        {   bool wasAdult = WasAdult(date);
             DateTime lastCalvingDate = Calvings.Max(calving => calving.Date).Date;
-            return TimeSpan.FromDays(Breed.Specie.MinimumTimeSpanBetweenCalvingAndHeatInDays) < date.Subtract(lastCalvingDate);
+            return wasAdult && TimeSpan.FromDays(Breed.Specie.MinimumTimeSpanBetweenCalvingAndHeatInDays) < date.Subtract(lastCalvingDate);
+        }
+
+        public override bool CanBeParentOfAnimalBornIn(DateTime dateTime)
+        {
+            var approximativeReproductionDate = dateTime.Subtract(TimeSpan.FromDays(this.Breed.Specie.PregnancyDurationInDays - 10));
+            
+            return CanBeMated(approximativeReproductionDate);
         }
 
         /// <summary>

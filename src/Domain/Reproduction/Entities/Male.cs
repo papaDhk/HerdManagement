@@ -17,6 +17,13 @@ namespace HerdManagement.Domain.Reproduction.Entities
         /// </summary>
         public override SexEnum Sex => SexEnum.Male;
 
+        public override bool CanBeParentOfAnimalBornIn(DateTime dateTime)
+        {
+            var approximativeReproductionDate = dateTime.Subtract(TimeSpan.FromDays(this.Breed.Specie.PregnancyDurationInDays - 10));
+
+            return WasAdult(approximativeReproductionDate);
+        }
+
         /// <summary>
         /// Indicates that the specified male has mated the given female.
         /// </summary>
