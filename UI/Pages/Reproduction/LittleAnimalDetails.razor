@@ -14,6 +14,7 @@
 @inject NavigationManager navigationManager
 @inject IAnimalRepository animalRepository
 @inject IBreedRepository breedRepository
+@inject IReproductionService reproductionService
 
 <nav class="navbar navbar-light mb-3 horizontal-nav-bar justify-content-between">
     <h6>Troupeaux / @AnimalHerdName / @AnimalName</h6>
@@ -120,6 +121,10 @@ else
                                     }
                             </InputSelect>
                             @*<ValidationMessage For="@(() => currentYoungAnimal.MotherId)" />*@
+                            @if (@canNotBeMother)
+                            {
+                                <div class="validation-message">L'animal sélectionné ne peut pas être la mère de "@currentYoungAnimal.Name"</div>
+                            }
                         </div>
                     </div>
 
@@ -135,6 +140,10 @@ else
                                     }
                             </InputSelect>
                             @*<ValidationMessage For="@(() => currentYoungAnimal.FatherId)" />*@
+                            @if (@canNotBeFather)
+                            {
+                                <div class="validation-message">L'animal selectionné ne peut pas être le père de "@currentYoungAnimal.Name"</div>
+                            }
                         </div>
                     </div>
 
@@ -159,7 +168,7 @@ else
                     }
                     else
                     {
-                        <button @onclick="@MakeNoEditable" type="button" class="btn btn-secondary">Annuler</button>
+                        <button @onclick="@CleanAndMakeNoEditable" type="button" class="btn btn-secondary">Annuler</button>
                         <button @onclick="@SaveAnimalAsync" type="button" class="btn btn-secondary">Enregistrer</button>
                     }
 
@@ -198,6 +207,10 @@ else
 
     private YoungAnimal currentYoungAnimal;
 
+    private bool canNotBeFather;
+
+    private bool canNotBeMother;
+
     protected async override Task OnInitializedAsync()
     {
         currentYoungAnimal = animalRepository.GetYoungAnimalByNumber(AnimalNumber);
@@ -227,9 +240,18 @@ else
 
     private async Task SaveAnimalAsync()
     {
+        canNotBeMother = !reproductionService.CanBeMotherOfAnimalBornIn(motherId, currentYoungAnimal.BirthDate);
+
+        canNotBeFather = !reproductionService.CanBeFatherOfAnimalBornIn(fatherId, currentYoungAnimal.BirthDate);
+
+        if (canNotBeFather || canNotBeMother)
+        {
+            return;
+        }
+
         currentYoungAnimal = await animalRepository.UpdateYoungAnimalAsync(currentYoungAnimal);
 
-        MakeNoEditable();
+        CleanAndMakeNoEditable();
     }
 
     private void MakeEditable()
@@ -237,8 +259,14 @@ else
         isNoEditable = false;
     }
 
-    private void MakeNoEditable()
+    private void CleanAndMakeNoEditable()
     {
+        canNotBeMother = false;
+        canNotBeFather = false;
+
+        motherId = 0;
+        fatherId = 0;
+
         isNoEditable = true;
     }
 

@@ -30,7 +30,9 @@ namespace HerdManagement.Domain.Reproduction.Entities
         /// <returns>true if this female is able to be mated at the given date. False otherwise</returns>
         public bool CanBeMated(DateTime date)
         {   bool wasAdult = WasAdult(date);
-            DateTime lastCalvingDate = Calvings.Max(calving => calving.Date).Date;
+
+            DateTime lastCalvingDate = Calvings.Any()? Calvings.Max(calving => calving.Date).Date : DateTime.MinValue;
+
             return wasAdult && TimeSpan.FromDays(Breed.Specie.MinimumTimeSpanBetweenCalvingAndHeatInDays) < date.Subtract(lastCalvingDate);
         }
 

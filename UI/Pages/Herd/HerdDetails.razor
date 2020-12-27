@@ -157,9 +157,9 @@ else
                                     </InputSelect>
                                     <ValidationMessage For="@(() => animalDTO.MotherId)" />
                                     @if (@canNotBeMother)
-                                    {
-                                        <div class="validation-message">The Name field is required.</div>
-                                    }
+                                     {
+                                        <div class="validation-message">L'animal sélectionné ne peut pas être la mère de "@animalDTO.Name"</div>
+                                     }
                                 </div>
                             </div>
 
@@ -176,9 +176,9 @@ else
                                     </InputSelect>
                                     <ValidationMessage For="@(() => animalDTO.FatherId)" />
                                     @if (@canNotBeFather)
-                                    {
-                                        <div class="validation-message">The Name field is required.</div>
-                                    }
+                                     {
+                                        <div class="validation-message">L'animal selectionné ne peut pas être le père de "@animalDTO.Name"</div>
+                                     }
 
                                 </div>
                             </div>
@@ -189,7 +189,7 @@ else
                                 Photo
                             </label>
                             <div class="col-sm-9">
-                                <SfUploader  >
+                                <SfUploader>
                                     <UploaderEvents ValueChange="OnChange"></UploaderEvents>
                                 </SfUploader>
                             </div>
@@ -285,6 +285,15 @@ else
 
         private async Task SaveAnimalAsync()
         {
+            canNotBeMother = !reproductionService.CanBeMotherOfAnimalBornIn(animalDTO.MotherId, animalDTO.BirthDate);
+
+            canNotBeFather = !reproductionService.CanBeFatherOfAnimalBornIn(animalDTO.FatherId, animalDTO.BirthDate);
+
+            if(canNotBeFather || canNotBeMother)
+            {
+                return;
+            }
+
             animalDTO.Origin = (AnimalOrigin)Enum.Parse(typeof(AnimalOrigin), newAnimalOrigin);
 
             var newAnimal = await reproductionService.AddNewAnimalAsync(animalDTO);

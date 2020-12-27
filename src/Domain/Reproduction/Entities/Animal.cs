@@ -45,7 +45,7 @@ namespace HerdManagement.Domain.Reproduction.Entities
 
         public bool IsAdult => Breed.Specie.ChildhoodDurationInDays < AgeInDays;
 
-        public bool WasAdult(DateTime dateTime) => Breed.Specie.ChildhoodDurationInDays < DateTime.UtcNow.Subtract(dateTime).Days;
+        public bool WasAdult(DateTime dateTime) => Breed.Specie.ChildhoodDurationInDays < dateTime.Subtract(BirthDate).Days;
 
         public override string ToString()
         {

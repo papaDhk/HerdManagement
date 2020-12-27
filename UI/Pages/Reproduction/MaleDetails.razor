@@ -14,6 +14,8 @@
 @inject NavigationManager navigationManager
 @inject IAnimalRepository animalRepository
 @inject IBreedRepository breedRepository
+@inject IReproductionService reproductionService
+
 
 <nav class="navbar navbar-light mb-3 horizontal-nav-bar justify-content-between">
     <h6>Troupeaux / @AnimalHerdName / @AnimalName</h6>
@@ -120,6 +122,10 @@ else
                                     }
                             </InputSelect>
                             @*<ValidationMessage For="@(() => currentMale.MotherId)" />*@
+                            @if (@canNotBeMother)
+                            {
+                                <div class="validation-message">L'animal sélectionné ne peut pas être la mère de "@currentMale.Name"</div>
+                            }
                         </div>
                     </div>
 
@@ -135,6 +141,10 @@ else
                                     }
                             </InputSelect>
                             @*<ValidationMessage For="@(() => currentMale.FatherId)" />*@
+                            @if (@canNotBeFather)
+                            {
+                                <div class="validation-message">L'animal selectionné ne peut pas être le père de "@currentMale.Name"</div>
+                            }
                         </div>
                     </div>
 
@@ -159,7 +169,7 @@ else
                     }
                     else
                     {
-                        <button @onclick="@MakeNoEditable" type="button" class="btn btn-secondary">Annuler</button>
+                        <button @onclick="@CleanAndMakeNoEditable" type="button" class="btn btn-secondary">Annuler</button>
                         <button @onclick="@SaveAnimalAsync" type="button" class="btn btn-secondary">Enregistrer</button>
                     }
 
@@ -198,6 +208,10 @@ else
 
     private Male currentMale;
 
+    private bool canNotBeFather;
+
+    private bool canNotBeMother;
+
     protected async override Task OnInitializedAsync()
     {
         currentMale = animalRepository.GetMaleByNumber(AnimalNumber);
@@ -209,27 +223,36 @@ else
         females = animalRepository.GetFemalesByHerdId(currentMale.Herd.Id).ToList();
     }
 
-    private async Task OnInputFileChange(InputFileChangeEventArgs e)
-    {
-        var maxAllowedFiles = 1;
-        var format = "image/png";
+    //private async Task OnInputFileChange(InputFileChangeEventArgs e)
+    //{
+    //    var maxAllowedFiles = 1;
+    //    var format = "image/png";
 
-        foreach (var imageFile in e.GetMultipleFiles(maxAllowedFiles))
-        {
-            var resizedImageFile = await imageFile.RequestImageFileAsync(format,
-                100, 100);
-            var buffer = new byte[resizedImageFile.Size];
-            await resizedImageFile.OpenReadStream().ReadAsync(buffer);
-            currentMale.Picture = buffer;
-        }
+    //    foreach (var imageFile in e.GetMultipleFiles(maxAllowedFiles))
+    //    {
+    //        var resizedImageFile = await imageFile.RequestImageFileAsync(format,
+    //            100, 100);
+    //        var buffer = new byte[resizedImageFile.Size];
+    //        await resizedImageFile.OpenReadStream().ReadAsync(buffer);
+    //        currentMale.Picture = buffer;
+    //    }
 
-    }
+    //}
 
     private async Task SaveAnimalAsync()
     {
+        canNotBeMother = !reproductionService.CanBeMotherOfAnimalBornIn(motherId, currentMale.BirthDate);
+
+        canNotBeFather = !reproductionService.CanBeFatherOfAnimalBornIn(fatherId, currentMale.BirthDate);
+
+        if (canNotBeFather || canNotBeMother)
+        {
+            return;
+        }
+
         currentMale = await animalRepository.UpdateMaleAsync(currentMale);
 
-        MakeNoEditable();
+        CleanAndMakeNoEditable();
     }
 
     private void MakeEditable()
@@ -237,8 +260,14 @@ else
         isNoEditable = false;
     }
 
-    private void MakeNoEditable()
+    private void CleanAndMakeNoEditable()
     {
+        canNotBeMother = false;
+        canNotBeFather = false;
+
+        motherId = 0;
+        fatherId = 0;
+
         isNoEditable = true;
     }
 
