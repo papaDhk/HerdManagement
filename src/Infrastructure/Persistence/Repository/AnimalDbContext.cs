@@ -22,7 +22,13 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
 
         public virtual DbSet<Calving> Calvings { get; set; }
 
-
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Female>()
+                .HasMany<Calving>(s => s.Calvings)
+                .WithOne(ad => ad.Female)
+                .HasForeignKey(ad => ad.FemaleId);
+        }
 
     }
 }

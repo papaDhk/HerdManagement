@@ -285,9 +285,9 @@ else
 
         private async Task SaveAnimalAsync()
         {
-            canNotBeMother = !reproductionService.CanBeMotherOfAnimalBornIn(animalDTO.MotherId, animalDTO.BirthDate);
+            canNotBeMother = animalDTO.MotherId > 0 ? !reproductionService.CanBeMotherOfAnimalBornIn(animalDTO.MotherId, animalDTO.BirthDate) : false;
 
-            canNotBeFather = !reproductionService.CanBeFatherOfAnimalBornIn(animalDTO.FatherId, animalDTO.BirthDate);
+            canNotBeFather = animalDTO.FatherId > 0 ? !reproductionService.CanBeFatherOfAnimalBornIn(animalDTO.FatherId, animalDTO.BirthDate) : false ;
 
             if(canNotBeFather || canNotBeMother)
             {

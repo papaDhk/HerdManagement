@@ -41,7 +41,7 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
 
         public async Task<Female> UpdateFemaleAsync(Female female)
         {
-            _animalDbContext.Entry(female).State = EntityState.Modified;
+            _animalDbContext.Update(female);
 
             _ = await _animalDbContext.SaveChangesAsync();
 
@@ -107,7 +107,7 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
 
         public async Task<Male> UpdateMaleAsync(Male male)
         {
-            _animalDbContext.Entry(male).State = EntityState.Modified;
+            _animalDbContext.Update(male);
 
             _ = await _animalDbContext.SaveChangesAsync();
 
@@ -173,7 +173,7 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
 
         public async Task<YoungAnimal> UpdateYoungAnimalAsync(YoungAnimal youngAnimal)
         {
-            _animalDbContext.Entry(youngAnimal).State = EntityState.Modified;
+            _animalDbContext.Update(youngAnimal);
 
             _ = await _animalDbContext.SaveChangesAsync();
 

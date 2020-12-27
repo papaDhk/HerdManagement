@@ -42,7 +42,7 @@ namespace Applicattion.Services
             
             if(animalDTO.Origin == AnimalOrigin.BornInFarm && animalDTO.FatherId != 0 && animalDTO.MotherId != 0)
             {
-                Calving animalOriginCalving = await GetOrCreateParentRelationShip(animalDTO.MotherId, animalDTO.FatherId, animalDTO.BirthDate);              
+                Calving animalOriginCalving = GetOrCreateParentRelationShip(animalDTO.MotherId, animalDTO.FatherId, animalDTO.BirthDate);              
 
                 animalDTO.FromCalving = animalOriginCalving;
             }
@@ -68,7 +68,7 @@ namespace Applicattion.Services
             return animal;
         }
 
-        public async Task<Calving> GetOrCreateParentRelationShip(int motherId, int fatherId, DateTime birthDate)
+        public Calving GetOrCreateParentRelationShip(int motherId, int fatherId, DateTime birthDate)
         {
             var mother = _animalRepository.GetFemaleById(motherId);
 
@@ -83,6 +83,7 @@ namespace Applicattion.Services
 
             if (animalOriginCalving == null)
             {
+                //Set approximativeDate
                 Reproduction reproduction = new Reproduction
                 {
                     FemaleId = motherId,
@@ -94,6 +95,8 @@ namespace Applicattion.Services
                     NumberOfNewborn = 1,
                     Date = birthDate,
                     Reproduction = reproduction,
+                    FemaleId = motherId,
+                    MaleId = fatherId
                 };
             }
             else
@@ -104,18 +107,51 @@ namespace Applicattion.Services
             return animalOriginCalving;
         }
 
-        public  bool CanBeFatherOfAnimalBornIn(int maleId, DateTime birthDate)
+        public async Task<Animal> UpdateAnimalAsync(Animal animal, int motherId, int fatherId)
+        {
+            if (fatherId != 0 && motherId != 0)
+            {
+                Calving animalOriginCalving = GetOrCreateParentRelationShip(motherId, fatherId, animal.BirthDate);
+
+                animal.FromCalving = animalOriginCalving;
+            }
+
+            if (animal.IsAdult == false)
+            {
+                animal = await _animalRepository.UpdateYoungAnimalAsync((YoungAnimal)animal).ContinueWith(youngAnimal => (Animal)youngAnimal.Result);
+            }
+            else
+            {
+                switch (animal.Sex)
+                {
+                    case SexEnum.Male:
+                        animal = await _animalRepository.UpdateMaleAsync((Male)animal).ContinueWith(male => (Animal)male.Result);
+                        break;
+                    case SexEnum.Female:
+                        animal = await _animalRepository.UpdateFemaleAsync((Female)animal).ContinueWith(female => (Animal)female.Result);
+                        break;
+                }
+            }
+
+            return animal;
+        }
+
+        public bool CanBeFatherOfAnimalBornIn(int maleId, DateTime birthDate)
         {
             var male = _animalRepository.GetMaleById(maleId);
 
-            return (bool)(male?.CanBeParentOfAnimalBornIn(birthDate));
+            var result = male is null ? false : male.CanBeParentOfAnimalBornIn(birthDate);
+
+            return result;
         }
 
         public bool CanBeMotherOfAnimalBornIn(int femaleId, DateTime birthDate)
         {
             var female = _animalRepository.GetFemaleById(femaleId);
 
-            return (bool)(female?.CanBeParentOfAnimalBornIn(birthDate));
+            bool result = female is null ? false : female.CanBeParentOfAnimalBornIn(birthDate);
+
+            return result;
         }
     }
 }

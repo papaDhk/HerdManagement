@@ -18,7 +18,9 @@ namespace HerdManagement.Domain.Reproduction.Entities
         public uint NumberOfNewborn { get;  set; }
         public string Commentary { get;  set; }
         public int ReproductionId { get; set; }
-
+        public int MaleId { get; set; }
+        public int FemaleId { get; set; }
+        public Female Female { get; set; }
         public List<YoungAnimal> YoungAnimals { get; set; }
 
         /// <summary>

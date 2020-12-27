@@ -4,14 +4,16 @@ using HerdManagement.Infrastructure.Persistence.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace UI.Migrations
 {
     [DbContext(typeof(AnimalDbContext))]
-    partial class AnimalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201227040322_rename animal_calvingFK")]
+    partial class renameanimal_calvingFK
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -61,10 +63,7 @@ namespace UI.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("FemaleId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MaleId")
+                    b.Property<int?>("FemaleId")
                         .HasColumnType("int");
 
                     b.Property<long>("NumberOfNewborn")
@@ -105,9 +104,6 @@ namespace UI.Migrations
                     b.Property<int?>("FromCalvingId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("FromCalvingId1")
-                        .HasColumnType("int");
-
                     b.Property<int?>("HerdId")
                         .HasColumnType("int");
 
@@ -139,7 +135,7 @@ namespace UI.Migrations
 
                     b.HasIndex("BreedId");
 
-                    b.HasIndex("FromCalvingId1");
+                    b.HasIndex("FromCalvingId");
 
                     b.HasIndex("HerdId");
 
@@ -168,9 +164,6 @@ namespace UI.Migrations
                     b.Property<int?>("FromCalvingId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("FromCalvingId1")
-                        .HasColumnType("int");
-
                     b.Property<int?>("HerdId")
                         .HasColumnType("int");
 
@@ -202,7 +195,7 @@ namespace UI.Migrations
 
                     b.HasIndex("BreedId");
 
-                    b.HasIndex("FromCalvingId1");
+                    b.HasIndex("FromCalvingId");
 
                     b.HasIndex("HerdId");
 
@@ -378,19 +371,15 @@ namespace UI.Migrations
 
             modelBuilder.Entity("HerdManagement.Domain.Reproduction.Entities.Calving", b =>
                 {
-                    b.HasOne("HerdManagement.Domain.Reproduction.Entities.Female", "Female")
+                    b.HasOne("HerdManagement.Domain.Reproduction.Entities.Female", null)
                         .WithMany("Calvings")
-                        .HasForeignKey("FemaleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("FemaleId");
 
                     b.HasOne("HerdManagement.Domain.Reproduction.Entities.Reproduction", "Reproduction")
                         .WithOne("Calving")
                         .HasForeignKey("HerdManagement.Domain.Reproduction.Entities.Calving", "ReproductionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Female");
 
                     b.Navigation("Reproduction");
                 });
@@ -403,7 +392,7 @@ namespace UI.Migrations
 
                     b.HasOne("HerdManagement.Domain.Reproduction.Entities.Calving", "FromCalving")
                         .WithMany()
-                        .HasForeignKey("FromCalvingId1");
+                        .HasForeignKey("FromCalvingId");
 
                     b.HasOne("HerdManagement.Domain.Herd.Entities.Herd", "Herd")
                         .WithMany()
@@ -424,7 +413,7 @@ namespace UI.Migrations
 
                     b.HasOne("HerdManagement.Domain.Reproduction.Entities.Calving", "FromCalving")
                         .WithMany()
-                        .HasForeignKey("FromCalvingId1");
+                        .HasForeignKey("FromCalvingId");
 
                     b.HasOne("HerdManagement.Domain.Herd.Entities.Herd", "Herd")
                         .WithMany()

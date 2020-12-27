@@ -25,7 +25,7 @@ namespace HerdManagement.Domain.Reproduction.Entities
         public virtual string BreedCharacteristics { get; set; }
         public virtual string SpecieCharacteristics { get; set; }
 
-        public int? CalivingId { get; set; }
+        public int? FromCalvingId { get; set; }
 
         public Calving FromCalving { get; set; }
 

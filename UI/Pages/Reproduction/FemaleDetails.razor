@@ -241,16 +241,16 @@ else
 
     private async Task SaveAnimalAsync()
     {
-        canNotBeMother = !reproductionService.CanBeMotherOfAnimalBornIn(motherId, currentFemale.BirthDate);
+        canNotBeMother = motherId > 0 ? !reproductionService.CanBeMotherOfAnimalBornIn(motherId, currentFemale.BirthDate) : false;
 
-        canNotBeFather = !reproductionService.CanBeFatherOfAnimalBornIn(fatherId, currentFemale.BirthDate);
+        canNotBeFather = fatherId > 0 ? !reproductionService.CanBeFatherOfAnimalBornIn(fatherId, currentFemale.BirthDate) : false;
 
         if (canNotBeFather || canNotBeMother)
         {
             return;
         }
 
-        currentFemale = await animalRepository.UpdateFemaleAsync(currentFemale);
+        currentFemale = (Female)await reproductionService.UpdateAnimalAsync(currentFemale, motherId, fatherId);
 
         CleanAndMakeNoEditable();
     }
