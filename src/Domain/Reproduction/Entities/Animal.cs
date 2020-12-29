@@ -2,10 +2,10 @@
 using HerdManagement.Domain.Common.Utils;
 using HerdManagement.Domain.Reproduction.Enumerations;
 using HerdManagement.Domain.SpecieBreed.Entities;
-using HerdManagement.Domain.SpecieBreed.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using HerdManagement.Domain.Characteristic.Entities;
 
 namespace HerdManagement.Domain.Reproduction.Entities
 {
@@ -28,6 +28,10 @@ namespace HerdManagement.Domain.Reproduction.Entities
         public int? FromCalvingId { get; set; }
 
         public Calving FromCalving { get; set; }
+
+        public List<BreedCharacteristicValue> BreedCharacteristicValues { get; set; }
+
+        public List<SpecieCharacteristicValue> SpecieCharacteristicValues { get; set; }
 
         protected override bool EqualsCore(Animal animalToCompareWith)
         {

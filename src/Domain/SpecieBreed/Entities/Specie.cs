@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using HerdManagement.Domain.Characteristic.Entities;
 
 namespace HerdManagement.Domain.SpecieBreed.Entities
 {
@@ -38,6 +39,8 @@ namespace HerdManagement.Domain.SpecieBreed.Entities
         //}
 
         public int MinimumTimeSpanBetweenCalvingAndHeatInDays { get; set; }
+
+        public List<SpecieCharacteristic> Characteristics { get; set; }
 
         protected override bool EqualsCore(Specie specieToCompareWith)
         {

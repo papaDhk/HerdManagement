@@ -3,6 +3,7 @@ using HerdManagement.Domain.SpecieBreed.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using HerdManagement.Domain.Characteristic.Entities;
 
 namespace HerdManagement.Domain.SpecieBreed.Entities
 {
@@ -11,6 +12,8 @@ namespace HerdManagement.Domain.SpecieBreed.Entities
         public string Label { get; set; }
 
         public Specie Specie { get; set; }
+
+        public List<BreedCharacteristic> BreedCharacteristics { get; set; }
 
         protected override bool EqualsCore(Breed breedToCompareWith)
         {
