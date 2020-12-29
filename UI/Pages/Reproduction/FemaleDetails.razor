@@ -160,19 +160,14 @@ else
                                 </SfUploader>
                             </div>
                         </div>
-                    }
 
-
-                    @if (isNoEditable)
-                    {
-                        <button @onclick="@MakeEditable" type="button" class="btn btn-secondary">Modifier</button>
-                    }
-                    else
-                    {
                         <button @onclick="@CleanAndMakeNoEditable" type="button" class="btn btn-secondary">Annuler</button>
                         <button @onclick="@SaveAnimalAsync" type="button" class="btn btn-secondary">Enregistrer</button>
                     }
-
+                    else
+                    {
+                        <button @onclick="@MakeEditable" type="button" class="btn btn-secondary">Modifier</button>
+                    }
                 </EditForm>
             </div>
         </div>
