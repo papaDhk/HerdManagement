@@ -17,6 +17,7 @@ using HerdManagement.Domain.SpecieBreed.Service;
 using Applicattion.Services;
 using HerdManagement.Domain.SpecieBreed.Repository;
 using HerdManagement.Domain.Reproduction.Repository;
+using HerdManagement.Domain.Characteristic.Repositories;
 
 namespace UI
 {
@@ -34,7 +35,15 @@ namespace UI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<AnimalDbContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("HERD_CATALOG"), options => options.MigrationsAssembly("UI")),ServiceLifetime.Transient);
+                options.UseSqlServer(Configuration.GetConnectionString("HERD_CATALOG"), options => options.MigrationsAssembly("UI"))
+                , ServiceLifetime.Transient
+            );
+
+            services.AddDbContext<CharacteristicDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("HERD_CATALOG"), options => options.MigrationsAssembly("UI"))
+                , ServiceLifetime.Transient
+            );
+
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddTransient<ISpecieRepository,SpecieRepository>();
@@ -44,6 +53,7 @@ namespace UI
             services.AddTransient<ISpecieBreedService, SpecieBreedService>();
             services.AddTransient<IReproductionService, ReproductionService>();
             services.AddTransient<IReproductionRepository, ReproductionRepository>();
+            services.AddTransient<ICharacteristicRepository, CharacteristicRepository>();
 
             services.AddSyncfusionBlazor();
         }

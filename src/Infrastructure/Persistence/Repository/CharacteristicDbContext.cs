@@ -8,8 +8,12 @@ using HerdManagement.Domain.Characteristic.Entities;
 
 namespace HerdManagement.Infrastructure.Persistence.Repository
 {
-    class CharacteristicDbContext : DbContext
+    public class CharacteristicDbContext : DbContext
     {
+        public CharacteristicDbContext(DbContextOptions<CharacteristicDbContext> options) : base(options)
+        {
+        }
+
         public virtual DbSet<SpecieCharacteristic> SpecieCharacteristics { get; set; }
         public virtual DbSet<BreedCharacteristic> BreedCharacteristics { get; set; }
         public virtual DbSet<SpecieCharacteristicValue> SpecieCharacteristicValues { get; set; }
