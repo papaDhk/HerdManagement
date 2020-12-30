@@ -22,10 +22,17 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<SpecieCharacteristicValue>()
-                .Property(s => s._Value).HasColumnName("Value");
+                .Property(s => s._SelectedValue).HasColumnName("SelectedValue");
 
             modelBuilder.Entity<BreedCharacteristicValue>()
-                .Property(s => s._Value).HasColumnName("Value");
+                .Property(s => s._SelectedValue).HasColumnName("SelectedValue");
+
+            modelBuilder.Entity<BreedCharacteristic>()
+                .Property(s => s._ValueList).HasColumnName("ValueList");
+
+            modelBuilder.Entity<SpecieCharacteristic>()
+                .Property(s => s._ValueList).HasColumnName("ValueList");
+
         }
     }
 }

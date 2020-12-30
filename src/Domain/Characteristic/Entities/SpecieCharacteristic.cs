@@ -8,7 +8,8 @@ using HerdManagement.Domain.Characteristic.Enumerations;
 
 namespace HerdManagement.Domain.Characteristic.Entities
 {
-    public class SpecieCharacteristic : CharacteristicValue
+    public class SpecieCharacteristic : Characteristic
     {
+        public List<SpecieCharacteristicValue> SpecieCharacteristicValues { get; set; }
     }
 }

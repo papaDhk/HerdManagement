@@ -11,5 +11,6 @@ namespace HerdManagement.Domain.Characteristic.Entities
 {
     public class SpecieCharacteristicValue : CharacteristicValue
     {
+        public int SpecieCharacteristicId { get; set; }
     }
 }

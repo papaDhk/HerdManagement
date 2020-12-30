@@ -11,14 +11,15 @@ namespace HerdManagement.Domain.Characteristic.Entities
 {
     public class CharacteristicValue : Entity<CharacteristicValue>
     {
-        public string Label { get; set; }
-        public string _Value { get; set; }
+        public string _SelectedValue { get; set; }
+
+        public DateTime Date { get; set; }
 
         [NotMapped]
-        public Data Value
+        public string[] SelectedValue
         {
-            get { return _Value == null ? null : JsonConvert.DeserializeObject<Data>(_Value); }
-            set { _Value = JsonConvert.SerializeObject(value); }
+            get { return _SelectedValue == null ? null : JsonConvert.DeserializeObject<string[]>(_SelectedValue); }
+            set { _SelectedValue = JsonConvert.SerializeObject(value); }
         }
 
         protected override bool EqualsCore(CharacteristicValue obj)

@@ -10,5 +10,6 @@ namespace HerdManagement.Domain.Characteristic.Entities
 {
     public class BreedCharacteristic : Characteristic
     {
+        public List<BreedCharacteristicValue> BreedCharacteristicValues { get; set; }
     }
 }
