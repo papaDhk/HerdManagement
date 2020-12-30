@@ -1,18 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using HerdManagement.Domain.Characteristic.Entities;
+using HerdManagement.Domain.Reproduction.Entities;
+using HerdManagement.Domain.Reproduction.ValueObjects;
 using Microsoft.EntityFrameworkCore;
-using HerdManagement.Domain.Characteristic.Entities;
 
 namespace HerdManagement.Infrastructure.Persistence.Repository
 {
-    public class CharacteristicDbContext : DbContext
+    public class HerdManagementDbContext : DbContext
     {
-        public CharacteristicDbContext(DbContextOptions<CharacteristicDbContext> options) : base(options)
+        public HerdManagementDbContext(DbContextOptions<HerdManagementDbContext> options)
+            : base(options)
         {
         }
+        public virtual DbSet<Male> Males { get; set; }
+
+        public virtual DbSet<Female> Females { get; set; }
+
+        public virtual DbSet<YoungAnimal> YoungAnimals { get; set; }
+
+        public virtual DbSet<ReproductionState> ReproductionStates { get; set; }
+
+        public virtual DbSet<Reproduction> Reproductions { get; set; }
+
+        public virtual DbSet<Calving> Calvings { get; set; }
 
         public virtual DbSet<SpecieCharacteristic> SpecieCharacteristics { get; set; }
         public virtual DbSet<BreedCharacteristic> BreedCharacteristics { get; set; }
@@ -21,8 +30,13 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Female>()
+                .HasMany<Calving>(s => s.Calvings)
+                .WithOne(ad => ad.Female)
+                .HasForeignKey(ad => ad.FemaleId);
+
             modelBuilder.Entity<SpecieCharacteristicValue>()
-                .Property(s => s._SelectedValue).HasColumnName("SelectedValue");
+            .Property(s => s._SelectedValue).HasColumnName("SelectedValue");
 
             modelBuilder.Entity<BreedCharacteristicValue>()
                 .Property(s => s._SelectedValue).HasColumnName("SelectedValue");
@@ -32,7 +46,7 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
 
             modelBuilder.Entity<SpecieCharacteristic>()
                 .Property(s => s._ValueList).HasColumnName("ValueList");
-
         }
+
     }
 }

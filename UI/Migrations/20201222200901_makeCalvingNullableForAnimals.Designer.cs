@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace UI.Migrations
 {
-    [DbContext(typeof(AnimalDbContext))]
+    [DbContext(typeof(HerdManagementDbContext))]
     [Migration("20201222200901_makeCalvingNullableForAnimals")]
     partial class makeCalvingNullableForAnimals
     {

@@ -1,23 +1,16 @@
+using Applicattion.Services;
+using HerdManagement.Domain.Characteristic.Repositories;
+using HerdManagement.Domain.Reproduction.Repository;
+using HerdManagement.Domain.SpecieBreed.Repository;
+using HerdManagement.Domain.SpecieBreed.Service;
 using HerdManagement.Infrastructure.Persistence.Repository;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Syncfusion.Blazor;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using UI.Data;
-using Microsoft.EntityFrameworkCore;
-using HerdManagement.Domain.SpecieBreed.Service;
-using Applicattion.Services;
-using HerdManagement.Domain.SpecieBreed.Repository;
-using HerdManagement.Domain.Reproduction.Repository;
-using HerdManagement.Domain.Characteristic.Repositories;
 
 namespace UI
 {
@@ -34,22 +27,17 @@ namespace UI
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<AnimalDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("HERD_CATALOG"), options => options.MigrationsAssembly("UI"))
-                , ServiceLifetime.Transient
-            );
-
-            services.AddDbContext<CharacteristicDbContext>(options =>
+            services.AddDbContext<HerdManagementDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("HERD_CATALOG"), options => options.MigrationsAssembly("UI"))
                 , ServiceLifetime.Transient
             );
 
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddTransient<ISpecieRepository,SpecieRepository>();
-            services.AddTransient<IBreedRepository,BreedRepository>();
-            services.AddTransient<IHerdRepository,HerdRepository>();
-            services.AddTransient<IAnimalRepository,AnimalRepository>();
+            services.AddTransient<ISpecieRepository, SpecieRepository>();
+            services.AddTransient<IBreedRepository, BreedRepository>();
+            services.AddTransient<IHerdRepository, HerdRepository>();
+            services.AddTransient<IAnimalRepository, AnimalRepository>();
             services.AddTransient<ISpecieBreedService, SpecieBreedService>();
             services.AddTransient<IReproductionService, ReproductionService>();
             services.AddTransient<IReproductionRepository, ReproductionRepository>();

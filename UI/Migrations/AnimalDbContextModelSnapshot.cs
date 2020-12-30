@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace UI.Migrations
 {
-    [DbContext(typeof(AnimalDbContext))]
+    [DbContext(typeof(HerdManagementDbContext))]
     partial class AnimalDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
@@ -18,6 +18,175 @@ namespace UI.Migrations
                 .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.0");
+
+            modelBuilder.Entity("HerdManagement.Domain.Characteristic.Entities.BreedCharacteristic", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<int?>("BreedId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Commentary")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Label")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UnitId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("_ValueList")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("ValueList");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BreedId");
+
+                    b.HasIndex("UnitId");
+
+                    b.ToTable("BreedCharacteristics");
+                });
+
+            modelBuilder.Entity("HerdManagement.Domain.Characteristic.Entities.BreedCharacteristicValue", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<int>("BreedCharacteristicId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("FemaleId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("MaleId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("YoungAnimalId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("_SelectedValue")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("SelectedValue");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BreedCharacteristicId");
+
+                    b.HasIndex("FemaleId");
+
+                    b.HasIndex("MaleId");
+
+                    b.HasIndex("YoungAnimalId");
+
+                    b.ToTable("BreedCharacteristicValues");
+                });
+
+            modelBuilder.Entity("HerdManagement.Domain.Characteristic.Entities.SpecieCharacteristic", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<string>("Commentary")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Label")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("SpecieId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UnitId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("_ValueList")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("ValueList");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SpecieId");
+
+                    b.HasIndex("UnitId");
+
+                    b.ToTable("SpecieCharacteristics");
+                });
+
+            modelBuilder.Entity("HerdManagement.Domain.Characteristic.Entities.SpecieCharacteristicValue", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("FemaleId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("MaleId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SpecieCharacteristicId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("YoungAnimalId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("_SelectedValue")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("SelectedValue");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FemaleId");
+
+                    b.HasIndex("MaleId");
+
+                    b.HasIndex("SpecieCharacteristicId");
+
+                    b.HasIndex("YoungAnimalId");
+
+                    b.ToTable("SpecieCharacteristicValues");
+                });
+
+            modelBuilder.Entity("HerdManagement.Domain.Common.Entities.MeasurementUnit", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<string>("Commentary")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Label")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Symbol")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MeasurementUnit");
+                });
 
             modelBuilder.Entity("HerdManagement.Domain.Herd.Entities.Herd", b =>
                 {
@@ -367,6 +536,74 @@ namespace UI.Migrations
                     b.ToTable("Specie");
                 });
 
+            modelBuilder.Entity("HerdManagement.Domain.Characteristic.Entities.BreedCharacteristic", b =>
+                {
+                    b.HasOne("HerdManagement.Domain.SpecieBreed.Entities.Breed", null)
+                        .WithMany("BreedCharacteristics")
+                        .HasForeignKey("BreedId");
+
+                    b.HasOne("HerdManagement.Domain.Common.Entities.MeasurementUnit", "Unit")
+                        .WithMany()
+                        .HasForeignKey("UnitId");
+
+                    b.Navigation("Unit");
+                });
+
+            modelBuilder.Entity("HerdManagement.Domain.Characteristic.Entities.BreedCharacteristicValue", b =>
+                {
+                    b.HasOne("HerdManagement.Domain.Characteristic.Entities.BreedCharacteristic", null)
+                        .WithMany("BreedCharacteristicValues")
+                        .HasForeignKey("BreedCharacteristicId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HerdManagement.Domain.Reproduction.Entities.Female", null)
+                        .WithMany("BreedCharacteristicValues")
+                        .HasForeignKey("FemaleId");
+
+                    b.HasOne("HerdManagement.Domain.Reproduction.Entities.Male", null)
+                        .WithMany("BreedCharacteristicValues")
+                        .HasForeignKey("MaleId");
+
+                    b.HasOne("HerdManagement.Domain.Reproduction.Entities.YoungAnimal", null)
+                        .WithMany("BreedCharacteristicValues")
+                        .HasForeignKey("YoungAnimalId");
+                });
+
+            modelBuilder.Entity("HerdManagement.Domain.Characteristic.Entities.SpecieCharacteristic", b =>
+                {
+                    b.HasOne("HerdManagement.Domain.SpecieBreed.Entities.Specie", null)
+                        .WithMany("Characteristics")
+                        .HasForeignKey("SpecieId");
+
+                    b.HasOne("HerdManagement.Domain.Common.Entities.MeasurementUnit", "Unit")
+                        .WithMany()
+                        .HasForeignKey("UnitId");
+
+                    b.Navigation("Unit");
+                });
+
+            modelBuilder.Entity("HerdManagement.Domain.Characteristic.Entities.SpecieCharacteristicValue", b =>
+                {
+                    b.HasOne("HerdManagement.Domain.Reproduction.Entities.Female", null)
+                        .WithMany("SpecieCharacteristicValues")
+                        .HasForeignKey("FemaleId");
+
+                    b.HasOne("HerdManagement.Domain.Reproduction.Entities.Male", null)
+                        .WithMany("SpecieCharacteristicValues")
+                        .HasForeignKey("MaleId");
+
+                    b.HasOne("HerdManagement.Domain.Characteristic.Entities.SpecieCharacteristic", null)
+                        .WithMany("SpecieCharacteristicValues")
+                        .HasForeignKey("SpecieCharacteristicId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HerdManagement.Domain.Reproduction.Entities.YoungAnimal", null)
+                        .WithMany("SpecieCharacteristicValues")
+                        .HasForeignKey("YoungAnimalId");
+                });
+
             modelBuilder.Entity("HerdManagement.Domain.Herd.Entities.Herd", b =>
                 {
                     b.HasOne("HerdManagement.Domain.SpecieBreed.Entities.Specie", "Specie")
@@ -495,6 +732,16 @@ namespace UI.Migrations
                     b.Navigation("Specie");
                 });
 
+            modelBuilder.Entity("HerdManagement.Domain.Characteristic.Entities.BreedCharacteristic", b =>
+                {
+                    b.Navigation("BreedCharacteristicValues");
+                });
+
+            modelBuilder.Entity("HerdManagement.Domain.Characteristic.Entities.SpecieCharacteristic", b =>
+                {
+                    b.Navigation("SpecieCharacteristicValues");
+                });
+
             modelBuilder.Entity("HerdManagement.Domain.Reproduction.Entities.Calving", b =>
                 {
                     b.Navigation("YoungAnimals");
@@ -502,14 +749,22 @@ namespace UI.Migrations
 
             modelBuilder.Entity("HerdManagement.Domain.Reproduction.Entities.Female", b =>
                 {
+                    b.Navigation("BreedCharacteristicValues");
+
                     b.Navigation("Calvings");
 
                     b.Navigation("Reproductions");
+
+                    b.Navigation("SpecieCharacteristicValues");
                 });
 
             modelBuilder.Entity("HerdManagement.Domain.Reproduction.Entities.Male", b =>
                 {
+                    b.Navigation("BreedCharacteristicValues");
+
                     b.Navigation("Reproductions");
+
+                    b.Navigation("SpecieCharacteristicValues");
                 });
 
             modelBuilder.Entity("HerdManagement.Domain.Reproduction.Entities.Reproduction", b =>
@@ -517,6 +772,23 @@ namespace UI.Migrations
                     b.Navigation("Calving");
 
                     b.Navigation("States");
+                });
+
+            modelBuilder.Entity("HerdManagement.Domain.Reproduction.Entities.YoungAnimal", b =>
+                {
+                    b.Navigation("BreedCharacteristicValues");
+
+                    b.Navigation("SpecieCharacteristicValues");
+                });
+
+            modelBuilder.Entity("HerdManagement.Domain.SpecieBreed.Entities.Breed", b =>
+                {
+                    b.Navigation("BreedCharacteristics");
+                });
+
+            modelBuilder.Entity("HerdManagement.Domain.SpecieBreed.Entities.Specie", b =>
+                {
+                    b.Navigation("Characteristics");
                 });
 #pragma warning restore 612, 618
         }

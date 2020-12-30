@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace UI.Migrations
 {
-    [DbContext(typeof(AnimalDbContext))]
+    [DbContext(typeof(HerdManagementDbContext))]
     [Migration("20201227040322_rename animal_calvingFK")]
     partial class renameanimal_calvingFK
     {
