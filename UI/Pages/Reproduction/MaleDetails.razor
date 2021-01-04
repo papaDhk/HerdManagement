@@ -121,6 +121,8 @@ else
                                     <option value="@female.Id">@female.ToString()</option>
                                     }
                             </InputSelect>
+                            <NavLink href="@females.Where(f => f.Id == motherId).FirstOrDefault()?.GetProfilePageUrl(AnimalHerdName)">Details</NavLink>
+
                             @*<ValidationMessage For="@(() => currentMale.MotherId)" />*@
                             @if (@canNotBeMother)
                             {
@@ -140,6 +142,8 @@ else
                                     <option value="@male.Id">@male.ToString()</option>
                                     }
                             </InputSelect>
+                            <NavLink href="@males.Where(m => m.Id == fatherId).FirstOrDefault()?.GetProfilePageUrl(AnimalHerdName)">Details</NavLink>
+
                             @*<ValidationMessage For="@(() => currentMale.FatherId)" />*@
                             @if (@canNotBeFather)
                             {
@@ -196,9 +200,9 @@ else
 
     private List<Female> females;
 
-    private int fatherId;
+    private int? fatherId = 0;
 
-    private int motherId;
+    private int? motherId = 0;
 
     private List<BreedDTO> breedDTOs;
 
@@ -212,41 +216,32 @@ else
     {
         currentMale = animalRepository.GetMaleByNumber(AnimalNumber);
 
+        motherId = currentMale?.FromCalving?.FemaleId ?? motherId;
+
+        fatherId = currentMale?.FromCalving?.MaleId ?? fatherId;
+
         breedDTOs = await breedRepository.GetAllBreeds().ContinueWith(breeds => breeds.Result.ToBreedDTOList().ToList());
 
-        males = animalRepository.GetMalesByHerdId(currentMale.Herd.Id).ToList();
+        males = animalRepository.GetMalesByHerdId(currentMale.Herd.Id)
+                                .Where(male => male.Id != currentMale.Id)
+                                .ToList();
 
         females = animalRepository.GetFemalesByHerdId(currentMale.Herd.Id).ToList();
     }
 
-    //private async Task OnInputFileChange(InputFileChangeEventArgs e)
-    //{
-    //    var maxAllowedFiles = 1;
-    //    var format = "image/png";
-
-    //    foreach (var imageFile in e.GetMultipleFiles(maxAllowedFiles))
-    //    {
-    //        var resizedImageFile = await imageFile.RequestImageFileAsync(format,
-    //            100, 100);
-    //        var buffer = new byte[resizedImageFile.Size];
-    //        await resizedImageFile.OpenReadStream().ReadAsync(buffer);
-    //        currentMale.Picture = buffer;
-    //    }
-
-    //}
 
     private async Task SaveAnimalAsync()
     {
-        canNotBeMother = motherId > 0 ? !reproductionService.CanBeMotherOfAnimalBornIn(motherId, currentMale.BirthDate) : false;
+        canNotBeMother = motherId > 0 ? !reproductionService.CanBeMotherOfAnimalBornIn(motherId.Value, currentMale.BirthDate) : false;
 
-        canNotBeFather = fatherId > 0 ? !reproductionService.CanBeFatherOfAnimalBornIn(fatherId, currentMale.BirthDate) : false;
+        canNotBeFather = fatherId > 0 ? !reproductionService.CanBeFatherOfAnimalBornIn(fatherId.Value, currentMale.BirthDate) : false;
 
         if (canNotBeFather || canNotBeMother)
         {
             return;
         }
 
-        currentMale = (Male)await reproductionService.UpdateAnimalAsync(currentMale, motherId, fatherId);
+        currentMale = (Male)await reproductionService.UpdateAnimalAsync(currentMale, motherId.Value, fatherId.Value);
 
         CleanAndMakeNoEditable();
     }
@@ -261,8 +256,8 @@ else
         canNotBeMother = false;
         canNotBeFather = false;
 
-        motherId = 0;
-        fatherId = 0;
+        motherId = currentMale?.FromCalving?.FemaleId ?? motherId;
+        fatherId = currentMale?.FromCalving?.MaleId ?? fatherId;
 
         isNoEditable = true;
     }

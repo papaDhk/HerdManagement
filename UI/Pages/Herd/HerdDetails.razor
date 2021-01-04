@@ -51,7 +51,10 @@ else
         </GridColumn>
         <GridColumn>
             <Template>
-                <NavLink href=@GetProfilePageUrl((Animal)context) class="btn btn-primary btn-sm">Details</NavLink>
+                @{ 
+                    var animal = (Animal)context;
+                }
+                <NavLink href=@animal.GetProfilePageUrl(currentHerd.Name) class="btn btn-primary btn-sm">Details</NavLink>
             </Template>
         </GridColumn>
     </GridColumns>
@@ -304,23 +307,6 @@ else
 
             ClearModalForm();
 
-        }
-
-        private string GetProfilePageUrl(Animal animal)
-        {
-            if (animal.IsAdult)
-            {
-                return animal.Sex switch
-                {
-                    SexEnum.Male => $"/animals/male/{currentHerd.Name}/{animal.Number}/{animal.Name}",
-                    SexEnum.Female => $"/animals/female/{currentHerd.Name}/{animal.Number}/{animal.Name}"
-
-                };
-            }
-            else
-            {
-                return $"/animals/little/{currentHerd.Name}/{animal.Number}/{animal.Name}";
-            }
         }
 
         private void OnChange(UploadChangeEventArgs args)

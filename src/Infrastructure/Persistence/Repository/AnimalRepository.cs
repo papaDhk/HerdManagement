@@ -70,7 +70,8 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
             return _animalDbContext.Females
                     .Include(female => female.Herd)
                    .Include(female => female.Breed)
-                   .ThenInclude(breed => breed.Specie)                  
+                   .ThenInclude(breed => breed.Specie)
+                   .Include(female => female.FromCalving)
                    .Where(female => female.Number == femaleNumber)
                    .FirstOrDefault();
         }
@@ -81,6 +82,7 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
                     .Include(female => female.Herd)
                    .Include(female => female.Breed)
                    .ThenInclude(breed => breed.Specie)
+                   .Include(female => female.FromCalving)
                    .Where(female => female.Id == femaleId)
                    .FirstOrDefault();
         }
@@ -139,6 +141,7 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
                    .Include(male => male.Herd)
                    .Include(male => male.Breed)
                    .ThenInclude(breed => breed.Specie)
+                   .Include(male => male.FromCalving)
                    .Where(male => male.Number == maleNumber)
                    .FirstOrDefault();
         }
@@ -149,6 +152,7 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
                    .Include(male => male.Herd)
                    .Include(male => male.Breed)
                    .ThenInclude(breed => breed.Specie)
+                   .Include(male => male.FromCalving)
                    .Where(male => male.Id == maleId)
                    .FirstOrDefault();
         }
@@ -207,6 +211,7 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
                    .Include(youngAnimal => youngAnimal.Herd)
                    .Include(youngAnimal => youngAnimal.Breed)
                    .ThenInclude(youngAnimal => youngAnimal.Specie)
+                   .Include(youngAnimal => youngAnimal.FromCalving)
                    .Where(youngAnimal => youngAnimal.Number == youngAnimalNumber)
                    .FirstOrDefault();
         }
@@ -217,6 +222,7 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
                    .Include(youngAnimal => youngAnimal.Herd)
                    .Include(youngAnimal => youngAnimal.Breed)
                    .ThenInclude(youngAnimal => youngAnimal.Specie)
+                   .Include(youngAnimal => youngAnimal.FromCalving)
                    .Where(youngAnimal => youngAnimal.Id == youngAnimalId)
                    .FirstOrDefault();
         }
