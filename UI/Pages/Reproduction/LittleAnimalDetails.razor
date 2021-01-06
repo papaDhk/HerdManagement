@@ -32,7 +32,8 @@ else
             <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Profil</a>
             <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Caracteristiques</a>
             <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Reproduction</a>
-            <a class="nav-item nav-link" id="nav-alinentation-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Alimentation</a>
+            <a class="nav-item nav-link" id="nav-alimentation-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Alimentation</a>
+            <a class="nav-item nav-link" id="nav-weightings-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Pesées</a>
         </div>
     </nav>
     <div class="tab-content mt-5" id="nav-tabContent">
@@ -98,10 +99,9 @@ else
                         </label>
                         <div class="col-9">
                             <InputSelect id="origin" @bind-Value="@currentYoungAnimal.Origin" class="form-control" disabled=@isNoEditable>
-
-                                @foreach (var origin in Enum.GetValues(typeof(AnimalOrigin)))
+                                @foreach (var origin in Helper.GetKeyValuesAsListFromEnum(typeof(AnimalOrigin)))
                                     {
-                                    <option value="@origin">@origin</option>
+                                    <option value="@origin.Key">@origin.Value</option>
                                     }
                             </InputSelect>
                             <ValidationMessage For="@(() => currentYoungAnimal.Origin)" />
@@ -177,7 +177,8 @@ else
         </div>
         <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">...</div>
         <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">...</div>
-        <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-alinentation-tab">...</div>
+        <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-alimentation-tab">...</div>
+        <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-weightings-tab">...</div>
     </div>
 }
 

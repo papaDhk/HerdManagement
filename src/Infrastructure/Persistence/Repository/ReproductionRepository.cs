@@ -27,6 +27,7 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
                 .Where(calving => calving.Reproduction.FemaleId == femaleId && calving.Reproduction.MaleId == maleId && calving.Date.Date == datetime.Date)
                 .Include(calving => calving.Reproduction).FirstOrDefault();
 
+
             _animalDbContext.UntrackEntities();
 
             return calving;

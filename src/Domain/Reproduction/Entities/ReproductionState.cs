@@ -2,10 +2,12 @@
 using HerdManagement.Domain.Reproduction.Enumerations;
 using System;
 
-namespace HerdManagement.Domain.Reproduction.ValueObjects
+namespace HerdManagement.Domain.Reproduction.Entities
 {
     public class ReproductionState : Entity<ReproductionState>
     {
+        public static ReproductionState Undefined => new ReproductionState { State = ReproductionStateEnum.Undefined };
+
         public ReproductionState()
         {
 
@@ -13,9 +15,9 @@ namespace HerdManagement.Domain.Reproduction.ValueObjects
 
         public int ReproductionId { get; set; }
 
-        public ReproductionStateEnum State { get; protected set; }
+        public ReproductionStateEnum State { get; set; }
 
-        public DateTime Date { get; protected set; }
+        public DateTime Date { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ReproductionState"/> class.

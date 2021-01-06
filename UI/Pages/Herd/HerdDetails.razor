@@ -23,7 +23,7 @@ else
 <SfGrid @ref=@dataGrid DataSource=@animals AllowSorting=true AllowPaging="true" Toolbar=@ToolbarItems TValue=Animal>
     <GridPageSettings PageCount="5" PageSizes="true" PageSize="5"></GridPageSettings>
     <GridColumns>
-        <GridColumn Field=@nameof(Animal.Picture)>
+        <GridColumn Field=@nameof(Animal.Picture) HeaderText="Photo de profil">
             <Template>
                 @{
                     var animal = context as Animal;
@@ -37,17 +37,29 @@ else
                 <img src="@imageUrl" class="img-thumbnail" />
             </Template>
         </GridColumn>
-        <GridColumn Field=@nameof(Animal.Number)>
+        <GridColumn Field=@nameof(Animal.Number) HeaderText="Numéro" TextAlign="TextAlign.Center">
         </GridColumn>
-        <GridColumn Field=@nameof(Animal.Name)>
+        <GridColumn Field=@nameof(Animal.Name) HeaderText="Nom"  TextAlign="TextAlign.Center">
         </GridColumn>
-        <GridColumn Field=@nameof(Animal.Sex)>
+        <GridColumn Field=@nameof(Animal.Sex) HeaderText="Sexe" TextAlign="TextAlign.Center">
+            <Template>
+                @{
+                    var animal = context as Animal;
+                }
+                <span>@Helper.GetDisplayName(animal.Sex)</span>
+            </Template>
         </GridColumn>
-        <GridColumn Field=@nameof(Animal.PresenceStatus)>
+        <GridColumn Field=@nameof(Animal.PresenceStatus) HeaderText="Présence"  TextAlign="TextAlign.Center">
+            <Template>
+                @{
+                    var animal = context as Animal;
+                }
+                <span>@Helper.GetDisplayName(animal.PresenceStatus)</span>
+            </Template>
         </GridColumn>
-        <GridColumn Field=@nameof(Animal.Weight)>
+        <GridColumn Field=@nameof(Animal.Weight) HeaderText="Poids"  TextAlign="TextAlign.Center">
         </GridColumn>
-        <GridColumn Field=@nameof(Animal.AgeInString)>
+        <GridColumn Field=@nameof(Animal.AgeInString) HeaderText="Age"  TextAlign="TextAlign.Center">
         </GridColumn>
         <GridColumn>
             <Template>
@@ -111,9 +123,9 @@ else
                             </label>
                             <div class="col-9">
                                 <InputSelect id="sex" @bind-Value="animalDTO.Sex" class="form-control">
-                                    @foreach (var sex in Enum.GetValues(typeof(SexEnum)))
+                                    @foreach (var sex in Helper.GetKeyValuesAsListFromEnum(typeof(SexEnum)))
                                         {
-                                        <option value="@sex">@sex</option>
+                                    <option value="@sex.Key">@sex.Value</option>
                                         }
                                 </InputSelect>
                                 <ValidationMessage For="@(() => animalDTO.Sex)" />
@@ -135,9 +147,9 @@ else
                             <div class="col-9">
                                 <InputSelect id="origin" @bind-Value="@newAnimalOrigin" class="form-control">
 
-                                    @foreach (var origin in Enum.GetValues(typeof(AnimalOrigin)))
+                                    @foreach (var origin in Helper.GetKeyValuesAsListFromEnum(typeof(AnimalOrigin)))
                                         {
-                                        <option value="@origin">@origin</option>
+                                        <option value="@origin.Key">@origin.Value</option>
                                         }
                                 </InputSelect>
                                 <ValidationMessage For="@(() => animalDTO.Origin)" />

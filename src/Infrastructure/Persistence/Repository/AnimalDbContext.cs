@@ -1,5 +1,4 @@
 ﻿using HerdManagement.Domain.Reproduction.Entities;
-using HerdManagement.Domain.Reproduction.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
 namespace HerdManagement.Infrastructure.Persistence.Repository

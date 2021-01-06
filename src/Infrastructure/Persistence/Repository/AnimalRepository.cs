@@ -87,6 +87,19 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
                    .FirstOrDefault();
         }
 
+        public Female GetAnimalWithReproductions(Female female)
+        {
+            _animalDbContext.Entry(female).State = EntityState.Unchanged;
+            _animalDbContext.Entry(female).Collection(female => female.Reproductions).Load();
+
+            foreach (var reproduction in female.Reproductions)
+            {
+                _animalDbContext.Entry(reproduction).Collection(r => r.States).Load();
+            }
+
+            _animalDbContext.UntrackEntities();
+            return female;
+        }
         //Males
 
         public async Task<Male> AddNewMaleAsync(Male male)
@@ -155,6 +168,21 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
                    .Include(male => male.FromCalving)
                    .Where(male => male.Id == maleId)
                    .FirstOrDefault();
+        }
+
+        public Male GetAnimalWithReproductions(Male male)
+        {
+            _animalDbContext.Entry(male).State = EntityState.Unchanged;
+            _animalDbContext.Entry(male).Collection(male => male.Reproductions).Load();
+
+            foreach (var reproduction in male.Reproductions)
+            {
+                _animalDbContext.Entry(reproduction).Collection(r => r.States).Load();
+            }
+
+            _animalDbContext.UntrackEntities();
+
+            return male;
         }
 
 

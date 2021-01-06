@@ -5,6 +5,8 @@ using HerdManagement.Domain.SpecieBreed.Entities;
 using HerdManagement.Domain.SpecieBreed.ValueObjects;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace HerdManagement.Domain.Reproduction.Entities
@@ -55,9 +57,16 @@ namespace HerdManagement.Domain.Reproduction.Entities
 
     public enum AnimalOrigin
     {
+        [Display(Name = "Acheté")]
         Bought,
+
+        [Display(Name = "Dotation")]
         Donated,
+
+        [Display(Name = "Trouvé")]
         Found,
+
+        [Display(Name = "Issu du troupeau")]
         BornInFarm
     }
 }

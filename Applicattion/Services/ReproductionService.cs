@@ -88,6 +88,7 @@ namespace Applicattion.Services
                 {
                     FemaleId = motherId,
                     MaleId = fatherId,
+                    States = new List<ReproductionState> { new ReproductionState { State = ReproductionStateEnum.Complete, Date = birthDate} }
                 };
 
                 animalOriginCalving = new Calving
@@ -101,7 +102,7 @@ namespace Applicattion.Services
             }
             else
             {
-                animalOriginCalving.NumberOfNewborn += 1;
+                animalOriginCalving.NumberOfNewborn += 1;                
             }
 
             return animalOriginCalving;
