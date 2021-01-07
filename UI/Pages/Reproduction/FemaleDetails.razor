@@ -15,7 +15,7 @@
 @inject IAnimalRepository animalRepository
 @inject IBreedRepository breedRepository
 @inject IReproductionService reproductionService
-@inject IJSRuntime JS;
+@inject BootstrapService bootstrapService
 
 
 <nav class="navbar navbar-light mb-3 horizontal-nav-bar justify-content-between">
@@ -183,45 +183,50 @@ else
             }
             else
             {
-        <SfGrid @ref="reproductionsDataGrid" DataSource=@reproductions AllowFiltering="true"  AllowPaging="true" AllowSorting="true" TValue=Reproduction>
-            <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
+                <SfGrid @ref="reproductionsDataGrid" DataSource=@reproductions AllowFiltering="true" AllowPaging="true" AllowSorting="true" TValue=Reproduction>
+                    <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
 
-            <GridPageSettings PageCount="5" PageSizes="true" PageSize="12"></GridPageSettings>
-            <GridColumns>
-                <GridColumn HeaderText="Partenaire">
-                    <Template>
-                        @{
-                            var reproduction = (Reproduction)context;
-                            var partner = males.Where(male => male.Id == reproduction.MaleId).FirstOrDefault();
-                        }
-                        <NavLink href="@partner?.GetProfilePageUrl(AnimalHerdName)">@partner?.ToString()</NavLink>
-                    </Template>
-                </GridColumn>
-                <GridColumn Field=@nameof(Reproduction.Date) TextAlign="TextAlign.Center">
-                </GridColumn>
-                <GridColumn Field=@nameof(Reproduction.Type) TextAlign="TextAlign.Center">
-                    <Template>
-                        @{
-                            var reproduction = (Reproduction)context;
-                        }
-                        <span class="@GetClassFromReproductionType(reproduction.Type)">@Helper.GetDisplayName(reproduction.Type)</span>
-                    </Template>
-                </GridColumn>
-                <GridColumn Field=@nameof(Reproduction.ActualState) HeaderText="Etat actuel" TextAlign="TextAlign.Center">
-                    <Template>
-                        @{
-                            var reproduction = (Reproduction)context;
-                        }
-                        <span class="@GetClassFromReproductionState(reproduction.ActualState.State)">@Helper.GetDisplayName(reproduction.ActualState.State)</span>
-                    </Template>
-                </GridColumn>
-                <GridColumn HeaderText="Actions" TextAlign="TextAlign.Center">
-                    <Template>
-                        actions
-                    </Template>
-                </GridColumn>
-            </GridColumns>
-        </SfGrid>
+                    <GridPageSettings PageCount="5" PageSizes="true" PageSize="12"></GridPageSettings>
+                    <GridColumns>
+                        <GridColumn HeaderText="Partenaire">
+                            <Template>
+                                @{
+                                    var reproduction = (Reproduction)context;
+                                    var partner = males.Where(male => male.Id == reproduction.MaleId).FirstOrDefault();
+                                }
+                                <NavLink href="@partner?.GetProfilePageUrl(AnimalHerdName)">@partner?.ToString()</NavLink>
+                            </Template>
+                        </GridColumn>
+                        <GridColumn Field=@nameof(Reproduction.Date) TextAlign="TextAlign.Center">
+                        </GridColumn>
+                        <GridColumn Field=@nameof(Reproduction.Type) TextAlign="TextAlign.Center">
+                            <Template>
+                                @{
+                                    var reproduction = (Reproduction)context;
+                                }
+                                <span class="@GetClassFromReproductionType(reproduction.Type)">@Helper.GetDisplayName(reproduction.Type)</span>
+                            </Template>
+                        </GridColumn>
+                        <GridColumn Field=@nameof(Reproduction.ActualState) HeaderText="Etat actuel" TextAlign="TextAlign.Center">
+                            <Template>
+                                @{
+                                    var reproduction = (Reproduction)context;
+                                }
+                                <span class="@GetClassFromReproductionState(reproduction.ActualState.State)">@Helper.GetDisplayName(reproduction.ActualState.State)</span>
+                            </Template>
+                        </GridColumn>
+                        <GridColumn HeaderText="Actions" TextAlign="TextAlign.Center">
+                            <Template>
+                                @{
+                                    var reproduction = (Reproduction)context;
+                                }
+                                <button class="btn btn-primary btn-sm" @onclick="@(() => OnReproductionDetailsClickedAsync(reproduction))">Details</button>
+                                <NavLink href="" class="btn btn-light btn-sm">Modifier</NavLink>
+                                <NavLink href="" class="btn btn-danger btn-sm">Supprimer</NavLink>
+                            </Template>
+                        </GridColumn>
+                    </GridColumns>
+                </SfGrid>
             }
         </div>
         <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-alimentation-tab">...</div>
@@ -229,7 +234,7 @@ else
 
 
         <div class="modal fade" id="reproductionModalForm" tabindex="-1" role="dialog" aria-labelledby="Enregistrer une reproduction pour @currentFemale.Name" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-dialog modal-dialog-centered" role="dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="reproductionModalFormLabel">Enregistrer une reproduction pour @currentFemale.Name</h5>
@@ -314,6 +319,160 @@ else
             </div>
         </div>
 
+        <div class="modal fade" id="successNotificationModal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <div class="thank-you-pop">
+                            <img src="images/Green-Round-Tick.png" alt="">
+                            <h1>Enregistrement réussi</h1>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal fade" id="reproductionDetailModal" tabindex="-1" role="dialog" aria-labelledby="Details de reproduction" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="reproductionModalFormLabel">Details de reproduction</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="ClearReproductionModalForm">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <EditForm Model="@reproductionCreation" OnValidSubmit="SaveUpdatedReproductionAsync">
+                        <div class="modal-body">
+
+                            <DataAnnotationsValidator />
+                            <div class="form-group row">
+                                <label for="Female-partner" class="col-3 col-form-label">
+                                    Femelle concernée
+                                </label>
+                                <div class="col-9">
+                                    <InputSelect id="Female-partner" @bind-Value="@currentFemale.Id" class="form-control">
+
+                                        <option value="@currentFemale.Id">@currentFemale.ToString()</option>
+                                    </InputSelect>
+                                    @*<ValidationMessage For="@(() => currentFemale.FatherId)" />*@
+                                    @if (reproductionCreationResponse.CouldFemaleBeMated == false)
+                                    {
+                                        <div class="validation-message">@currentFemale.Name n'était pas en mesure de se reproduire à cette date</div>
+                                    }
+
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="partner" class="col-3 col-form-label">
+                                    Partenaire
+                                </label>
+                                <div class="col-9">
+                                    <InputSelect id="partner" @bind-Value="@reproductionCreation.MaleId" class="form-control">
+                                        @foreach (var male in males)
+                                            {
+                                            <option value="@male.Id">@male.ToString()</option>
+                                            }
+                                    </InputSelect>
+                                    @*<ValidationMessage For="@(() => currentFemale.FatherId)" />*@
+                                    @if (reproductionCreationResponse.WasMaleAdult == false)
+                                    {
+                                        <div class="validation-message">Le mâle selectionné n'était pas en mesure de se reproduire à cette date</div>
+                                    }
+
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="reproductionType" class="col-3 col-form-label">
+                                    Type de reproduction
+                                </label>
+                                <div class="col-9">
+                                    <InputSelect id="reproductionType" @bind-Value="@reproductionCreation.Type" class="form-control">
+
+                                        @foreach (var reproductionType in Helper.GetKeyValuesAsListFromEnum(typeof(ReproductionTypeEnum)))
+                                            {
+                                            <option value="@reproductionType.Key">@reproductionType.Value</option>
+                                            }
+                                    </InputSelect>
+                                    <ValidationMessage For="@(() => reproductionCreation.Type)" />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="reproductionDate" class="col-3 col-form-label">
+                                    Date
+                                </label>
+                                <div class="col-sm-9">
+                                    <InputDate id="reproductionDate" class="form-control" placeholder="Date de la reproduction" @bind-Value="reproductionCreation.Date" />
+                                    <ValidationMessage For="@(() => reproductionCreation.Date)" />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="reproductionCurrentState" class="col-3 col-form-label">
+                                    Etat actuel
+                                </label>
+                                <div class="col-sm-9">
+                                    <span class="@GetClassFromReproductionState((ReproductionStateEnum)reproductionCreation?.ActualState?.State)">@Helper.GetDisplayName(reproductionCreation?.ActualState?.State)</span>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="reproductionStates" class="col-3 col-form-label">
+                                    Etats
+                                </label>
+                                <div class="col-sm-9">
+                                    <SfGrid DataSource=@reproductionCreation.States TValue=ReproductionState  Toolbar="@(new List<string>() { "Add", "Edit", "Delete","Update", "Cancel" })">
+                                        <GridEditSettings AllowAdding="true" AllowDeleting="true" AllowEditing="true"></GridEditSettings>
+
+                                        <GridColumns>
+                                            <GridColumn Field="@nameof(ReproductionState.Id)"  IsPrimaryKey="true" IsIdentity="true"  Visible="false"></GridColumn>
+                                            <GridColumn Field=@nameof(ReproductionState.State) HeaderText="Etat">
+                                                <Template Context="reproductionStateContext">
+                                                    @{
+                                                        var reproductionState = (ReproductionState)reproductionStateContext;
+                                                    }
+                                                    <span class="@GetClassFromReproductionState(reproductionState.State)">@Helper.GetDisplayName(reproductionState.State)</span>
+                                                </Template>
+
+                                                <EditTemplate Context="reproductionStateContext">
+                                                    @*ID value should be based on Field name*@
+                                                    <SfDropDownList ID="ReproductionState___State"
+                                                                    TItem="string"
+                                                                    TValue="ReproductionStateEnum"
+                                                                    @bind-Value="@((reproductionStateContext as ReproductionState).State)"
+                                                                    DataSource="@Helper.GetKeyValuesFromEnum(typeof(ReproductionStateEnum)).Keys">
+                                                        <DropDownListTemplates TItem="string">
+                                                            <ItemTemplate Context="ReproductionStateEnumContext">
+                                                                <span>@(Helper.GetKeyValuesFromEnum(typeof(ReproductionStateEnum))[(ReproductionStateEnumContext as string)])</span>
+                                                            </ItemTemplate>
+                                                        </DropDownListTemplates>
+                                                        <DropDownListFieldSettings Text="Name" Value="Name"></DropDownListFieldSettings>
+                                                    </SfDropDownList>
+                                                </EditTemplate>
+                                            </GridColumn>
+                                            <GridColumn Field=@nameof(ReproductionState.Date) TextAlign="TextAlign.Center">
+                                            </GridColumn>
+                                        </GridColumns>
+                                    </SfGrid>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="ClearReproductionModalForm">Fermer</button>
+                            <button type="submit" class="btn btn-primary">Enregistrer</button>
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
 
     </div>
 }
@@ -351,6 +510,8 @@ else
     private List<Reproduction> reproductions;
 
     private Reproduction reproductionCreation = new Reproduction();
+
+    private Reproduction selectedReproduction = new Reproduction();
 
     private ReproductionCreationResponse reproductionCreationResponse = new ReproductionCreationResponse { WasMaleAdult = true, CouldFemaleBeMated = true, IsSuccessful = true };
 
@@ -400,14 +561,57 @@ else
 
         if (reproductionCreationResponse.IsSuccessful)
         {
-            reproductions.Insert(0, reproductionCreationResponse.Reproduction);
+            if (reproductions.Any(r => r.Id == reproductionCreationResponse.Reproduction.Id) == false)
+            {
+                reproductions.Insert(0, reproductionCreationResponse.Reproduction);
+            }
 
             reproductionsDataGrid.Refresh();
 
-            await JS.InvokeAsync<bool>("hideModalDialog", "#reproductionModalForm");
+            await bootstrapService.HideModal("#reproductionModalForm");
 
             ClearReproductionModalForm();
+
+            await bootstrapService.ShowModal("#successNotificationModal");
         }
+
+    }
+
+    private async Task SaveUpdatedReproductionAsync()
+    {
+        reproductionCreationResponse = await reproductionService.CreateOrUpdateReproductionAsync(reproductionCreation);
+
+        if (reproductionCreationResponse.IsSuccessful)
+        {
+
+            reproductionsDataGrid.Refresh();
+
+            //await bootstrapService.HideModal("#reproductionModalForm");
+
+
+            //await bootstrapService.ShowModal("#successNotificationModal");
+        }
+
+    }
+
+    private async Task OnReproductionDetailsClickedAsync(Reproduction reproduction)
+    {
+        reproductionCreation = reproduction;
+
+        await bootstrapService.ShowModal("#reproductionDetailModal");
+
+        //if (reproductionCreationResponse.IsSuccessful)
+        //{
+        //    reproductions.Insert(0, reproductionCreationResponse.Reproduction);
+
+        //    reproductionsDataGrid.Refresh();
+
+        //    await bootstrapService.HideModal("#reproductionModalForm");
+
+        //    ClearReproductionModalForm();
+
+        //    await bootstrapService.ShowModal("#successNotificationModal");
+        //}
 
     }
 

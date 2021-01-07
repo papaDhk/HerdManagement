@@ -22,6 +22,7 @@ else
         <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true"></GridEditSettings>
         <GridEvents OnActionBegin="OnBeginHandlerAsync" CommandClicked="OnDetailButtonClicked" TValue="BreedDTO"></GridEvents>
         <GridColumns>
+            <GridColumn Field=@nameof(BreedDTO.Id) IsPrimaryKey="true" IsIdentity="true"></GridColumn>
             <GridColumn Field=@nameof(BreedDTO.Label)>
             </GridColumn>
             <GridColumn>

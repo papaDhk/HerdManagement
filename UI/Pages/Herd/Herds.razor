@@ -3,6 +3,7 @@
 @inject IHerdRepository herdRepository
 @inject ISpecieRepository specieRepository
 @inject ISpecieBreedService specieBreedService
+@inject BootstrapService bootstrapService
 
 <nav class="navbar navbar-light mb-3 horizontal-nav-bar justify-content-between">
     <h6>Troupeaux</h6>
@@ -86,6 +87,27 @@ else
                 </div>
             </div>
         </div>
+
+        <div class="modal fade" id="successNotificationModal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <div class="thank-you-pop">
+                            <img src="images/Green-Round-Tick.png" alt="">
+                            <h1>Nouveau troupeau créé!</h1>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 
@@ -143,7 +165,12 @@ else
         Response<Herd> response = await specieBreedService.CreateHerd(herdCreationDTO);
         if (response.IsOperationSuccessfull)
         {
+            await bootstrapService.HideModal("#herdModalForm");
+
             ClearModalForm();
+
+            await bootstrapService.ShowModal("#successNotificationModal");
+
             herdDTOs.Add(response.Core.ToHerdDTO());
         }
     }

@@ -7,6 +7,7 @@
 @inject IHerdRepository herdRepository
 @inject IReproductionService reproductionService
 @inject NavigationManager navigationManager
+@inject BootstrapService bootstrapService
 
 
 <nav class="navbar navbar-light mb-3 horizontal-nav-bar justify-content-between">
@@ -20,8 +21,10 @@
 }
 else
 {
-<SfGrid @ref=@dataGrid DataSource=@animals AllowSorting=true AllowPaging="true" Toolbar=@ToolbarItems TValue=Animal>
+<SfGrid @ref=@dataGrid DataSource=@animals AllowSorting=true AllowPaging="true" Toolbar=@ToolbarItems AllowFiltering="true" TValue=Animal>
     <GridPageSettings PageCount="5" PageSizes="true" PageSize="5"></GridPageSettings>
+    <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
+
     <GridColumns>
         <GridColumn Field=@nameof(Animal.Picture) HeaderText="Photo de profil">
             <Template>
@@ -39,7 +42,7 @@ else
         </GridColumn>
         <GridColumn Field=@nameof(Animal.Number) HeaderText="Numéro" TextAlign="TextAlign.Center">
         </GridColumn>
-        <GridColumn Field=@nameof(Animal.Name) HeaderText="Nom"  TextAlign="TextAlign.Center">
+        <GridColumn Field=@nameof(Animal.Name) HeaderText="Nom" TextAlign="TextAlign.Center">
         </GridColumn>
         <GridColumn Field=@nameof(Animal.Sex) HeaderText="Sexe" TextAlign="TextAlign.Center">
             <Template>
@@ -49,7 +52,7 @@ else
                 <span>@Helper.GetDisplayName(animal.Sex)</span>
             </Template>
         </GridColumn>
-        <GridColumn Field=@nameof(Animal.PresenceStatus) HeaderText="Présence"  TextAlign="TextAlign.Center">
+        <GridColumn Field=@nameof(Animal.PresenceStatus) HeaderText="Présence" TextAlign="TextAlign.Center">
             <Template>
                 @{
                     var animal = context as Animal;
@@ -57,13 +60,13 @@ else
                 <span>@Helper.GetDisplayName(animal.PresenceStatus)</span>
             </Template>
         </GridColumn>
-        <GridColumn Field=@nameof(Animal.Weight) HeaderText="Poids"  TextAlign="TextAlign.Center">
+        <GridColumn Field=@nameof(Animal.Weight) HeaderText="Poids" TextAlign="TextAlign.Center">
         </GridColumn>
-        <GridColumn Field=@nameof(Animal.AgeInString) HeaderText="Age"  TextAlign="TextAlign.Center">
+        <GridColumn Field=@nameof(Animal.AgeInString) HeaderText="Age" TextAlign="TextAlign.Center">
         </GridColumn>
         <GridColumn>
             <Template>
-                @{ 
+                @{
                     var animal = (Animal)context;
                 }
                 <NavLink href=@animal.GetProfilePageUrl(currentHerd.Name) class="btn btn-primary btn-sm">Details</NavLink>
@@ -125,7 +128,7 @@ else
                                 <InputSelect id="sex" @bind-Value="animalDTO.Sex" class="form-control">
                                     @foreach (var sex in Helper.GetKeyValuesAsListFromEnum(typeof(SexEnum)))
                                         {
-                                    <option value="@sex.Key">@sex.Value</option>
+                                        <option value="@sex.Key">@sex.Value</option>
                                         }
                                 </InputSelect>
                                 <ValidationMessage For="@(() => animalDTO.Sex)" />
@@ -172,9 +175,9 @@ else
                                     </InputSelect>
                                     <ValidationMessage For="@(() => animalDTO.MotherId)" />
                                     @if (@canNotBeMother)
-                                     {
+                                    {
                                         <div class="validation-message">L'animal sélectionné ne peut pas être la mère de "@animalDTO.Name"</div>
-                                     }
+                                    }
                                 </div>
                             </div>
 
@@ -191,9 +194,9 @@ else
                                     </InputSelect>
                                     <ValidationMessage For="@(() => animalDTO.FatherId)" />
                                     @if (@canNotBeFather)
-                                     {
+                                    {
                                         <div class="validation-message">L'animal selectionné ne peut pas être le père de "@animalDTO.Name"</div>
-                                     }
+                                    }
 
                                 </div>
                             </div>
@@ -210,7 +213,7 @@ else
                             </div>
                         </div>
                     </div>
-                    
+
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="ClearModalForm">Close</button>
@@ -220,124 +223,149 @@ else
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="successNotificationModal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="thank-you-pop">
+                        <img src="images/Green-Round-Tick.png" alt="">
+                        <h1>Enregistrement réussi</h1>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
 }
 
 
-    @code {
-        [Parameter]
-        public int herdId { get; set; }
+@code {
+    [Parameter]
+    public int herdId { get; set; }
 
-        [Parameter]
-        public string herdName { get; set; }
+    [Parameter]
+    public string herdName { get; set; }
 
-        private HerdDTO currentHerd;
+    private HerdDTO currentHerd;
 
-        SfGrid<Animal> dataGrid;
+    SfGrid<Animal> dataGrid;
 
-        private List<Male> males;
+    private List<Male> males;
 
-        private List<Female> females;
+    private List<Female> females;
 
-        private List<YoungAnimal> youngAnimals;
+    private List<YoungAnimal> youngAnimals;
 
-        private List<Animal> animals;
+    private List<Animal> animals;
 
-        private List<BreedDTO> breedDTOs;
+    private List<BreedDTO> breedDTOs;
 
-        private BreedDTO selectedBreed;
+    private BreedDTO selectedBreed;
 
-        private AnimalDTO animalDTO = new AnimalDTO { BirthDate = DateTime.UtcNow };
+    private AnimalDTO animalDTO = new AnimalDTO { BirthDate = DateTime.UtcNow };
 
-        public string[] ToolbarItems = new string[] { "Search" };
+    public string[] ToolbarItems = new string[] { "Search" };
 
-        private string newAnimalOrigin = "";
+    private string newAnimalOrigin = "";
 
-        private bool canNotBeFather;
+    private bool canNotBeFather;
 
-        private bool canNotBeMother;
+    private bool canNotBeMother;
 
 
 
-        protected async override Task OnInitializedAsync()
+    protected async override Task OnInitializedAsync()
+    {
+        currentHerd = await herdRepository.GetHerdById(herdId).ContinueWith(herd => herd.Result.ToHerdDTO());
+        animalDTO.Herd = currentHerd;
+
+        males = animalRepository.GetMalesByHerdId(herdId).ToList();
+
+        females = animalRepository.GetFemalesByHerdId(herdId).ToList();
+
+        youngAnimals = animalRepository.GetYoungAnimalsByHerdId(herdId).ToList();
+
+        animals = males.Cast<Animal>().ToList();
+
+        animals.AddRange(females.Cast<Animal>());
+
+        animals.AddRange(youngAnimals.Cast<Animal>());
+
+        breedDTOs = await breedRepository.GetBreedsBySpecie(currentHerd.Specie.Id).ContinueWith(breeds => breeds.Result.ToBreedDTOList().ToList());
+    }
+
+    private async Task OnInputFileChange(InputFileChangeEventArgs e)
+    {
+        var maxAllowedFiles = 1;
+        var format = "image/png";
+
+        foreach (var imageFile in e.GetMultipleFiles(maxAllowedFiles))
         {
-            currentHerd = await herdRepository.GetHerdById(herdId).ContinueWith(herd => herd.Result.ToHerdDTO());
-            animalDTO.Herd = currentHerd;
-
-            males = animalRepository.GetMalesByHerdId(herdId).ToList();
-
-            females = animalRepository.GetFemalesByHerdId(herdId).ToList();
-
-            youngAnimals = animalRepository.GetYoungAnimalsByHerdId(herdId).ToList();
-
-            animals = males.Cast<Animal>().ToList();
-
-            animals.AddRange(females.Cast<Animal>());
-
-            animals.AddRange(youngAnimals.Cast<Animal>());
-
-            breedDTOs = await breedRepository.GetBreedsBySpecie(currentHerd.Specie.Id).ContinueWith(breeds => breeds.Result.ToBreedDTOList().ToList());
-        }
-
-        private async Task OnInputFileChange(InputFileChangeEventArgs e)
-        {
-            var maxAllowedFiles = 1;
-            var format = "image/png";
-
-            foreach (var imageFile in e.GetMultipleFiles(maxAllowedFiles))
-            {
-                var resizedImageFile = await imageFile.RequestImageFileAsync(format,
-                    300, 300);
-                var buffer = new byte[resizedImageFile.Size];
-                await resizedImageFile.OpenReadStream().ReadAsync(buffer);
-                animalDTO.Picture = buffer;
-            }
-        }
-
-        private void ClearModalForm()
-        {
-            animalDTO = new AnimalDTO { Herd = currentHerd, BirthDate = DateTime.UtcNow };
-        }
-
-        private async Task SaveAnimalAsync()
-        {
-            canNotBeMother = animalDTO.MotherId > 0 ? !reproductionService.CanBeMotherOfAnimalBornIn(animalDTO.MotherId, animalDTO.BirthDate) : false;
-
-            canNotBeFather = animalDTO.FatherId > 0 ? !reproductionService.CanBeFatherOfAnimalBornIn(animalDTO.FatherId, animalDTO.BirthDate) : false ;
-
-            if(canNotBeFather || canNotBeMother)
-            {
-                return;
-            }
-
-            animalDTO.Origin = (AnimalOrigin)Enum.Parse(typeof(AnimalOrigin), newAnimalOrigin);
-
-            var newAnimal = await reproductionService.AddNewAnimalAsync(animalDTO);
-
-            animals.Add(newAnimal);
-
-            dataGrid.Refresh();
-
-            ClearModalForm();
-
-        }
-
-        private void OnChange(UploadChangeEventArgs args)
-        {
-            foreach (var file in args.Files)
-            {
-                animalDTO.Picture = file.Stream.ToArray();
-            }
-        }
-
-        private void CanBeFather(ChangedEventArgs changedEventArgs)
-        {
-            int selectedFatherId = int.Parse(changedEventArgs.Value);
-            canNotBeFather = !reproductionService.CanBeFatherOfAnimalBornIn(selectedFatherId, animalDTO.BirthDate);
-        }
-
-        private void CanBeMother(ChangedEventArgs changedEventArgs)
-        {
-            int selectedMotherId = int.Parse(changedEventArgs.Value);
-            canNotBeMother = !reproductionService.CanBeMotherOfAnimalBornIn(selectedMotherId, animalDTO.BirthDate);
+            var resizedImageFile = await imageFile.RequestImageFileAsync(format,
+                300, 300);
+            var buffer = new byte[resizedImageFile.Size];
+            await resizedImageFile.OpenReadStream().ReadAsync(buffer);
+            animalDTO.Picture = buffer;
         }
     }
+
+    private void ClearModalForm()
+    {
+        animalDTO = new AnimalDTO { Herd = currentHerd, BirthDate = DateTime.UtcNow };
+    }
+
+    private async Task SaveAnimalAsync()
+    {
+        canNotBeMother = animalDTO.MotherId > 0 ? !reproductionService.CanBeMotherOfAnimalBornIn(animalDTO.MotherId, animalDTO.BirthDate) : false;
+
+        canNotBeFather = animalDTO.FatherId > 0 ? !reproductionService.CanBeFatherOfAnimalBornIn(animalDTO.FatherId, animalDTO.BirthDate) : false;
+
+        if (canNotBeFather || canNotBeMother)
+        {
+            return;
+        }
+
+        animalDTO.Origin = (AnimalOrigin)Enum.Parse(typeof(AnimalOrigin), newAnimalOrigin);
+
+        var newAnimal = await reproductionService.AddNewAnimalAsync(animalDTO);
+
+        animals.Add(newAnimal);
+
+        dataGrid.Refresh();
+
+        await bootstrapService.HideModal("#animalModalForm");
+
+        ClearModalForm();
+
+        await bootstrapService.ShowModal("#successNotificationModal");
+
+    }
+
+    private void OnChange(UploadChangeEventArgs args)
+    {
+        foreach (var file in args.Files)
+        {
+            animalDTO.Picture = file.Stream.ToArray();
+        }
+    }
+
+    private void CanBeFather(ChangedEventArgs changedEventArgs)
+    {
+        int selectedFatherId = int.Parse(changedEventArgs.Value);
+        canNotBeFather = !reproductionService.CanBeFatherOfAnimalBornIn(selectedFatherId, animalDTO.BirthDate);
+    }
+
+    private void CanBeMother(ChangedEventArgs changedEventArgs)
+    {
+        int selectedMotherId = int.Parse(changedEventArgs.Value);
+        canNotBeMother = !reproductionService.CanBeMotherOfAnimalBornIn(selectedMotherId, animalDTO.BirthDate);
+    }
+}

@@ -44,6 +44,7 @@ namespace UI
             services.AddTransient<ISpecieBreedService, SpecieBreedService>();
             services.AddTransient<IReproductionService, ReproductionService>();
             services.AddTransient<IReproductionRepository, ReproductionRepository>();
+            services.AddScoped<BootstrapService, BootstrapService>();
 
             services.AddSyncfusionBlazor();
         }

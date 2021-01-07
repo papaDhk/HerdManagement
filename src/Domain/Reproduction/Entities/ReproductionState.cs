@@ -4,7 +4,7 @@ using System;
 
 namespace HerdManagement.Domain.Reproduction.Entities
 {
-    public class ReproductionState : Entity<ReproductionState>
+    public class ReproductionState : Entity<ReproductionState>, IComparable
     {
         public static ReproductionState Undefined => new ReproductionState { State = ReproductionStateEnum.Undefined };
 
@@ -47,6 +47,17 @@ namespace HerdManagement.Domain.Reproduction.Entities
         protected override int GetHashCodeCore()
         {
             return (int)State ^ Date.GetHashCode();
+        }
+
+        public int CompareTo(object obj)
+        {
+            if(obj == null) return 1;
+
+            ReproductionState otherReproductionState = obj as ReproductionState;
+            if (otherReproductionState != null)
+                return this.State.CompareTo(otherReproductionState.State);
+            else
+                throw new ArgumentException("Object is not a ReproductionState");
         }
 
         /// <summary>
