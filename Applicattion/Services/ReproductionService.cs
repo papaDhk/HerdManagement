@@ -1,5 +1,6 @@
 ﻿using Applicattion.Data.DTO.Reproduction;
 using Applicattion.Data.DTO.Reproduction.Assembler;
+using Applicattion.Data.Messages;
 using HerdManagement.Domain.Reproduction.Entities;
 using HerdManagement.Domain.Reproduction.Enumerations;
 using HerdManagement.Domain.Reproduction.Repository;
@@ -39,14 +40,14 @@ namespace Applicattion.Services
             var breed = await _breedRepository.GetBreedById(animalDTO.BreedId);
 
             bool isYoungAnimal = breed.Specie.ChildhoodDurationInDays > animalDTO.AgeInDays;
-            
-            if(animalDTO.Origin == AnimalOrigin.BornInFarm && animalDTO.FatherId != 0 && animalDTO.MotherId != 0)
+
+            if (animalDTO.Origin == AnimalOrigin.BornInFarm && animalDTO.FatherId != 0 && animalDTO.MotherId != 0)
             {
-                Calving animalOriginCalving = GetOrCreateParentRelationShip(animalDTO.MotherId, animalDTO.FatherId, animalDTO.BirthDate);              
+                Calving animalOriginCalving = GetOrCreateParentRelationShip(animalDTO.MotherId, animalDTO.FatherId, animalDTO.BirthDate);
 
                 animalDTO.FromCalving = animalOriginCalving;
             }
-            
+
 
             if (isYoungAnimal)
             {
@@ -64,7 +65,7 @@ namespace Applicattion.Services
                         break;
                 }
             }
-         
+
             return animal;
         }
 
@@ -74,12 +75,12 @@ namespace Applicattion.Services
 
             var father = _animalRepository.GetMaleById(fatherId);
 
-            if(mother?.CanBeParentOfAnimalBornIn(birthDate) == false || father?.CanBeParentOfAnimalBornIn(birthDate) == false)
+            if (mother?.CanBeParentOfAnimalBornIn(birthDate) == false || father?.CanBeParentOfAnimalBornIn(birthDate) == false)
             {
                 return null;
             }
 
-            Calving animalOriginCalving =  _reproductionRepository.GetCalvingByParentsIdsAndDate(motherId, fatherId, birthDate);
+            Calving animalOriginCalving = _reproductionRepository.GetCalvingByParentsIdsAndDate(motherId, fatherId, birthDate);
 
             if (animalOriginCalving == null)
             {
@@ -88,7 +89,7 @@ namespace Applicattion.Services
                 {
                     FemaleId = motherId,
                     MaleId = fatherId,
-                    States = new List<ReproductionState> { new ReproductionState { State = ReproductionStateEnum.Complete, Date = birthDate} }
+                    States = new List<ReproductionState> { new ReproductionState { State = ReproductionStateEnum.Complete, Date = birthDate } }
                 };
 
                 animalOriginCalving = new Calving
@@ -102,7 +103,7 @@ namespace Applicattion.Services
             }
             else
             {
-                animalOriginCalving.NumberOfNewborn += 1;                
+                animalOriginCalving.NumberOfNewborn += 1;
             }
 
             return animalOriginCalving;
@@ -153,6 +154,39 @@ namespace Applicattion.Services
             bool result = female is null ? false : female.CanBeParentOfAnimalBornIn(birthDate);
 
             return result;
+        }
+
+        public async Task<ReproductionCreationResponse> CreateOrUpdateReproductionAsync(Reproduction reproduction)
+        {
+            var response = new ReproductionCreationResponse();
+
+            var male = _animalRepository.GetMaleById(reproduction.MaleId);
+
+            var female = _animalRepository.GetFemaleWithReproductionsById(reproduction.FemaleId);
+
+            if(female is null || male is null)
+            {
+                return response;
+            }
+
+            var canFemaleBeMated = female.CanBeMated(reproduction.Date);
+
+            response = new ReproductionCreationResponse
+            {
+                CouldFemaleBeMated = canFemaleBeMated,
+                WasMaleAdult = male.WasAdult(reproduction.Date),
+            };
+
+            if (canFemaleBeMated && response.WasMaleAdult)
+            {
+                Reproduction createdReproduction = await _reproductionRepository.CreateorUpdateReproductionAsync(reproduction);
+
+                response.IsSuccessful = true;
+
+                response.Reproduction = createdReproduction;
+            }
+
+            return response;
         }
     }
 }

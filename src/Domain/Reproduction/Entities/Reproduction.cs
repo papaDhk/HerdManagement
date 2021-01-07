@@ -22,10 +22,10 @@ namespace HerdManagement.Domain.Reproduction.Entities
         public int FemaleId { get; set; }
         public Male Male { get; set; }
         public int MaleId { get; set; }
-        public DateTime Date { get; protected set; }
-        public ReproductionTypeEnum Type { get; protected set; }
+        public DateTime Date { get; set; }
+        public ReproductionTypeEnum Type { get; set; }
         public IEnumerable<ReproductionState> States { get; set; } = new List<ReproductionState>();
-        public string Commentary { get; protected set; }
+        public string Commentary { get; set; }
         public ReproductionState ActualState => States.Any() ? States.Max() : ReproductionState.Undefined ;
 
         public Calving Calving { get; set; }

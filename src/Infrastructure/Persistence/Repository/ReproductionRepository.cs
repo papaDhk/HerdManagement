@@ -20,6 +20,22 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
             _animalDbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
+        public async Task<Reproduction> CreateorUpdateReproductionAsync(Reproduction reproduction)
+        {
+            if(reproduction is null)
+            {
+                return null;
+            }
+
+            _animalDbContext.Attach(reproduction);
+
+            await _animalDbContext.SaveChangesAsync();
+
+            _animalDbContext.UntrackEntities();
+
+            return reproduction;
+        }
+
         public Calving GetCalvingByParentsIdsAndDate(int femaleId, int maleId, DateTime datetime)
         {
             var calving = _animalDbContext.Calvings

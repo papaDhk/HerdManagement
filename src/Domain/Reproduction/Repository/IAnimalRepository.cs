@@ -13,6 +13,7 @@ namespace HerdManagement.Domain.Reproduction.Repository
         Task<Male> AddNewMaleAsync(Male male);
         Female GetFemaleByNumber(int femaleNumber);
         Female GetFemaleById(int femaleId);
+        Female GetFemaleWithReproductionsById(int femaleId);
         IEnumerable<Female> GetFemales();
         Male GetMaleByNumber(int maleNumber);
         Male GetMaleById(int maleId);

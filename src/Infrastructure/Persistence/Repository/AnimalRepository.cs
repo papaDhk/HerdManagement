@@ -87,6 +87,18 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
                    .FirstOrDefault();
         }
 
+        public Female GetFemaleWithReproductionsById(int femaleId)
+        {
+            return _animalDbContext.Females
+                    .Include(female => female.Herd)
+                   .Include(female => female.Breed)
+                   .ThenInclude(breed => breed.Specie)
+                   .Include(female => female.FromCalving)
+                   .Include(female => female.Reproductions)
+                   .Where(female => female.Id == femaleId)
+                   .FirstOrDefault();
+        }
+
         public Female GetAnimalWithReproductions(Female female)
         {
             _animalDbContext.Entry(female).State = EntityState.Unchanged;
