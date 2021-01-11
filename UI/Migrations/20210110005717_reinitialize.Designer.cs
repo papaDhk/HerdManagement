@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace UI.Migrations
 {
     [DbContext(typeof(AnimalDbContext))]
-    [Migration("20201227050158_seeIfThereAreChanges")]
-    partial class seeIfThereAreChanges
+    [Migration("20210110005717_reinitialize")]
+    partial class reinitialize
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -50,12 +50,76 @@ namespace UI.Migrations
                     b.ToTable("Herd");
                 });
 
+            modelBuilder.Entity("HerdManagement.Domain.Reproduction.Entities.Animal", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("BirthDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("BreedCharacteristics")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("BreedId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DeathDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("HerdId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Number")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Origin")
+                        .HasColumnType("int");
+
+                    b.Property<byte[]>("Picture")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<int>("PresenceStatus")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Sex")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SpecieCharacteristics")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("Weight")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("category_type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BreedId");
+
+                    b.HasIndex("HerdId");
+
+                    b.ToTable("Animals");
+
+                    b.HasDiscriminator<string>("category_type").HasValue("Animal");
+                });
+
             modelBuilder.Entity("HerdManagement.Domain.Reproduction.Entities.Calving", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
+
+                    b.Property<int>("AnimalId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Commentary")
                         .HasColumnType("nvarchar(max)");
@@ -69,146 +133,19 @@ namespace UI.Migrations
                     b.Property<int>("MaleId")
                         .HasColumnType("int");
 
-                    b.Property<long>("NumberOfNewborn")
-                        .HasColumnType("bigint");
-
                     b.Property<int>("ReproductionId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FemaleId");
-
-                    b.HasIndex("ReproductionId")
+                    b.HasIndex("AnimalId")
                         .IsUnique();
 
+                    b.HasIndex("FemaleId");
+
+                    b.HasIndex("ReproductionId");
+
                     b.ToTable("Calvings");
-                });
-
-            modelBuilder.Entity("HerdManagement.Domain.Reproduction.Entities.Female", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<DateTime>("BirthDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("BreedCharacteristics")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("BreedId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("DeathDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("FromCalvingId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("FromCalvingId1")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("HerdId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Number")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Origin")
-                        .HasColumnType("int");
-
-                    b.Property<byte[]>("Picture")
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<int>("PresenceStatus")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Sex")
-                        .HasColumnType("int");
-
-                    b.Property<string>("SpecieCharacteristics")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("Weight")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BreedId");
-
-                    b.HasIndex("FromCalvingId1");
-
-                    b.HasIndex("HerdId");
-
-                    b.ToTable("Females");
-                });
-
-            modelBuilder.Entity("HerdManagement.Domain.Reproduction.Entities.Male", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<DateTime>("BirthDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("BreedCharacteristics")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("BreedId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("DeathDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("FromCalvingId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("FromCalvingId1")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("HerdId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Number")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Origin")
-                        .HasColumnType("int");
-
-                    b.Property<byte[]>("Picture")
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<int>("PresenceStatus")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Sex")
-                        .HasColumnType("int");
-
-                    b.Property<string>("SpecieCharacteristics")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("Weight")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BreedId");
-
-                    b.HasIndex("FromCalvingId1");
-
-                    b.HasIndex("HerdId");
-
-                    b.ToTable("males");
                 });
 
             modelBuilder.Entity("HerdManagement.Domain.Reproduction.Entities.Reproduction", b =>
@@ -242,67 +179,7 @@ namespace UI.Migrations
                     b.ToTable("Reproductions");
                 });
 
-            modelBuilder.Entity("HerdManagement.Domain.Reproduction.Entities.YoungAnimal", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<DateTime>("BirthDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("BreedCharacteristics")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("BreedId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("DeathDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("FromCalvingId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("HerdId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Number")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Origin")
-                        .HasColumnType("int");
-
-                    b.Property<byte[]>("Picture")
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<int>("PresenceStatus")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Sex")
-                        .HasColumnType("int");
-
-                    b.Property<string>("SpecieCharacteristics")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("Weight")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BreedId");
-
-                    b.HasIndex("FromCalvingId");
-
-                    b.HasIndex("HerdId");
-
-                    b.ToTable("YoungAnimals");
-                });
-
-            modelBuilder.Entity("HerdManagement.Domain.Reproduction.ValueObjects.ReproductionState", b =>
+            modelBuilder.Entity("HerdManagement.Domain.Reproduction.Entities.ReproductionState", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -369,6 +246,27 @@ namespace UI.Migrations
                     b.ToTable("Specie");
                 });
 
+            modelBuilder.Entity("HerdManagement.Domain.Reproduction.Entities.Female", b =>
+                {
+                    b.HasBaseType("HerdManagement.Domain.Reproduction.Entities.Animal");
+
+                    b.HasDiscriminator().HasValue("female");
+                });
+
+            modelBuilder.Entity("HerdManagement.Domain.Reproduction.Entities.Male", b =>
+                {
+                    b.HasBaseType("HerdManagement.Domain.Reproduction.Entities.Animal");
+
+                    b.HasDiscriminator().HasValue("male");
+                });
+
+            modelBuilder.Entity("HerdManagement.Domain.Reproduction.Entities.YoungAnimal", b =>
+                {
+                    b.HasBaseType("HerdManagement.Domain.Reproduction.Entities.Animal");
+
+                    b.HasDiscriminator().HasValue("young_animal");
+                });
+
             modelBuilder.Entity("HerdManagement.Domain.Herd.Entities.Herd", b =>
                 {
                     b.HasOne("HerdManagement.Domain.SpecieBreed.Entities.Specie", "Specie")
@@ -378,65 +276,44 @@ namespace UI.Migrations
                     b.Navigation("Specie");
                 });
 
+            modelBuilder.Entity("HerdManagement.Domain.Reproduction.Entities.Animal", b =>
+                {
+                    b.HasOne("HerdManagement.Domain.SpecieBreed.Entities.Breed", "Breed")
+                        .WithMany()
+                        .HasForeignKey("BreedId");
+
+                    b.HasOne("HerdManagement.Domain.Herd.Entities.Herd", "Herd")
+                        .WithMany()
+                        .HasForeignKey("HerdId");
+
+                    b.Navigation("Breed");
+
+                    b.Navigation("Herd");
+                });
+
             modelBuilder.Entity("HerdManagement.Domain.Reproduction.Entities.Calving", b =>
                 {
-                    b.HasOne("HerdManagement.Domain.Reproduction.Entities.Female", "Female")
+                    b.HasOne("HerdManagement.Domain.Reproduction.Entities.Animal", "Animal")
+                        .WithOne("FromCalving")
+                        .HasForeignKey("HerdManagement.Domain.Reproduction.Entities.Calving", "AnimalId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HerdManagement.Domain.Reproduction.Entities.Female", null)
                         .WithMany("Calvings")
                         .HasForeignKey("FemaleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("HerdManagement.Domain.Reproduction.Entities.Reproduction", "Reproduction")
-                        .WithOne("Calving")
-                        .HasForeignKey("HerdManagement.Domain.Reproduction.Entities.Calving", "ReproductionId")
+                        .WithMany("Calvings")
+                        .HasForeignKey("ReproductionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Female");
+                    b.Navigation("Animal");
 
                     b.Navigation("Reproduction");
-                });
-
-            modelBuilder.Entity("HerdManagement.Domain.Reproduction.Entities.Female", b =>
-                {
-                    b.HasOne("HerdManagement.Domain.SpecieBreed.Entities.Breed", "Breed")
-                        .WithMany()
-                        .HasForeignKey("BreedId");
-
-                    b.HasOne("HerdManagement.Domain.Reproduction.Entities.Calving", "FromCalving")
-                        .WithMany()
-                        .HasForeignKey("FromCalvingId1");
-
-                    b.HasOne("HerdManagement.Domain.Herd.Entities.Herd", "Herd")
-                        .WithMany()
-                        .HasForeignKey("HerdId");
-
-                    b.Navigation("Breed");
-
-                    b.Navigation("FromCalving");
-
-                    b.Navigation("Herd");
-                });
-
-            modelBuilder.Entity("HerdManagement.Domain.Reproduction.Entities.Male", b =>
-                {
-                    b.HasOne("HerdManagement.Domain.SpecieBreed.Entities.Breed", "Breed")
-                        .WithMany()
-                        .HasForeignKey("BreedId");
-
-                    b.HasOne("HerdManagement.Domain.Reproduction.Entities.Calving", "FromCalving")
-                        .WithMany()
-                        .HasForeignKey("FromCalvingId1");
-
-                    b.HasOne("HerdManagement.Domain.Herd.Entities.Herd", "Herd")
-                        .WithMany()
-                        .HasForeignKey("HerdId");
-
-                    b.Navigation("Breed");
-
-                    b.Navigation("FromCalving");
-
-                    b.Navigation("Herd");
                 });
 
             modelBuilder.Entity("HerdManagement.Domain.Reproduction.Entities.Reproduction", b =>
@@ -458,28 +335,7 @@ namespace UI.Migrations
                     b.Navigation("Male");
                 });
 
-            modelBuilder.Entity("HerdManagement.Domain.Reproduction.Entities.YoungAnimal", b =>
-                {
-                    b.HasOne("HerdManagement.Domain.SpecieBreed.Entities.Breed", "Breed")
-                        .WithMany()
-                        .HasForeignKey("BreedId");
-
-                    b.HasOne("HerdManagement.Domain.Reproduction.Entities.Calving", "FromCalving")
-                        .WithMany("YoungAnimals")
-                        .HasForeignKey("FromCalvingId");
-
-                    b.HasOne("HerdManagement.Domain.Herd.Entities.Herd", "Herd")
-                        .WithMany()
-                        .HasForeignKey("HerdId");
-
-                    b.Navigation("Breed");
-
-                    b.Navigation("FromCalving");
-
-                    b.Navigation("Herd");
-                });
-
-            modelBuilder.Entity("HerdManagement.Domain.Reproduction.ValueObjects.ReproductionState", b =>
+            modelBuilder.Entity("HerdManagement.Domain.Reproduction.Entities.ReproductionState", b =>
                 {
                     b.HasOne("HerdManagement.Domain.Reproduction.Entities.Reproduction", null)
                         .WithMany("States")
@@ -497,9 +353,16 @@ namespace UI.Migrations
                     b.Navigation("Specie");
                 });
 
-            modelBuilder.Entity("HerdManagement.Domain.Reproduction.Entities.Calving", b =>
+            modelBuilder.Entity("HerdManagement.Domain.Reproduction.Entities.Animal", b =>
                 {
-                    b.Navigation("YoungAnimals");
+                    b.Navigation("FromCalving");
+                });
+
+            modelBuilder.Entity("HerdManagement.Domain.Reproduction.Entities.Reproduction", b =>
+                {
+                    b.Navigation("Calvings");
+
+                    b.Navigation("States");
                 });
 
             modelBuilder.Entity("HerdManagement.Domain.Reproduction.Entities.Female", b =>
@@ -512,13 +375,6 @@ namespace UI.Migrations
             modelBuilder.Entity("HerdManagement.Domain.Reproduction.Entities.Male", b =>
                 {
                     b.Navigation("Reproductions");
-                });
-
-            modelBuilder.Entity("HerdManagement.Domain.Reproduction.Entities.Reproduction", b =>
-                {
-                    b.Navigation("Calving");
-
-                    b.Navigation("States");
                 });
 #pragma warning restore 612, 618
         }

@@ -11,7 +11,7 @@
 @inject NavigationManager navigationManager
 
 <nav class="navbar navbar-light mb-3 horizontal-nav-bar">
-    <h4>Espéces animales</h4>
+    <h6>Espéces animales</h6>
 </nav>
 
 @if (specieDTOs == null)
@@ -24,7 +24,7 @@ else
         <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true"></GridEditSettings>
         <GridEvents OnActionBegin="OnBeginHandlerAsync" CommandClicked="OnDetailButtonClicked" TValue="SpecieDTO"></GridEvents>
         <GridColumns>
-            <GridColumn Field=@nameof(SpecieDTO.Id) IsPrimaryKey="true" IsIdentity="true"></GridColumn>
+            <GridColumn Field=@nameof(SpecieDTO.Id) IsPrimaryKey="true" IsIdentity="true" Visible="false"></GridColumn>
             <GridColumn Field=@nameof(SpecieDTO.Label)>
             </GridColumn>
             <GridColumn Field=@nameof(SpecieDTO.PregnancyDurationInDays)>

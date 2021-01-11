@@ -43,7 +43,9 @@ namespace Applicattion.Services
 
             if (animalDTO.Origin == AnimalOrigin.BornInFarm && animalDTO.FatherId != 0 && animalDTO.MotherId != 0)
             {
-                Calving animalOriginCalving = GetOrCreateParentRelationShip(animalDTO.MotherId, animalDTO.FatherId, animalDTO.BirthDate);
+                animal = animalDTO.ToAnimal();
+                animal.Breed = breed;
+                Calving animalOriginCalving = GetOrCreateParentRelationShip(animalDTO.MotherId, animalDTO.FatherId, animalDTO.BirthDate, animal.ApproximativeOriginReproductionDate);
 
                 animalDTO.FromCalving = animalOriginCalving;
             }
@@ -69,7 +71,7 @@ namespace Applicattion.Services
             return animal;
         }
 
-        public Calving GetOrCreateParentRelationShip(int motherId, int fatherId, DateTime birthDate)
+        public Calving GetOrCreateParentRelationShip(int motherId, int fatherId, DateTime birthDate, DateTime inferredOriginReproductionDate, int childId = 0)
         {
             var mother = _animalRepository.GetFemaleById(motherId);
 
@@ -80,40 +82,34 @@ namespace Applicattion.Services
                 return null;
             }
 
-            Calving animalOriginCalving = _reproductionRepository.GetCalvingByParentsIdsAndDate(motherId, fatherId, birthDate);
+            Reproduction animalOriginReproduction = _reproductionRepository.GetReproductionByPartnersIdsAndDate(motherId, fatherId, inferredOriginReproductionDate);
 
-            if (animalOriginCalving == null)
+            if (animalOriginReproduction == null)
             {
                 //Set approximativeDate
-                Reproduction reproduction = new Reproduction
+                animalOriginReproduction = new Reproduction
                 {
                     FemaleId = motherId,
                     MaleId = fatherId,
-                    States = new List<ReproductionState> { new ReproductionState { State = ReproductionStateEnum.Complete, Date = birthDate } }
-                };
-
-                animalOriginCalving = new Calving
-                {
-                    NumberOfNewborn = 1,
-                    Date = birthDate,
-                    Reproduction = reproduction,
-                    FemaleId = motherId,
-                    MaleId = fatherId
+                    States = new List<ReproductionState> { new ReproductionState { State = ReproductionStateEnum.Complete, Date = birthDate } },
+                    Date = inferredOriginReproductionDate
                 };
             }
-            else
+
+            return animalOriginReproduction.Calvings.Where(calving => calving.AnimalId == childId).FirstOrDefault() ?? new Calving
             {
-                animalOriginCalving.NumberOfNewborn += 1;
-            }
-
-            return animalOriginCalving;
+                Date = birthDate,
+                Reproduction = animalOriginReproduction,
+                FemaleId = motherId,
+                MaleId = fatherId
+            };
         }
 
         public async Task<Animal> UpdateAnimalAsync(Animal animal, int motherId, int fatherId)
         {
             if (fatherId != 0 && motherId != 0)
             {
-                Calving animalOriginCalving = GetOrCreateParentRelationShip(motherId, fatherId, animal.BirthDate);
+                Calving animalOriginCalving = GetOrCreateParentRelationShip(motherId, fatherId, animal.BirthDate, animal.ApproximativeOriginReproductionDate, animal.Id);
 
                 animal.FromCalving = animalOriginCalving;
             }

@@ -20,6 +20,17 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
             _animalDbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
+        public Animal GetAnimalById(int animalId)
+        {
+            return _animalDbContext.Animals
+                   .Include(animal => animal.Herd)
+                   .Include(animal => animal.Breed)
+                   .ThenInclude(breed => breed.Specie)
+                   .Include(animal => animal.FromCalving)
+                   .Where(animal => animal.Id == animalId)
+                   .FirstOrDefault();
+        }
+
         //Females
 
         public async Task<Female> AddNewFemaleAsync(Female female)
@@ -107,6 +118,15 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
             foreach (var reproduction in female.Reproductions)
             {
                 _animalDbContext.Entry(reproduction).Collection(r => r.States).Load();
+                _animalDbContext.Entry(reproduction).Collection(r => r.Calvings).Load();
+
+                foreach (var calving in reproduction.Calvings)
+                {
+                    _animalDbContext.Entry(calving).Reference(r => r.Animal).Load();
+                    _animalDbContext.Entry(calving.Animal).Reference(a => a.Breed).Load();
+                    _animalDbContext.Entry(calving.Animal).Reference(a => a.Herd).Load();
+                    _animalDbContext.Entry(calving.Animal.Breed).Reference(b => b.Specie).Load();
+                }
             }
 
             _animalDbContext.UntrackEntities();

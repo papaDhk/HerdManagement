@@ -11,7 +11,9 @@
 @inject IBreedRepository breedRepository
 @inject NavigationManager navigationManager
 
-<h1>@pageTitle</h1>
+<nav class="navbar navbar-light mb-3 horizontal-nav-bar">
+    <h6>@pageTitle</h6>
+</nav>
 @if (breedDTOs == null)
 {
     <p><em>En cours de chargement...</em></p>
@@ -22,7 +24,7 @@ else
         <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true"></GridEditSettings>
         <GridEvents OnActionBegin="OnBeginHandlerAsync" CommandClicked="OnDetailButtonClicked" TValue="BreedDTO"></GridEvents>
         <GridColumns>
-            <GridColumn Field=@nameof(BreedDTO.Id) IsPrimaryKey="true" IsIdentity="true"></GridColumn>
+            <GridColumn Field=@nameof(BreedDTO.Id) IsPrimaryKey="true" IsIdentity="true" Visible="false"></GridColumn>
             <GridColumn Field=@nameof(BreedDTO.Label)>
             </GridColumn>
             <GridColumn>
@@ -48,7 +50,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         specie = await specieRepository.GetSpecieById(specieId);
-        pageTitle = $"Especes animales/{specie.Label}";
+        pageTitle = $"Espèces animales / {specie.Label}";
         IEnumerable<Breed> breeds = await breedRepository.GetBreedsBySpecie(specieId);
         breedDTOs = breeds.ToBreedDTOList().ToList();
     }

@@ -11,25 +11,40 @@ using System.Text;
 
 namespace HerdManagement.Domain.Reproduction.Entities
 {
-    public abstract class Animal : Entity<Animal>
+    public class Animal : Entity<Animal>
     {
-        public virtual string Name { get; set; }
-        public virtual int Number { get; set; }
+        public  string Name { get; set; }
+        public  int Number { get; set; }
         public virtual SexEnum Sex { get; set; }
-        public virtual DateTime BirthDate { get; set; }
-        public virtual byte[] Picture { get; set; }
-        public virtual AnimalOrigin Origin { get; set; }
-        public virtual uint Weight { get; set; }
-        public virtual PresenceStatusEnum PresenceStatus { get; set; }
-        public virtual DateTime DeathDate { get; set; }
-        public virtual Breed Breed { get; set; }
-        public virtual Herd.Entities.Herd Herd { get; set; }
-        public virtual string BreedCharacteristics { get; set; }
-        public virtual string SpecieCharacteristics { get; set; }
-
-        public int? FromCalvingId { get; set; }
-
+        public  DateTime BirthDate { get; set; }
+        public  byte[] Picture { get; set; }
+        public  AnimalOrigin Origin { get; set; }
+        public  uint Weight { get; set; }
+        public  PresenceStatusEnum PresenceStatus { get; set; }
+        public  DateTime DeathDate { get; set; }
+        public int BreedId { get; set; }
+        public  Breed Breed { get; set; }
+        public int HerdId { get; set; }
+        public  Herd.Entities.Herd Herd { get; set; }
+        public  string BreedCharacteristics { get; set; }
+        public  string SpecieCharacteristics { get; set; }
         public Calving FromCalving { get; set; }
+        public string CategoryType
+        {
+            get
+            {
+                if (IsAdult)
+                {
+                    return Sex == SexEnum.Male ? "male" : "female";
+                }
+                else
+                {
+                    return "young_animal";
+                }
+            }
+
+            set { }
+        }
 
         protected override bool EqualsCore(Animal animalToCompareWith)
         {
@@ -45,14 +60,18 @@ namespace HerdManagement.Domain.Reproduction.Entities
 
         public string AgeInString => BirthDate.GetAge(DateTime.UtcNow);
 
-        public bool IsAdult => Breed.Specie.ChildhoodDurationInDays < AgeInDays;
+        public bool IsAdult => Breed?.Specie?.ChildhoodDurationInDays < AgeInDays;
 
-        public bool WasAdult(DateTime dateTime) => Breed.Specie.ChildhoodDurationInDays < dateTime.Subtract(BirthDate).Days;
+        public bool WasAdult(DateTime dateTime) => Breed?.Specie?.ChildhoodDurationInDays < dateTime.Subtract(BirthDate).Days;
 
         public override string ToString()
         {
             return $"{Number} - {Name} - {Breed.Label}";
-        }     
+        }
+
+        public DateTime ApproximativeOriginReproductionDate => BirthDate.Subtract(TimeSpan.FromDays(this.Breed.Specie.PregnancyDurationInDays));
+
+        
     }
 
     public enum AnimalOrigin

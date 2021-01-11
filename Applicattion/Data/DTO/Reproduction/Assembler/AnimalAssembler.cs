@@ -56,6 +56,31 @@ namespace Applicattion.Data.DTO.Reproduction.Assembler
             }
         }
 
+        public static Animal ToAnimal(this AnimalDTO animalDTO)
+        {
+            if (animalDTO != null)
+            {
+                return new Animal
+                {
+                    Name = animalDTO.Name,
+                    BirthDate = animalDTO.BirthDate,
+                    Origin = animalDTO.Origin,
+                    Number = animalDTO.Number,
+                    DeathDate = animalDTO.DeathDate,
+                    Herd = animalDTO.Herd.ToHerd(),
+                    Breed = new Breed { Id = animalDTO.BreedId },
+                    Picture = animalDTO.Picture,
+                    PresenceStatus = animalDTO.PresenceStatus,
+                    Weight = animalDTO.Weight,
+                    FromCalving = animalDTO.FromCalving
+                };
+            }
+            else
+            {
+                return new Animal();
+            }
+        }
+
         public static YoungAnimal ToYoungAnimal(this AnimalDTO animalDTO)
         {
             if (animalDTO != null)

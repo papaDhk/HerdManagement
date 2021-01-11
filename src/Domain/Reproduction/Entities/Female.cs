@@ -6,7 +6,6 @@ using System.Linq;
 
 namespace HerdManagement.Domain.Reproduction.Entities
 {
-    [Table("Females")]
     public class Female : AdultAnimal
     {
         public Female()
@@ -21,7 +20,7 @@ namespace HerdManagement.Domain.Reproduction.Entities
         /// <summary>
         /// Different female's calvings
         /// </summary>
-        public IEnumerable<Calving> Calvings { get; } = new List<Calving>();
+        public List<Calving> Calvings { get; } = new List<Calving>();
 
         /// <summary>
         /// Indicates wether this female can be mated or not at the given date

@@ -9,6 +9,8 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
             : base(options)
         {
         }
+
+        public virtual DbSet<Animal> Animals { get; set; }
         public virtual DbSet<Male> Males { get; set; }
 
         public virtual DbSet<Female> Females { get; set; }
@@ -23,10 +25,20 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Female>()
-                .HasMany<Calving>(s => s.Calvings)
-                .WithOne(ad => ad.Female)
-                .HasForeignKey(ad => ad.FemaleId);
+            modelBuilder.Entity<Calving>()
+                .HasOne<Animal>(calving => calving.Animal)
+                .WithOne(Animal => Animal.FromCalving);
+
+            modelBuilder.Entity<Animal>()
+        .HasDiscriminator(a => a.CategoryType)
+        .HasValue<Female>("female")
+        .HasValue<Male>("male")
+        .HasValue<YoungAnimal>("young_animal"); ;
+
+            modelBuilder.Entity<Animal>()
+                .Property(a => a.CategoryType)
+                .HasColumnName("category_type");
+            
         }
 
     }

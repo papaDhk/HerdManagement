@@ -6,7 +6,8 @@ namespace HerdManagement.Domain.Reproduction.Repository
 {
     public interface IReproductionRepository
     {
-        Calving GetCalvingByParentsIdsAndDate(int femaleId, int maleId, DateTime datetime);
+        Entities.Reproduction GetReproductionByPartnersIdsAndDate(int femaleId, int maleId, DateTime datetime);
         Task<Entities.Reproduction> CreateorUpdateReproductionAsync(Entities.Reproduction reproduction);
+        Task<Calving> CreateorUpdateCalvingAsync(Calving calving);
     }
 }

@@ -28,7 +28,7 @@ namespace HerdManagement.Domain.Reproduction.Entities
         public string Commentary { get; set; }
         public ReproductionState ActualState => States.Any() ? States.Max() : ReproductionState.Undefined ;
 
-        public Calving Calving { get; set; }
+        public List<Calving> Calvings { get; set; } = new List<Calving>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Reproduction"/> class.

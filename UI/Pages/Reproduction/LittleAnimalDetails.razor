@@ -119,14 +119,20 @@ else
                                     <option value="@female.Id">@female.ToString()</option>
                                     }
                             </InputSelect>
-                            <NavLink href="@females.Where(f => f.Id == motherId).FirstOrDefault()?.GetProfilePageUrl(AnimalHerdName)">Details</NavLink>
 
-                            @*<ValidationMessage For="@(() => currentYoungAnimal.MotherId)" />*@
+                            @if ((int)motherId > 0)
+                            {
+                        <i class="fas fa-eye text-primary" style="cursor: pointer;"
+                           @onclick="@(() => navigationManager.NavigateTo(females.Where(f => f.Id == motherId).FirstOrDefault()?.GetProfilePageUrl(AnimalHerdName), forceLoad:true))">
+                            Details
+                        </i>
+                            }
+
                             @if (@canNotBeMother)
                             {
                                 <div class="validation-message">L'animal sélectionné ne peut pas être la mère de "@currentYoungAnimal.Name"</div>
                             }
-                        </div>
+                            </div>
                     </div>
 
                     <div class="form-group row">
@@ -140,9 +146,15 @@ else
                                     <option value="@male.Id">@male.ToString()</option>
                                     }
                             </InputSelect>
-                            <NavLink href="@males.Where(m => m.Id == fatherId).FirstOrDefault()?.GetProfilePageUrl(AnimalHerdName)">Details</NavLink>
 
-                            @*<ValidationMessage For="@(() => currentYoungAnimal.FatherId)" />*@
+                            @if ((int)fatherId > 0)
+                            {
+                                <i class="fas fa-eye text-primary" style="cursor: pointer;"
+                                   @onclick="@(() => navigationManager.NavigateTo(@males.Where(m => m.Id == fatherId).FirstOrDefault()?.GetProfilePageUrl(AnimalHerdName), forceLoad:true))">
+                                    Details
+                                </i>
+                            }
+
                             @if (@canNotBeFather)
                             {
                                 <div class="validation-message">L'animal selectionné ne peut pas être le père de "@currentYoungAnimal.Name"</div>
@@ -255,8 +267,8 @@ else
         canNotBeMother = false;
         canNotBeFather = false;
 
-        motherId = currentYoungAnimal?.FromCalving?.FemaleId ?? motherId;
-        fatherId = currentYoungAnimal?.FromCalving?.MaleId ?? fatherId;
+        motherId = currentYoungAnimal?.FromCalving?.FemaleId ?? 0;
+        fatherId = currentYoungAnimal?.FromCalving?.MaleId ?? 0;
 
         isNoEditable = true;
     }

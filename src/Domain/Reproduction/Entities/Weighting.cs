@@ -1,4 +1,5 @@
 ﻿using HerdManagement.Domain.Common;
+using HerdManagement.Domain.Common.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,5 +19,13 @@ namespace HerdManagement.Domain.Reproduction.Entities
         {
             throw new NotImplementedException();
         }
+
+        public int AnimalId { get; set; }
+
+        public MeasurementUnit MeasurementUnit { get; set; }
+
+        public int MeasurementUnitId { get; set; }
+
+        public DateTime DateTime { get; set; }
     }
 }
