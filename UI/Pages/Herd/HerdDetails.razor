@@ -1,5 +1,4 @@
 ﻿@page "/herds/{herdId:int}/{herdName}"
-@using HerdManagement.Domain.Reproduction.Enumerations;
 
 @inject ISpecieRepository specieRepository
 @inject IBreedRepository breedRepository
@@ -17,7 +16,7 @@
 
 @if (breedDTOs == null)
 {
-    <img src="images/dog-alone.gif" class="rounded mx-auto d-block img-fluid" />
+    <img src="images/dog-alone.gif" class="rounded mx-auto d-block img-fluid"  alt="walkin dog"/>
 }
 else
 {
@@ -31,13 +30,13 @@ else
                 @{
                     var animal = context as Animal;
                     var imageUrl = string.Empty;
-                    if (animal.Picture != null && animal.Picture.Length > 0)
+                    if (animal?.Picture != null && animal.Picture.Length > 0)
                     {
                         imageUrl = $"data:image/png;base64,{Convert.ToBase64String(animal.Picture)}";
                     }
 
                 }
-                <img src="@imageUrl" class="img-thumbnail" />
+                <img src="@imageUrl" class="img-thumbnail"/>
             </Template>
         </GridColumn>
         <GridColumn Field=@nameof(Animal.Number) HeaderText="Numéro" TextAlign="TextAlign.Center">
@@ -49,7 +48,7 @@ else
                 @{
                     var animal = context as Animal;
                 }
-                <span>@Helper.GetDisplayName(animal.Sex)</span>
+                <span>@Helper.GetDisplayName(animal?.Sex)</span>
             </Template>
         </GridColumn>
         <GridColumn Field=@nameof(Animal.PresenceStatus) HeaderText="Présence" TextAlign="TextAlign.Center">
@@ -57,7 +56,7 @@ else
                 @{
                     var animal = context as Animal;
                 }
-                <span>@Helper.GetDisplayName(animal.PresenceStatus)</span>
+                <span>@Helper.GetDisplayName(animal?.PresenceStatus)</span>
             </Template>
         </GridColumn>
         <GridColumn Field=@nameof(Animal.Weight) HeaderText="Poids" TextAlign="TextAlign.Center">
@@ -206,7 +205,7 @@ else
                             <label for="picture" class="col-3 col-form-label">
                                 Photo
                             </label>
-                            <div class="col-sm-9">
+                            <div id="picture" class="col-sm-9">
                                 <SfUploader>
                                     <UploaderEvents ValueChange="OnChange"></UploaderEvents>
                                 </SfUploader>
@@ -237,7 +236,7 @@ else
 
                     <div class="thank-you-pop">
                         <img src="images/Green-Round-Tick.png" alt="">
-                        <h1>Enregistrement réussi</h1>
+                        <h1>Enregistrement réussi!</h1>
                     </div>
 
                 </div>

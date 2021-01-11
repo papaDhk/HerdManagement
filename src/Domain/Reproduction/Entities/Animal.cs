@@ -42,8 +42,6 @@ namespace HerdManagement.Domain.Reproduction.Entities
                     return "young_animal";
                 }
             }
-
-            set { }
         }
 
         protected override bool EqualsCore(Animal animalToCompareWith)
