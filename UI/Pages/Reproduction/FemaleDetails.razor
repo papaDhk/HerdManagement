@@ -794,10 +794,15 @@ else
             calving.MaleId = reproductionCreation.MaleId;
 
             calving.Animal.Breed = breedDTOs.FirstOrDefault(b => b.Id == calving.Animal.BreedId).ToBreed();
-
-            var s = calving.Animal.CategoryType;
-            calving = await reproductionRepository.CreateOrUpdateCalvingAsync(calving);
             
+            var animal = await reproductionService.AddNewAnimalAsync(calving.Animal);
+
+            calving.Animal = null;
+
+            calving.AnimalId = animal.Id;
+
+            calving = await reproductionRepository.CreateOrUpdateCalvingAsync(calving);
+
             reproductionCreation.Calvings.Add(calving);
 
             calvingsGrid.Refresh();

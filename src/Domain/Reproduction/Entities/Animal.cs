@@ -32,21 +32,14 @@ namespace HerdManagement.Domain.Reproduction.Entities
         {
             get
             {
-                if (_categoryType != null && _categoryType != "Animal")
-                {
-                    return _categoryType;
-                }
-                
                 if (IsAdult)
                 {
                     return Sex == SexEnum.Male ? "male" : "female";
                 }
-
+                
                 return "young_animal";
             }
-
-            set => _categoryType = CategoryType;
-
+            
         }
 
         protected override bool EqualsCore(Animal animalToCompareWith)

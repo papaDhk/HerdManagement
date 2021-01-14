@@ -14,5 +14,6 @@ namespace Application.Services
         bool CanBeFatherOfAnimalBornIn(int maleId, DateTime birthDate);
         bool CanBeMotherOfAnimalBornIn(int femaleId, DateTime birthDate);
         Task<ReproductionCreationResponse> CreateOrUpdateReproductionAsync(Reproduction reproduction);
+        Task<Animal> AddNewAnimalAsync(Animal animal);
     }
 }

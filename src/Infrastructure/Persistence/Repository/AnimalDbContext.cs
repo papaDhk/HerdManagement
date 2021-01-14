@@ -31,6 +31,7 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
 
             modelBuilder.Entity<Animal>()
         .HasDiscriminator(a => a.CategoryType)
+        .HasValue<Animal>("animal")
         .HasValue<Female>("female")
         .HasValue<Male>("male")
         .HasValue<YoungAnimal>("young_animal"); ;

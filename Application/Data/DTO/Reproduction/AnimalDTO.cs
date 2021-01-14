@@ -48,7 +48,7 @@ namespace Application.Data.DTO.Reproduction
 
         public HerdDTO Herd
         {
-            get => _herdDto ?? new HerdDTO{Id = BreedId};
+            get => _herdDto ?? new HerdDTO{Id = HerdId};
 
             set => _herdDto = value;
         }

@@ -18,7 +18,7 @@ namespace Application.Data.DTO.Reproduction.Assembler
                     Origin = animalDTO.Origin,
                     Number = animalDTO.Number,
                     DeathDate = animalDTO.DeathDate,
-                    Herd = animalDTO.Herd.ToHerd(),
+                    Herd = animalDTO.Herd?.ToHerd(),
                     Breed = animalDTO.Breed.ToBreed(),
                     Picture = animalDTO.Picture,
                     PresenceStatus = animalDTO.PresenceStatus,
@@ -68,12 +68,15 @@ namespace Application.Data.DTO.Reproduction.Assembler
                     Origin = animalDTO.Origin,
                     Number = animalDTO.Number,
                     DeathDate = animalDTO.DeathDate,
-                    Herd = animalDTO.Herd.ToHerd(),
-                    Breed = animalDTO.Breed.ToBreed(),
+                    Herd = animalDTO.Herd?.ToHerd(),
+                    Breed = animalDTO.Breed?.ToBreed(),
                     Picture = animalDTO.Picture,
                     PresenceStatus = animalDTO.PresenceStatus,
                     Weight = animalDTO.Weight,
-                    FromCalving = animalDTO.FromCalving
+                    FromCalving = animalDTO.FromCalving,
+                    Sex = animalDTO.Sex,
+                    HerdId = animalDTO.Herd?.Id ?? animalDTO.HerdId,
+                    BreedId = animalDTO.Breed?.Id ?? animalDTO.BreedId
                 };
             }
             else
@@ -82,6 +85,34 @@ namespace Application.Data.DTO.Reproduction.Assembler
             }
         }
 
+        public static AnimalDTO ToAnimalDTO(this Animal animal)
+        {
+            if (animal != null)
+            {
+                return new AnimalDTO()
+                {
+                    Name = animal.Name,
+                    BirthDate = animal.BirthDate,
+                    Origin = animal.Origin,
+                    Number = animal.Number,
+                    DeathDate = animal.DeathDate,
+                    Herd = animal.Herd?.ToHerdDTO(),
+                    Breed = animal.Breed?.ToBreedDTO(),
+                    Picture = animal.Picture,
+                    PresenceStatus = animal.PresenceStatus,
+                    Weight = animal.Weight,
+                    FromCalving = animal.FromCalving,
+                    Sex = animal.Sex,
+                    HerdId = animal.Herd?.Id ?? animal.HerdId,
+                    BreedId = animal.Breed?.Id ?? animal.BreedId
+                };
+            }
+            else
+            {
+                return new AnimalDTO();
+            }
+        }
+        
         public static YoungAnimal ToYoungAnimal(this AnimalDTO animalDTO)
         {
             if (animalDTO != null)

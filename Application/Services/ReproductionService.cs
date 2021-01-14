@@ -72,6 +72,11 @@ namespace Application.Services
             return animal;
         }
 
+        public async Task<Animal> AddNewAnimalAsync(Animal animal)
+        {
+            return await AddNewAnimalAsync(animal?.ToAnimalDTO());
+        }
+        
         public Calving GetOrCreateParentRelationShip(int motherId, int fatherId, DateTime birthDate, DateTime inferredOriginReproductionDate, int childId = 0)
         {
             var mother = _animalRepository.GetFemaleById(motherId);
