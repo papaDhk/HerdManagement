@@ -42,8 +42,33 @@ namespace HerdManagement.Infrastructure.Persistence.Utils
             };
 
             dbContext.ChangeTracker.TrackGraph(entity, e => CheckState(e));
+            
+        }
+        
+        public static void AttachGraphForAdditionWithoutDuplicates(this DbContext dbContext, object entity)
+        {
+            Action<EntityEntryGraphNode> CheckState = (EntityEntryGraphNode entityNode) =>
+            {
 
+                try
+                {
+                    if (entityNode.Entry.IsKeySet == false)
+                    {
+                        entityNode.Entry.State = EntityState.Added;
+                    }
+                    else
+                    {
+                        entityNode.Entry.State = EntityState.Unchanged;
+                    }
+                }
+                catch (InvalidOperationException)
+                {
+                    //TODO this is a general exeption. Find another way to no track already tracked entities with same Id
+                }
+            };
 
+            dbContext.ChangeTracker.TrackGraph(entity, e => CheckState(e));
+            
         }
     }
 }

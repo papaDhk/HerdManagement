@@ -1,4 +1,5 @@
 ﻿using Application.Data.DTO.Herd.Assembler;
+using Application.Data.DTO.SpecieBreed.Assembler;
 using HerdManagement.Domain.Reproduction.Entities;
 using HerdManagement.Domain.SpecieBreed.Entities;
 
@@ -18,7 +19,7 @@ namespace Application.Data.DTO.Reproduction.Assembler
                     Number = animalDTO.Number,
                     DeathDate = animalDTO.DeathDate,
                     Herd = animalDTO.Herd.ToHerd(),
-                    Breed = new Breed { Id = animalDTO.BreedId },
+                    Breed = animalDTO.Breed.ToBreed(),
                     Picture = animalDTO.Picture,
                     PresenceStatus = animalDTO.PresenceStatus,
                     Weight = animalDTO.Weight,
@@ -43,7 +44,7 @@ namespace Application.Data.DTO.Reproduction.Assembler
                     Number = animalDTO.Number,
                     DeathDate = animalDTO.DeathDate,
                     Herd = animalDTO.Herd.ToHerd(),
-                    Breed = new Breed { Id = animalDTO.BreedId },
+                    Breed = animalDTO.Breed.ToBreed(),
                     Picture = animalDTO.Picture,
                     PresenceStatus = animalDTO.PresenceStatus,
                     Weight = animalDTO.Weight,
@@ -68,7 +69,7 @@ namespace Application.Data.DTO.Reproduction.Assembler
                     Number = animalDTO.Number,
                     DeathDate = animalDTO.DeathDate,
                     Herd = animalDTO.Herd.ToHerd(),
-                    Breed = new Breed { Id = animalDTO.BreedId },
+                    Breed = animalDTO.Breed.ToBreed(),
                     Picture = animalDTO.Picture,
                     PresenceStatus = animalDTO.PresenceStatus,
                     Weight = animalDTO.Weight,
@@ -93,7 +94,7 @@ namespace Application.Data.DTO.Reproduction.Assembler
                     Number = animalDTO.Number,
                     DeathDate = animalDTO.DeathDate,
                     Herd = animalDTO.Herd.ToHerd(),
-                    Breed = new Breed { Id = animalDTO.BreedId },
+                    Breed = animalDTO.Breed.ToBreed(),
                     Picture = animalDTO.Picture,
                     PresenceStatus = animalDTO.PresenceStatus,
                     Weight = animalDTO.Weight,

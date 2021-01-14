@@ -9,6 +9,10 @@ namespace Application.Data.DTO.Reproduction
 {
     public class AnimalDTO
     {
+        private BreedDTO _breedDto;
+        
+        private HerdDTO _herdDto;
+        
         [Required]
         public string Name { get; set; }
 
@@ -34,16 +38,21 @@ namespace Application.Data.DTO.Reproduction
 
         public BreedDTO Breed
         {
-            get
-            {
-                return new BreedDTO { Id = BreedId};
-            }
+            get => _breedDto ?? new BreedDTO{Id = BreedId};
+
+            set => _breedDto = value;
         }
 
         [Required]
         public int BreedId { get; set; }
 
-        public HerdDTO Herd { get; set; }
+        public HerdDTO Herd
+        {
+            get => _herdDto ?? new HerdDTO{Id = BreedId};
+
+            set => _herdDto = value;
+        }
+        
         
         [Required]
         public int HerdId;

@@ -75,7 +75,7 @@ namespace Application.Data.DTO.Reproduction.Assembler
         public static List<CalvingDTO> ToCalvingDTOList(this IEnumerable<Calving> calvings)
         {
             return calvings != null && calvings.Any() ?
-                   calvings.Select(measurementUnit => measurementUnit?.ToCalvingDTO()).ToList() :
+                   calvings.Select(calving => calving.ToCalvingDTO()).ToList() :
                    new List<CalvingDTO>();
 
         }

@@ -52,7 +52,7 @@ else
         specieDTOs = species.ToSpecieDTOList().ToList();
     }
 
-    public string[] ToolbarItems = new string[] { "Add" };
+    private string[] ToolbarItems = new string[] { "Add" };
 
     private async Task OnBeginHandlerAsync(ActionEventArgs<SpecieDTO> Args)
     {

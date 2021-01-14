@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Application.Data.DTO.Reproduction;
+using Application.Data.DTO.SpecieBreed.Assembler;
 using Application.Data.Messages;
 
 namespace Application.Services
@@ -38,7 +39,7 @@ namespace Application.Services
 
 
             var breed = await _breedRepository.GetBreedById(animalDTO.BreedId);
-
+            animalDTO.Breed = breed.ToBreedDTO();
             bool isYoungAnimal = breed.Specie.ChildhoodDurationInDays > animalDTO.AgeInDays;
 
             if (animalDTO.Origin == AnimalOrigin.BornInFarm && animalDTO.FatherId != 0 && animalDTO.MotherId != 0)
@@ -175,7 +176,7 @@ namespace Application.Services
 
             if (canFemaleBeMated && response.WasMaleAdult)
             {
-                Reproduction createdReproduction = await _reproductionRepository.CreateorUpdateReproductionAsync(reproduction);
+                Reproduction createdReproduction = await _reproductionRepository.CreateOrUpdateReproductionAsync(reproduction);
 
                 response.IsSuccessful = true;
 

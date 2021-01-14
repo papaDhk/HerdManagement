@@ -12,7 +12,7 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
 {
     public class ReproductionRepository : IReproductionRepository
     {
-        private AnimalDbContext _animalDbContext;
+        private readonly AnimalDbContext _animalDbContext;
 
         public ReproductionRepository(AnimalDbContext animalDbContext)
         {
@@ -20,7 +20,7 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
             _animalDbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
-        public async Task<Reproduction> CreateorUpdateReproductionAsync(Reproduction reproduction)
+        public async Task<Reproduction> CreateOrUpdateReproductionAsync(Reproduction reproduction)
         {
             if(reproduction is null)
             {
@@ -41,10 +41,9 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
             var reproduction = _animalDbContext.Reproductions
                 .Select(reproduction => reproduction)
                 .Include(reproduction => reproduction.Calvings)
-                .Where(reproduction => reproduction.FemaleId == femaleId && reproduction.MaleId == maleId &&
-                       reproduction.Date >= datetime.Date.AddDays(-10) &&
-                       reproduction.Date <= datetime.Date.AddDays(10))
-                .FirstOrDefault();
+                .FirstOrDefault(reproduction => reproduction.FemaleId == femaleId && reproduction.MaleId == maleId &&
+                                                reproduction.Date >= datetime.Date.AddDays(-10) &&
+                                                reproduction.Date <= datetime.Date.AddDays(10));
 
 
             _animalDbContext.UntrackEntities();
@@ -52,7 +51,7 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
             return reproduction;
         }
 
-        public async Task<Calving> CreateorUpdateCalvingAsync(Calving calving)
+        public async Task<Calving> CreateOrUpdateCalvingAsync(Calving calving)
         {
             if (calving is null)
             {
@@ -63,10 +62,10 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
 
             await _animalDbContext.SaveChangesAsync();
 
-            _animalDbContext.Entry(calving).Reference(r => r.Animal).Load();
-            _animalDbContext.Entry(calving.Animal).Reference(a => a.Breed).Load();
-            _animalDbContext.Entry(calving.Animal).Reference(a => a.Herd).Load();
-            _animalDbContext.Entry(calving.Animal.Breed).Reference(b => b.Specie).Load();
+            await _animalDbContext.Entry(calving).Reference(r => r.Animal).LoadAsync();
+            await _animalDbContext.Entry(calving.Animal).Reference(a => a.Breed).LoadAsync();
+            await _animalDbContext.Entry(calving.Animal).Reference(a => a.Herd).LoadAsync();
+            await _animalDbContext.Entry(calving.Animal.Breed).Reference(b => b.Specie).LoadAsync();
 
             _animalDbContext.UntrackEntities();
 

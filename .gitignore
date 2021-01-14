@@ -234,3 +234,14 @@ _Pvt_Extensions
 /src/Web/WebUI
 /HerdManagement/*.jfm
 *.jfm
+/.idea/.idea.HerdManagement/.idea/dataSources/41373af8-83b3-4227-bfcb-4e13266d6db9/storage_v2/_src_/database/HERD_CATALOG.qfvIxQ/schema/dbo.sYMBAA.zip
+/.idea/.idea.HerdManagement/.idea/.gitignore
+/.idea/.idea.HerdManagement/.idea/dataSources/41373af8-83b3-4227-bfcb-4e13266d6db9.xml
+/UI/Migrations/20210111210729_test.cs
+/UI/Migrations/20210111210729_test.Designer.cs
+/.idea/.idea.HerdManagement/.idea/dataSources.xml
+/.idea/.idea.HerdManagement/.idea/encodings.xml
+/.idea/.idea.HerdManagement/.idea/indexLayout.xml
+/.idea/.idea.HerdManagement/.idea/riderModule.iml
+/.idea/.idea.HerdManagement/.idea/sqldialects.xml
+/.idea/.idea.HerdManagement/.idea/vcs.xml

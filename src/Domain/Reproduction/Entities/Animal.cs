@@ -2,12 +2,8 @@
 using HerdManagement.Domain.Common.Utils;
 using HerdManagement.Domain.Reproduction.Enumerations;
 using HerdManagement.Domain.SpecieBreed.Entities;
-using HerdManagement.Domain.SpecieBreed.ValueObjects;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace HerdManagement.Domain.Reproduction.Entities
 {
@@ -29,19 +25,28 @@ namespace HerdManagement.Domain.Reproduction.Entities
         public  string BreedCharacteristics { get; set; }
         public  string SpecieCharacteristics { get; set; }
         public Calving FromCalving { get; set; }
+
+        private string _categoryType;
+        
         public string CategoryType
         {
             get
             {
+                if (_categoryType != null && _categoryType != "Animal")
+                {
+                    return _categoryType;
+                }
+                
                 if (IsAdult)
                 {
                     return Sex == SexEnum.Male ? "male" : "female";
                 }
-                else
-                {
-                    return "young_animal";
-                }
+
+                return "young_animal";
             }
+
+            set => _categoryType = CategoryType;
+
         }
 
         protected override bool EqualsCore(Animal animalToCompareWith)

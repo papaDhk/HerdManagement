@@ -1,10 +1,4 @@
 ﻿@page "/animals/female/{AnimalHerdName}/{animalNumber:int}/{animalName}"
-@using HerdManagement.Infrastructure.Persistence.Repository
-@using HerdManagement.Domain.SpecieBreed.Entities
-@using HerdManagement.Domain.Reproduction.Entities
-@using Syncfusion.Blazor.Grids
-@using Syncfusion.Blazor.DropDowns
-@using HerdManagement.Domain.SpecieBreed.Repository
 
 @inject ISpecieRepository specieRepository
 @inject NavigationManager navigationManager
@@ -193,8 +187,12 @@ else
             else
             {
                 <SfGrid @ref="reproductionsDataGrid" DataSource=@reproductions AllowFiltering="true" AllowPaging="true" AllowSorting="true" TValue=Reproduction>
+                     <GridSortSettings>
+                         <GridSortColumns>
+                             <GridSortColumn Field=@nameof(Reproduction.Date) Direction="SortDirection.Descending"></GridSortColumn>
+                         </GridSortColumns>
+                    </GridSortSettings>
                     <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
-
                     <GridPageSettings PageCount="5" PageSizes="true" PageSize="12"></GridPageSettings>
                     <GridColumns>
                         <GridColumn HeaderText="Partenaire">
@@ -797,8 +795,9 @@ else
 
             calving.Animal.Breed = breedDTOs.FirstOrDefault(b => b.Id == calving.Animal.BreedId).ToBreed();
 
-            calving = await reproductionRepository.CreateorUpdateCalvingAsync(calving);
-
+            var s = calving.Animal.CategoryType;
+            calving = await reproductionRepository.CreateOrUpdateCalvingAsync(calving);
+            
             reproductionCreation.Calvings.Add(calving);
 
             calvingsGrid.Refresh();
@@ -813,7 +812,7 @@ else
 
             calving.Animal.Breed = breedDTOs.FirstOrDefault(b => b.Id == calving.Animal.BreedId).ToBreed();
 
-            calving = await reproductionRepository.CreateorUpdateCalvingAsync(calving);
+            calving = await reproductionRepository.CreateOrUpdateCalvingAsync(calving);
 
             int calvingIndex = reproductionCreation.Calvings.FindIndex(c => c.Id == calving.Id);
 
