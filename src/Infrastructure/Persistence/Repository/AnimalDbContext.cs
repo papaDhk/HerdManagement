@@ -22,6 +22,9 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
         public virtual DbSet<Reproduction> Reproductions { get; set; }
 
         public virtual DbSet<Calving> Calvings { get; set; }
+        
+        public virtual DbSet<Weighing> Weighings { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -30,11 +33,11 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
                 .WithOne(Animal => Animal.FromCalving);
 
             modelBuilder.Entity<Animal>()
-        .HasDiscriminator(a => a.CategoryType)
-        .HasValue<Animal>("animal")
-        .HasValue<Female>("female")
-        .HasValue<Male>("male")
-        .HasValue<YoungAnimal>("young_animal"); ;
+                .HasDiscriminator(a => a.CategoryType)
+                .HasValue<Animal>("animal")
+                .HasValue<Female>("female")
+                .HasValue<Male>("male")
+                .HasValue<YoungAnimal>("young_animal");
 
             modelBuilder.Entity<Animal>()
                 .Property(a => a.CategoryType)

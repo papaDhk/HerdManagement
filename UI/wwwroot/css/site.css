@@ -58,7 +58,7 @@ app {
 }
 
 .sidebar {
-    background-image: linear-gradient(180deg, rgb(1 15 80) 10%, #062f47b0 70%);
+    background-image: linear-gradient(180deg, rgb(1 15 80) 10%, rgba(6, 47, 71, 0.69) 70%);
 }
 
 .horizontal-nav-bar {
@@ -124,6 +124,11 @@ app {
 
 .content {
     padding-top: 1.1rem;
+}
+
+.reproductionDetailsSeparator {
+    border: 5px solid #062F47;
+    border-radius: 5px;
 }
 
 .navbar-toggler {

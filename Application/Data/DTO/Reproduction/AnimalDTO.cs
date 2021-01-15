@@ -9,6 +9,8 @@ namespace Application.Data.DTO.Reproduction
 {
     public class AnimalDTO
     {
+        public int Id { get; set; }
+        
         private BreedDTO _breedDto;
         
         private HerdDTO _herdDto;
@@ -69,5 +71,7 @@ namespace Application.Data.DTO.Reproduction
         {
             return $"{Number} - {Name} - {Breed.Label}";
         }
+
+        public string CategoryType { get; set; }
     }
 }

@@ -12,6 +12,7 @@ namespace HerdManagement.Domain.Common.Entities
 
         public string Commentary { get; set; }
 
+        public MeasurementUnitCategory Category { get; set; }
         protected override bool EqualsCore(MeasurementUnit obj)
         {
             return Label == obj.Label || Symbol == obj.Symbol;
@@ -22,5 +23,13 @@ namespace HerdManagement.Domain.Common.Entities
             return Label.GetHashCode() ^ Symbol.GetHashCode();
         }
 
+    }
+
+    public enum MeasurementUnitCategory
+    {
+        Length,
+        Mass,
+        Area,
+        Volume
     }
 }

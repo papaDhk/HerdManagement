@@ -28,18 +28,25 @@ namespace HerdManagement.Domain.Reproduction.Entities
 
         private string _categoryType;
         
+        
         public string CategoryType
         {
             get
             {
+                if (_categoryType != null)
+                {
+                    return _categoryType;
+                }
+                
                 if (IsAdult)
                 {
                     return Sex == SexEnum.Male ? "male" : "female";
                 }
-                
+
                 return "young_animal";
             }
-            
+
+            set => _categoryType = CategoryType;
         }
 
         protected override bool EqualsCore(Animal animalToCompareWith)
@@ -67,7 +74,17 @@ namespace HerdManagement.Domain.Reproduction.Entities
 
         public DateTime ApproximativeOriginReproductionDate => BirthDate.Subtract(TimeSpan.FromDays(this.Breed.Specie.PregnancyDurationInDays));
 
-        
+        public static string GetCategory(Specie specie, SexEnum sex, DateTime birthDate)
+        {
+            bool isAdult = specie?.ChildhoodDurationInDays < DateTime.UtcNow.Subtract(birthDate).Days;
+            
+            if (isAdult)
+            {
+                return sex == SexEnum.Male ? "male" : "female";
+            }
+
+            return "young_animal";
+        }
     }
 
     public enum AnimalOrigin

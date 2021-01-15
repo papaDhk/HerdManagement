@@ -8,6 +8,9 @@ namespace Application.Data.DTO.SpecieBreed.Assembler
     {
         public static Breed ToBreed(this BreedCreationDTO breedCreationDTO)
         {
+            if (breedCreationDTO is null)
+                return null;
+
             return new Breed
             {
                 Label = breedCreationDTO.Label,
@@ -17,6 +20,9 @@ namespace Application.Data.DTO.SpecieBreed.Assembler
 
         public static Breed ToBreed(this BreedUpdateDTO breedUpdateDTO, int breedId)
         {
+            if (breedUpdateDTO is null)
+                return null;
+
             return new Breed
             {
                 Id = breedId,
@@ -27,6 +33,9 @@ namespace Application.Data.DTO.SpecieBreed.Assembler
 
         public static BreedDTO ToBreedDTO(this Breed breed)
         {
+            if (breed is null)
+                return null;
+
             return new BreedDTO
             {
                 Id = breed.Id,

@@ -24,7 +24,7 @@ namespace HerdManagement.Domain.Reproduction.Entities
         /// <summary>
         /// Expresses equality of two Calving objects.
         /// </summary>
-        /// <param name="obj">The object.</param>
+        /// <param name="obj">The object.</param>F
         /// <returns></returns>
         protected override bool EqualsCore(Calving obj)
         {

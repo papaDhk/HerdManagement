@@ -54,17 +54,17 @@ namespace Application.Services
 
             if (isYoungAnimal)
             {
-                animal = await _animalRepository.AddNewYoungAnimalAsync(animalDTO.ToYoungAnimal()).ContinueWith(youngAnimal => (Animal)youngAnimal.Result);
+                animal = await _animalRepository.AddNewYoungAnimalAsync(animalDTO.ToYoungAnimalUpdateDTO()).ContinueWith(youngAnimal => (Animal)youngAnimal.Result);
             }
             else
             {
                 switch (animalDTO.Sex)
                 {
                     case SexEnum.Male:
-                        animal = await _animalRepository.AddNewMaleAsync(animalDTO.ToMale()).ContinueWith(male => (Animal)male.Result);
+                        animal = await _animalRepository.AddNewMaleAsync(animalDTO.ToMaleUpdateDTO()).ContinueWith(male => (Animal)male.Result);
                         break;
                     case SexEnum.Female:
-                        animal = await _animalRepository.AddNewFemaleAsync(animalDTO.ToFemale()).ContinueWith(female => (Animal)female.Result);
+                        animal = await _animalRepository.AddNewFemaleAsync(animalDTO.ToFemaleUpdateDTO()).ContinueWith(female => (Animal)female.Result);
                         break;
                 }
             }

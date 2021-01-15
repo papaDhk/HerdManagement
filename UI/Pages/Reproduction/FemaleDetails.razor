@@ -421,15 +421,18 @@ else
                                     <ValidationMessage For="@(() => reproductionCreation.Date)" />
                                 </div>
                             </div>
-                            <div class="form-group row">
-                                <label for="reproductionCurrentState" class="col-3 col-form-label">
-                                    Etat actuel
-                                </label>
-                                <div class="col-sm-9">
-                                    <span class="@GetClassFromReproductionState((ReproductionStateEnum)reproductionCreation?.ActualState?.State)">@Helper.GetDisplayName(reproductionCreation?.ActualState?.State)</span>
-                                </div>
+                        <div class="form-group row">
+                            <label for="reproductionCurrentState" class="col-3 col-form-label">
+                                Etat actuel
+                            </label>
+                            <div class="col-sm-9">
+                                <span class="@GetClassFromReproductionState((ReproductionStateEnum)reproductionCreation?.ActualState?.State)">@Helper.GetDisplayName(reproductionCreation?.ActualState?.State)</span>
                             </div>
-                            <div class="form-group row">
+                        </div>
+                        
+                        <hr class="reproductionDetailsSeparator">
+                        
+                        <div class="form-group row">
                                 <label for="reproductionStates" class="col-2 col-form-label">
                                     Etats
                                 </label>
@@ -472,6 +475,8 @@ else
 
                             @if (reproductionCreation.ActualState.State == ReproductionStateEnum.Complete)
                             {
+                                <hr class="reproductionDetailsSeparator">
+                                
                                 <div class="form-group row">
                                     <label for="reproductionCalvings" class="col-2 col-form-label">
                                         Naissances
@@ -583,7 +588,6 @@ else
 
 
 @code {
-
     [Parameter]
     public int AnimalNumber { get; set; }
 
@@ -613,11 +617,14 @@ else
 
     private List<Reproduction> reproductions;
 
-    private Reproduction reproductionCreation = new Reproduction();
+    private Reproduction reproductionCreation = new();
 
-    private Reproduction selectedReproduction = new Reproduction();
+    private Reproduction selectedReproduction = new();
 
-    private ReproductionCreationResponse reproductionCreationResponse = new ReproductionCreationResponse { WasMaleAdult = true, CouldFemaleBeMated = true, IsSuccessful = true };
+    private ReproductionCreationResponse reproductionCreationResponse = new()
+    {
+        WasMaleAdult = true, CouldFemaleBeMated = true, IsSuccessful = true
+    };
 
     private SfGrid<Reproduction> reproductionsDataGrid;
 
@@ -647,9 +654,9 @@ else
 
     private async Task SaveAnimalAsync()
     {
-        canNotBeMother = motherId > 0 ? !reproductionService.CanBeMotherOfAnimalBornIn(motherId.Value, currentFemale.BirthDate) : false;
+        canNotBeMother = motherId > 0 && !reproductionService.CanBeMotherOfAnimalBornIn(motherId.Value, currentFemale.BirthDate);
 
-        canNotBeFather = fatherId > 0 ? !reproductionService.CanBeFatherOfAnimalBornIn(fatherId.Value, currentFemale.BirthDate) : false;
+        canNotBeFather = fatherId > 0 && !reproductionService.CanBeFatherOfAnimalBornIn(fatherId.Value, currentFemale.BirthDate);
 
         if (canNotBeFather || canNotBeMother)
         {
@@ -680,24 +687,18 @@ else
 
             await bootstrapService.ShowModal("#successNotificationModal");
         }
-
     }
 
     private async Task SaveUpdatedReproductionAsync()
     {
-        reproductionCreationResponse = await reproductionService.CreateOrUpdateReproductionAsync(reproductionCreation);
+        reproductionCreationResponse = await reproductionService
+                                             .CreateOrUpdateReproductionAsync(reproductionCreation
+                                                 .ToReproductionUpdateDTO());
 
         if (reproductionCreationResponse.IsSuccessful)
         {
-
             reproductionsDataGrid.Refresh();
-
-            //await bootstrapService.HideModal("#reproductionModalForm");
-
-
-            //await bootstrapService.ShowModal("#successNotificationModal");
         }
-
     }
 
     private async Task OnReproductionDetailsClickedAsync(Reproduction reproduction)
@@ -705,20 +706,6 @@ else
         reproductionCreation = reproduction;
 
         await bootstrapService.ShowModal("#reproductionDetailModal");
-
-        //if (reproductionCreationResponse.IsSuccessful)
-        //{
-        //    reproductions.Insert(0, reproductionCreationResponse.Reproduction);
-
-        //    reproductionsDataGrid.Refresh();
-
-        //    await bootstrapService.HideModal("#reproductionModalForm");
-
-        //    ClearReproductionModalForm();
-
-        //    await bootstrapService.ShowModal("#successNotificationModal");
-        //}
-
     }
 
     private void MakeEditable()
@@ -795,7 +782,7 @@ else
 
             calving.Animal.Breed = breedDTOs.FirstOrDefault(b => b.Id == calving.Animal.BreedId).ToBreed();
             
-            var animal = await reproductionService.AddNewAnimalAsync(calving.Animal);
+            var animal = await reproductionService.AddNewAnimalAsync(calving.Animal.ToAnimalDTO());
 
             calving.Animal = null;
 
@@ -811,13 +798,12 @@ else
         else if (Args.Action == "Edit")
         {
             CalvingDTO calvingDTO = Args.Data;
-
-
+            
             Calving calving = calvingDTO.ToCalving();
 
             calving.Animal.Breed = breedDTOs.FirstOrDefault(b => b.Id == calving.Animal.BreedId).ToBreed();
 
-            calving = await reproductionRepository.CreateOrUpdateCalvingAsync(calving);
+            calving = await reproductionRepository.CreateOrUpdateCalvingAsync(calving.ToCalvingUpdateDTOWithFullAnimal());
 
             int calvingIndex = reproductionCreation.Calvings.FindIndex(c => c.Id == calving.Id);
 

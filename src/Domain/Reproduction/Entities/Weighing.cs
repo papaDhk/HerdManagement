@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace HerdManagement.Domain.Reproduction.Entities
 {
-    public class Weighting : Entity<Weighting>
+    public class Weighing : Entity<Weighing>
     {
-        protected override bool EqualsCore(Weighting obj)
+        protected override bool EqualsCore(Weighing obj)
         {
             throw new NotImplementedException();
         }
@@ -21,11 +21,15 @@ namespace HerdManagement.Domain.Reproduction.Entities
         }
 
         public int AnimalId { get; set; }
+        
+        public Animal Animal { get; set; }
 
         public MeasurementUnit MeasurementUnit { get; set; }
 
         public int MeasurementUnitId { get; set; }
 
         public DateTime DateTime { get; set; }
+
+        public int Value { get; set; }
     }
 }

@@ -40,7 +40,7 @@ namespace Application.Data.DTO.Reproduction.Assembler
             }
             else
             {
-                return new Calving();
+                return null;
             }
         }
 
@@ -68,7 +68,49 @@ namespace Application.Data.DTO.Reproduction.Assembler
             }
             else
             {
-                return new CalvingDTO();
+                return null;
+            }
+        }
+        
+        public static Calving ToCalvingUpdateDTOWithFullAnimal(this Calving calving)
+        {
+            if (calving != null)
+            {
+                return new Calving
+                {
+                    Id = calving.Id,
+                    Date = calving.Date,
+                    Commentary = calving.Commentary,
+                    FemaleId = calving.FemaleId,
+                    MaleId = calving.AnimalId,
+                    Animal = calving.Animal.ToAnimalUpdateDTO(),
+                    ReproductionId = calving.ReproductionId
+                };
+            }
+            else
+            {
+                return null;
+            }
+        }
+        
+        public static Calving ToCalvingUpdateDTO(this Calving calving)
+        {
+            if (calving != null)
+            {
+                return new Calving
+                {
+                    Id = calving.Id,
+                    Date = calving.Date,
+                    Commentary = calving.Commentary,
+                    FemaleId = calving.FemaleId,
+                    MaleId = calving.AnimalId,
+                    AnimalId = calving.AnimalId,
+                    ReproductionId = calving.ReproductionId
+                };
+            }
+            else
+            {
+                return null;
             }
         }
 

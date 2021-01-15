@@ -4,14 +4,16 @@ using HerdManagement.Infrastructure.Persistence.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace UI.Migrations
 {
     [DbContext(typeof(AnimalDbContext))]
-    partial class AnimalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210115045134_weighings")]
+    partial class weighings
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -25,9 +27,6 @@ namespace UI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
-
-                    b.Property<int>("Category")
-                        .HasColumnType("int");
 
                     b.Property<string>("Commentary")
                         .HasColumnType("nvarchar(max)");
