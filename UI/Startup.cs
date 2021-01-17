@@ -18,6 +18,7 @@ using Application.Services;
 using HerdManagement.Domain.SpecieBreed.Repository;
 using HerdManagement.Domain.Reproduction.Repository;
 using HerdManagement.Domain.Common.Repositories;
+using HerdManagement.Domain.Reproduction.Entities;
 
 namespace UI
 {
@@ -45,7 +46,8 @@ namespace UI
             services.AddTransient<ISpecieBreedService, SpecieBreedService>();
             services.AddTransient<IReproductionService, ReproductionService>();
             services.AddTransient<IReproductionRepository, ReproductionRepository>();
-            services.AddTransient<IMeasurementUnitRepository, MeasurementUnitRepository>();
+            services.AddTransient<IMeasurementUnitRepository, MeasurementUnitRepositoryEF>();
+            services.AddTransient<IWeighingRepository, WeighingRepository>();
             services.AddScoped<BootstrapService, BootstrapService>();
 
             services.AddSyncfusionBlazor();

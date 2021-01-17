@@ -1,4 +1,5 @@
-﻿using HerdManagement.Domain.Reproduction.Entities;
+﻿using HerdManagement.Domain.Common.Entities;
+using HerdManagement.Domain.Reproduction.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace HerdManagement.Infrastructure.Persistence.Repository
@@ -24,6 +25,9 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
         public virtual DbSet<Calving> Calvings { get; set; }
         
         public virtual DbSet<Weighing> Weighings { get; set; }
+        
+        public virtual DbSet<MeasurementUnit> MeasurementUnits { get; set; }
+
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

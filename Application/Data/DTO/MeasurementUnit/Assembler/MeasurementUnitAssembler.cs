@@ -16,6 +16,7 @@ namespace Application.Data.DTO.MeasurementUnitBreed.Assembler
                         Label = measurementUnit.Label,
                         Symbol = measurementUnit.Symbol,
                         Commentary = measurementUnit.Commentary,
+                        MeasurementUnitCategory = measurementUnit.Category
                     } :
                     null;
         }
@@ -29,6 +30,7 @@ namespace Application.Data.DTO.MeasurementUnitBreed.Assembler
                         Label = measurementUnitDTO.Label,
                         Symbol = measurementUnitDTO.Symbol,
                         Commentary = measurementUnitDTO.Commentary,
+                        Category = measurementUnitDTO.MeasurementUnitCategory
                     } :
                     null;
         }

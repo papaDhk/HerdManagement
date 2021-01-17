@@ -1,7 +1,7 @@
 ﻿@page "/configurations"
 
 @using Application.Data.DTO.MeasurementUnit
-@using HerdManagement.Domain.Common.Entities 
+@using HerdManagement.Domain.Common.Entities
 @using Application.Data.DTO.MeasurementUnitBreed.Assembler
 @using HerdManagement.Domain.Common.Repositories
 @using Syncfusion.Blazor.Grids
@@ -15,7 +15,7 @@
 
 @if (measurementUnitDTOs == null)
 {
-    <img src="images/dog-alone.gif" class="rounded mx-auto d-block img-fluid" />
+    <img src="images/dog-alone.gif" class="rounded mx-auto d-block img-fluid"/>
 }
 else
 {
@@ -27,7 +27,7 @@ else
                         Unités de mesure
                     </div>
                     <div class="card-body">
-                        <SfGrid @ref="measurementUnitDataGrid" DataSource="@measurementUnitDTOs" AllowSorting="true" AllowFiltering="true" Toolbar="@ToolbarItems">
+                        <SfGrid @ref="measurementUnitDataGrid" DataSource="@measurementUnitDTOs" AllowSorting="true" Toolbar="@ToolbarItems">
                             <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog"></GridEditSettings>
                             <GridEvents OnActionBegin="OnBeginHandlerAsync" CommandClicked="OnDetailButtonClicked" TValue="MeasurementUnitDTO"></GridEvents>
                             <GridColumns>
@@ -36,13 +36,36 @@ else
                                 </GridColumn>
                                 <GridColumn Field=@nameof(MeasurementUnitDTO.Symbol) HeaderText="Symbole">
                                 </GridColumn>
+                                <GridColumn Field=@nameof(MeasurementUnitDTO.MeasurementUnitCategory) HeaderText="Catégorie">
+                                    <Template Context="MeasurementUnitContext">
+                                                                                        @{
+                                                                                            var measurementUnit = (MeasurementUnitDTO)MeasurementUnitContext;
+                                                                                        }
+                                                                                        <span>@Helper.GetDisplayName(measurementUnit.MeasurementUnitCategory)</span>
+                                                                                    </Template>
+                                    <EditTemplate Context="MeasurementUnitContext">
+                                        @*ID value should be based on Field name*@
+                                        <SfDropDownList ID="MeasurementUnit___Category"
+                                                        TItem="string"
+                                                        TValue="MeasurementUnitCategory"
+                                                        @bind-Value="@((MeasurementUnitContext as MeasurementUnitDTO).MeasurementUnitCategory)"
+                                                        DataSource="@Helper.GetKeyValuesFromEnum(typeof(MeasurementUnitCategory)).Keys">
+                                            <DropDownListTemplates TItem="string">
+                                                <ItemTemplate Context="MeasurementUnitCategoryContext">
+                                                    <span>@(Helper.GetKeyValuesFromEnum(typeof(MeasurementUnitCategory))[(MeasurementUnitCategoryContext as string)])</span>
+                                                </ItemTemplate>
+                                            </DropDownListTemplates>
+                                            <DropDownListFieldSettings Text="Name" Value="Name"></DropDownListFieldSettings>
+                                        </SfDropDownList>
+                                    </EditTemplate>
+                                </GridColumn>
                                 <GridColumn Field=@nameof(MeasurementUnitDTO.Commentary) HeaderText="Commentaire">
                                 </GridColumn>
                                 <GridColumn HeaderText="Actions">
                                     <GridCommandColumns>
-                                        <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-edit", CssClass = "e-flat" })"></GridCommandColumn>
-                                        <GridCommandColumn Type="CommandButtonType.Save" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-update", CssClass = "e-flat" })"></GridCommandColumn>
-                                        <GridCommandColumn Type="CommandButtonType.Cancel" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-cancel-icon", CssClass = "e-flat" })"></GridCommandColumn>
+                                        <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() {IconCss = "e-icons e-edit", CssClass = "e-flat"})"></GridCommandColumn>
+                                        <GridCommandColumn Type="CommandButtonType.Save" ButtonOption="@(new CommandButtonOptions() {IconCss = "e-icons e-update", CssClass = "e-flat"})"></GridCommandColumn>
+                                        <GridCommandColumn Type="CommandButtonType.Cancel" ButtonOption="@(new CommandButtonOptions() {IconCss = "e-icons e-cancel-icon", CssClass = "e-flat"})"></GridCommandColumn>
                                     </GridCommandColumns>
                                 </GridColumn>
                             </GridColumns>
@@ -67,7 +90,7 @@ else
         measurementUnitDTOs = measurementUnits.ToMeasurementUnitDTOList().ToList();
     }
 
-    public string[] ToolbarItems = new string[] { "Add" };
+    public string[] ToolbarItems = new string[] {"Add"};
 
     private async Task OnBeginHandlerAsync(ActionEventArgs<MeasurementUnitDTO> Args)
     {
@@ -90,4 +113,5 @@ else
             navigationManager.NavigateTo($"measurementUnits/{args.RowData.Id}");
         }
     }
+
 }

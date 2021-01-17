@@ -14,5 +14,8 @@ namespace HerdManagement.Domain.Common.Repositories
         Task<int> UpdateMeasurementUnit(MeasurementUnit measurementUnit);
         Task<int> DeleteMeasurementUnit(int measurementUnitId);
         Task<MeasurementUnit> CreateMeasurementUnit(MeasurementUnit measurementUnit);
+
+        IEnumerable<MeasurementUnit> GetMeasurementUnitsByCategory(
+            MeasurementUnitCategory measurementUnitCategory);
     }
 }

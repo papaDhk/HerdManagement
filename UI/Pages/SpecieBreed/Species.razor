@@ -17,7 +17,7 @@
 }
 else
 {
-    <SfGrid DataSource="@specieDTOs" AllowSorting="true" AllowFiltering="true" Toolbar="@ToolbarItems">
+    <SfGrid DataSource="@specieDTOs" AllowSorting="true" Toolbar="@ToolbarItems">
         <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true"></GridEditSettings>
         <GridEvents OnActionBegin="OnBeginHandlerAsync" CommandClicked="OnDetailButtonClicked" TValue="SpecieDTO"></GridEvents>
         <GridColumns>

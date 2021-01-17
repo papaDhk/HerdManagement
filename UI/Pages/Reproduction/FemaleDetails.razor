@@ -26,7 +26,7 @@ else
             <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Caracteristiques</a>
             <a class="nav-item nav-link" id="nav-reproductions-tab" data-toggle="tab" href="#nav-reproductions" role="tab" aria-controls="nav-reproductions" aria-selected="false">Reproduction</a>
             <a class="nav-item nav-link" id="nav-alimentation-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Alimentation</a>
-            <a class="nav-item nav-link" id="nav-weightings-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Pesées</a>
+            <a class="nav-item nav-link" id="nav-weightings-tab" data-toggle="tab" href="#nav-weightings" role="tab" aria-controls="nav-contact" aria-selected="false">Pesées</a>
         </div>
     </nav>
     <div class="tab-content mt-5" id="nav-tabContent">
@@ -236,7 +236,9 @@ else
             }
         </div>
         <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-alimentation-tab">...</div>
-        <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-weightings-tab">...</div>
+    <div class="tab-pane fade" id="nav-weightings" role="tabpanel" aria-labelledby="nav-weightings-tab">
+        <Weighings AnimalId="@currentFemale.Id"></Weighings>
+    </div>
 
 
         <div class="modal fade" id="reproductionModalForm" tabindex="-1" role="dialog" aria-labelledby="Enregistrer une reproduction pour @currentFemale.Name" aria-hidden="true">

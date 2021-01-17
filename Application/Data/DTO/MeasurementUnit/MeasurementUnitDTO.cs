@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HerdManagement.Domain.Common.Entities;
 
 namespace Application.Data.DTO.MeasurementUnit
 {
@@ -14,5 +15,7 @@ namespace Application.Data.DTO.MeasurementUnit
         public string Symbol { get; set; }
 
         public string Commentary { get; set; }
+
+        public MeasurementUnitCategory MeasurementUnitCategory { get; set; }
     }
 }

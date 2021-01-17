@@ -1,0 +1,78 @@
+﻿@using HerdManagement.Domain.Common.Entities
+@using HerdManagement.Domain.Common.Repositories
+@inject IWeighingRepository _weighingRepository;
+@inject IMeasurementUnitRepository _measurementUnitRepository;
+
+<SfGrid @ref="_weighingsDataGrid" DataSource="@_weighings" AllowSorting="true" Toolbar="@ToolbarItems">
+    <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog"></GridEditSettings>
+    <GridEvents OnActionBegin="OnBeginHandlerAsync" TValue="Weighing"></GridEvents>
+    <GridColumns>
+        <GridColumn Field=@nameof(Weighing.Id) IsPrimaryKey="true" IsIdentity="true" Visible="false"></GridColumn>
+        <GridColumn Field=@nameof(Weighing.Value) HeaderText="Valeur de la pesée">
+        </GridColumn>
+        <GridColumn Field=@nameof(Weighing.MeasurementUnit) HeaderText="Unité">
+            <Template Context="weighingContext">
+                @{
+                    var weighing = (Weighing) weighingContext;
+                }
+                <span>@weighing?.MeasurementUnit?.ToString()</span>
+            </Template>
+            <EditTemplate Context="WeighingContext">
+                @{
+                    var weighing = WeighingContext as Weighing;
+                }
+                <InputSelect id="measurementUnit" @bind-Value="@weighing.MeasurementUnitId" class="form-control">
+                    @foreach (var measurementUnit in _lengthMeasurementUnits)
+                    {
+                        <option value="@measurementUnit.Id">@measurementUnit?.ToString()</option>
+                    }
+                </InputSelect>
+            </EditTemplate>
+        </GridColumn>
+        <GridColumn Field=@nameof(Weighing.DateTime) HeaderText="Date">
+        </GridColumn>
+    </GridColumns>
+</SfGrid>
+
+@code {
+
+    [Parameter]
+    public int AnimalId { get; set; }
+
+    private List<Weighing> _weighings;
+
+    private List<MeasurementUnit> _lengthMeasurementUnits;
+
+    private SfGrid<Weighing> _weighingsDataGrid;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        _weighings = _weighingRepository.GetWeighingsByAnimalId(AnimalId).ToList();
+
+        _lengthMeasurementUnits = _measurementUnitRepository.GetMeasurementUnitsByCategory(MeasurementUnitCategory.Mass)
+            .ToList();
+    }
+
+    public string[] ToolbarItems = new string[] {"Add"};
+
+    private async Task OnBeginHandlerAsync(ActionEventArgs<Weighing> Args)
+    {
+        if (Args.Action == "Add")
+        {
+            Weighing newWeighing = Args.Data;
+            
+            newWeighing.AnimalId = AnimalId;
+            
+            await _weighingRepository.CreateOrUpdateWeighingAsync(newWeighing);
+        }
+        else if (Args.Action == "Edit")
+        {
+            Weighing weighingToUpdate = Args.Data;
+
+            await _weighingRepository.CreateOrUpdateWeighingAsync(weighingToUpdate.ToWeighingUpdateDTO());
+            
+            StateHasChanged();
+        }
+    }
+
+}
