@@ -10,5 +10,5 @@ AS
 BEGIN
 
 	DELETE [dbo].[Herd]
-    WHERE Id = @Id       
+    WHERE Id = @Id  
 END

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace HerdManagement.Domain.Common.Entities
@@ -12,6 +13,7 @@ namespace HerdManagement.Domain.Common.Entities
 
         public string Commentary { get; set; }
 
+        public MeasurementUnitCategory Category { get; set; }
         protected override bool EqualsCore(MeasurementUnit obj)
         {
             return Label == obj.Label || Symbol == obj.Symbol;
@@ -21,6 +23,23 @@ namespace HerdManagement.Domain.Common.Entities
         {
             return Label.GetHashCode() ^ Symbol.GetHashCode();
         }
+        
+        public override string ToString()
+        {
+            return $"{Label}({Symbol})";
+        }
 
+    }
+
+    public enum MeasurementUnitCategory
+    {
+        [Display(Name = "Longueur")]
+        Length,
+        [Display(Name = "Masse")]
+        Mass,
+        [Display(Name = "Superficie")]
+        Area,
+        [Display(Name = "Volume")]
+        Volume
     }
 }

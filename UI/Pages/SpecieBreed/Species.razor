@@ -1,8 +1,5 @@
 ﻿@page "/species"
-
-@using Applicattion.Data.DTO.SpecieBreed
 @using HerdManagement.Infrastructure.Persistence.Repository
-@using Applicattion.Data.DTO.SpecieBreed.Assembler
 @using HerdManagement.Domain.SpecieBreed.Entities
 @using Syncfusion.Blazor.Grids
 @using HerdManagement.Domain.SpecieBreed.Repository
@@ -11,7 +8,7 @@
 @inject NavigationManager navigationManager
 
 <nav class="navbar navbar-light mb-3 horizontal-nav-bar">
-    <h4>Espéces animales</h4>
+    <h6>Espéces animales</h6>
 </nav>
 
 @if (specieDTOs == null)
@@ -20,10 +17,11 @@
 }
 else
 {
-    <SfGrid DataSource="@specieDTOs" AllowSorting="true" AllowFiltering="true" Toolbar="@ToolbarItems">
+    <SfGrid DataSource="@specieDTOs" AllowSorting="true" Toolbar="@_toolbarItems">
         <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true"></GridEditSettings>
         <GridEvents OnActionBegin="OnBeginHandlerAsync" CommandClicked="OnDetailButtonClicked" TValue="SpecieDTO"></GridEvents>
         <GridColumns>
+            <GridColumn Field=@nameof(SpecieDTO.Id) IsPrimaryKey="true" IsIdentity="true" Visible="false"></GridColumn>
             <GridColumn Field=@nameof(SpecieDTO.Label)>
             </GridColumn>
             <GridColumn Field=@nameof(SpecieDTO.PregnancyDurationInDays)>
@@ -54,7 +52,7 @@ else
         specieDTOs = species.ToSpecieDTOList().ToList();
     }
 
-    public string[] ToolbarItems = new string[] { "Add" };
+    private readonly string[] _toolbarItems = { "Add" };
 
     private async Task OnBeginHandlerAsync(ActionEventArgs<SpecieDTO> Args)
     {
@@ -62,6 +60,7 @@ else
         {
             SpecieDTO newSpecieDTO = Args.Data;
             Specie createdSpecie = await specieRepository.CreateSpecie(newSpecieDTO.ToSpecie());
+            Args.Data = createdSpecie.ToSpecieDTO();
         }
         else if (Args.Action == "Edit")
         {

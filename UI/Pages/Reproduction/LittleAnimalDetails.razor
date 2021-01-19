@@ -1,13 +1,9 @@
 ﻿@page "/animals/little/{AnimalHerdName}/{animalNumber:int}/{animalName}"
-
-@using Applicattion.Data.DTO.SpecieBreed
 @using HerdManagement.Infrastructure.Persistence.Repository
-@using Applicattion.Data.DTO.Reproduction
 @using HerdManagement.Domain.SpecieBreed.Entities
 @using HerdManagement.Domain.Reproduction.Entities
 @using Syncfusion.Blazor.Grids
 @using Syncfusion.Blazor.DropDowns
-@using Applicattion.Data.DTO.SpecieBreed.Assembler
 @using HerdManagement.Domain.SpecieBreed.Repository
 
 @inject ISpecieRepository specieRepository
@@ -31,8 +27,8 @@ else
         <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
             <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Profil</a>
             <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Caracteristiques</a>
-            <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Reproduction</a>
-            <a class="nav-item nav-link" id="nav-alinentation-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Alimentation</a>
+            <a class="nav-item nav-link" id="nav-alimentation-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Alimentation</a>
+            <a class="nav-item nav-link" id="nav-weightings-tab" data-toggle="tab" href="#nav-weightings" role="tab" aria-controls="nav-contact" aria-selected="false">Pesées</a>
         </div>
     </nav>
     <div class="tab-content mt-5" id="nav-tabContent">
@@ -98,10 +94,9 @@ else
                         </label>
                         <div class="col-9">
                             <InputSelect id="origin" @bind-Value="@currentYoungAnimal.Origin" class="form-control" disabled=@isNoEditable>
-
-                                @foreach (var origin in Enum.GetValues(typeof(AnimalOrigin)))
+                                @foreach (var origin in Helper.GetKeyValuesAsListFromEnum(typeof(AnimalOrigin)))
                                     {
-                                    <option value="@origin">@origin</option>
+                                    <option value="@origin.Key">@origin.Value</option>
                                     }
                             </InputSelect>
                             <ValidationMessage For="@(() => currentYoungAnimal.Origin)" />
@@ -120,12 +115,20 @@ else
                                     <option value="@female.Id">@female.ToString()</option>
                                     }
                             </InputSelect>
-                            @*<ValidationMessage For="@(() => currentYoungAnimal.MotherId)" />*@
+
+                            @if ((int)motherId > 0)
+                            {
+                        <i class="fas fa-eye text-primary" style="cursor: pointer;"
+                           @onclick="@(() => navigationManager.NavigateTo(females.Where(f => f.Id == motherId).FirstOrDefault()?.GetProfilePageUrl(AnimalHerdName), forceLoad:true))">
+                            Details
+                        </i>
+                            }
+
                             @if (@canNotBeMother)
                             {
                                 <div class="validation-message">L'animal sélectionné ne peut pas être la mère de "@currentYoungAnimal.Name"</div>
                             }
-                        </div>
+                            </div>
                     </div>
 
                     <div class="form-group row">
@@ -139,7 +142,15 @@ else
                                     <option value="@male.Id">@male.ToString()</option>
                                     }
                             </InputSelect>
-                            @*<ValidationMessage For="@(() => currentYoungAnimal.FatherId)" />*@
+
+                            @if ((int)fatherId > 0)
+                            {
+                                <i class="fas fa-eye text-primary" style="cursor: pointer;"
+                                   @onclick="@(() => navigationManager.NavigateTo(@males.Where(m => m.Id == fatherId).FirstOrDefault()?.GetProfilePageUrl(AnimalHerdName), forceLoad:true))">
+                                    Details
+                                </i>
+                            }
+
                             @if (@canNotBeFather)
                             {
                                 <div class="validation-message">L'animal selectionné ne peut pas être le père de "@currentYoungAnimal.Name"</div>
@@ -159,17 +170,13 @@ else
                                 </SfUploader>
                             </div>
                         </div>
-                    }
 
-
-                    @if (isNoEditable)
-                    {
-                        <button @onclick="@MakeEditable" type="button" class="btn btn-secondary">Modifier</button>
+                        <button @onclick="@CleanAndMakeNoEditable" type="button" class="btn btn-secondary">Annuler</button>
+                        <button @onclick="@SaveAnimalAsync" type="button" class="btn btn-secondary">Enregistrer</button>
                     }
                     else
                     {
-                        <button @onclick="@CleanAndMakeNoEditable" type="button" class="btn btn-secondary">Annuler</button>
-                        <button @onclick="@SaveAnimalAsync" type="button" class="btn btn-secondary">Enregistrer</button>
+                        <button @onclick="@MakeEditable" type="button" class="btn btn-secondary">Modifier</button>
                     }
 
                 </EditForm>
@@ -177,8 +184,10 @@ else
         </div>
         <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">...</div>
         <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">...</div>
-        <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-alinentation-tab">...</div>
-    </div>
+        <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-alimentation-tab">...</div>
+        <div class="tab-pane fade" id="nav-weightings" role="tabpanel" aria-labelledby="nav-weightings-tab">
+             <Weighings AnimalId="@currentYoungAnimal.Id"></Weighings>
+        </div>    </div>
 }
 
 
@@ -199,9 +208,9 @@ else
 
     private List<Female> females;
 
-    private int fatherId;
+    private int? fatherId = 0;
 
-    private int motherId;
+    private int? motherId = 0;
 
     private List<BreedDTO> breedDTOs;
 
@@ -215,6 +224,12 @@ else
     {
         currentYoungAnimal = animalRepository.GetYoungAnimalByNumber(AnimalNumber);
 
+
+        motherId = currentYoungAnimal?.FromCalving?.FemaleId ?? motherId;
+
+        fatherId = currentYoungAnimal?.FromCalving?.MaleId ?? fatherId;
+
+
         breedDTOs = await breedRepository.GetAllBreeds().ContinueWith(breeds => breeds.Result.ToBreedDTOList().ToList());
 
         males = animalRepository.GetMalesByHerdId(currentYoungAnimal.Herd.Id).ToList();
@@ -222,34 +237,19 @@ else
         females = animalRepository.GetFemalesByHerdId(currentYoungAnimal.Herd.Id).ToList();
     }
 
-    private async Task OnInputFileChange(InputFileChangeEventArgs e)
-    {
-        var maxAllowedFiles = 1;
-        var format = "image/png";
-
-        foreach (var imageFile in e.GetMultipleFiles(maxAllowedFiles))
-        {
-            var resizedImageFile = await imageFile.RequestImageFileAsync(format,
-                100, 100);
-            var buffer = new byte[resizedImageFile.Size];
-            await resizedImageFile.OpenReadStream().ReadAsync(buffer);
-            currentYoungAnimal.Picture = buffer;
-        }
-
-    }
 
     private async Task SaveAnimalAsync()
     {
-        canNotBeMother = motherId > 0 ? !reproductionService.CanBeMotherOfAnimalBornIn(motherId, currentYoungAnimal.BirthDate) : false;
+        canNotBeMother = motherId > 0 ? !reproductionService.CanBeMotherOfAnimalBornIn(motherId.Value, currentYoungAnimal.BirthDate) : false;
 
-        canNotBeFather = fatherId > 0 ? !reproductionService.CanBeFatherOfAnimalBornIn(fatherId, currentYoungAnimal.BirthDate) : false;
+        canNotBeFather = fatherId > 0 ? !reproductionService.CanBeFatherOfAnimalBornIn(fatherId.Value, currentYoungAnimal.BirthDate) : false;
 
         if (canNotBeFather || canNotBeMother)
         {
             return;
         }
 
-        currentYoungAnimal = (YoungAnimal)await reproductionService.UpdateAnimalAsync(currentYoungAnimal, motherId, fatherId);
+        currentYoungAnimal = (YoungAnimal)await reproductionService.UpdateAnimalAsync(currentYoungAnimal, motherId.Value, fatherId.Value);
 
         CleanAndMakeNoEditable();
     }
@@ -264,8 +264,8 @@ else
         canNotBeMother = false;
         canNotBeFather = false;
 
-        motherId = 0;
-        fatherId = 0;
+        motherId = currentYoungAnimal?.FromCalving?.FemaleId ?? 0;
+        fatherId = currentYoungAnimal?.FromCalving?.MaleId ?? 0;
 
         isNoEditable = true;
     }

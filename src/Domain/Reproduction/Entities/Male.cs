@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HerdManagement.Domain.Reproduction.Entities
 {
-    [Table("males")]
     public class Male : AdultAnimal
     {
         public Male()

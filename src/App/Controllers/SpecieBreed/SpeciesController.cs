@@ -5,9 +5,9 @@ using HerdManagement.Domain.SpecieBreed.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using HerdManagement.Domain.SpecieBreed.Repository;
-using Applicattion.Data.DTO.SpecieBreed;
-using Applicattion.Data.DTO.SpecieBreed.Assembler;
-using Applicattion.Data.DTO.MeasurementUnit;
+using Application.Data.DTO.SpecieBreed;
+using Application.Data.DTO.SpecieBreed.Assembler;
+using Application.Data.DTO.MeasurementUnit;
 
 namespace App.Controllers.SpecieBreed
 {

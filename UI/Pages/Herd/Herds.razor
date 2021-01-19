@@ -3,6 +3,7 @@
 @inject IHerdRepository herdRepository
 @inject ISpecieRepository specieRepository
 @inject ISpecieBreedService specieBreedService
+@inject BootstrapService bootstrapService
 
 <nav class="navbar navbar-light mb-3 horizontal-nav-bar justify-content-between">
     <h6>Troupeaux</h6>
@@ -24,7 +25,7 @@ else
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">@herd.Name</h5>
-                            <p class="card-text">Troupeau avec des animaux de l'espece @herd.Specie.Label</p>
+                            <p class="card-text">Troupeau avec des animaux de l'espèce @herd.Specie.Label</p>
                             <NavLink href="@{"herds/" + @herd.Id.ToString() + "/" + herd.Name}" Match="NavLinkMatch.All" class="btn btn-primary mx-auto">Gerer</NavLink>
                         </div>
                     </div>
@@ -86,6 +87,27 @@ else
                 </div>
             </div>
         </div>
+
+        <div class="modal fade" id="successNotificationModal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <div class="thank-you-pop">
+                            <img src="images/Green-Round-Tick.png" alt="">
+                            <h1>Nouveau troupeau créé!</h1>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 
@@ -94,11 +116,8 @@ else
 @code {
     private List<HerdDTO> herdDTOs;
     private List<SpecieDTO> specieDTOs;
-    private List<String> specieLabels;
     private SpecieDTO selectedSpecie;
-    private string selectedColor;
-    private string SpecieId = "";
-    private HerdCreationDTO herdCreationDTO = new HerdCreationDTO();
+    private HerdCreationDTO herdCreationDTO = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -120,14 +139,12 @@ else
         {
             HerdDTO newHerdDTO = Args.Data;
             newHerdDTO.Specie = selectedSpecie;
-            newHerdDTO.Color = selectedColor;
             Herd createdHerd = await herdRepository.CreateHerd(newHerdDTO.ToHerd());
         }
         else if (Args.Action == "Edit")
         {
             HerdDTO newHerdDTO = Args.Data;
             newHerdDTO.Specie = selectedSpecie;
-            newHerdDTO.Color = selectedColor;
             int result = await herdRepository.UpdateHerd(newHerdDTO.ToHerd());
         }
     }
@@ -143,7 +160,12 @@ else
         Response<Herd> response = await specieBreedService.CreateHerd(herdCreationDTO);
         if (response.IsOperationSuccessfull)
         {
+            await bootstrapService.HideModal("#herdModalForm");
+
             ClearModalForm();
+
+            await bootstrapService.ShowModal("#successNotificationModal");
+
             herdDTOs.Add(response.Core.ToHerdDTO());
         }
     }

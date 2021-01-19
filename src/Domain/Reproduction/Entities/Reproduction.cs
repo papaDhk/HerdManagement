@@ -1,6 +1,5 @@
 ﻿using HerdManagement.Domain.Common;
 using HerdManagement.Domain.Reproduction.Enumerations;
-using HerdManagement.Domain.Reproduction.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -17,19 +16,19 @@ namespace HerdManagement.Domain.Reproduction.Entities
         }
 
         public static Reproduction None => new Reproduction(null, null, DateTime.MinValue,
-                                                            ReproductionTypeEnum.Artificial,
+                                                            ReproductionTypeEnum.Undefined,
                                                             ReproductionStateEnum.Initial);
         public Female Female { get; set; }
         public int FemaleId { get; set; }
         public Male Male { get; set; }
         public int MaleId { get; set; }
-        public DateTime Date { get; protected set; }
-        public ReproductionTypeEnum Type { get; protected set; }
-        public IEnumerable<ReproductionState> States { get; } = new List<ReproductionState>();
-        public string Commentary { get; protected set; }
-        public ReproductionState ActualState => States.Max();
+        public DateTime Date { get; set; }
+        public ReproductionTypeEnum Type { get; set; }
+        public IEnumerable<ReproductionState> States { get; set; } = new List<ReproductionState>();
+        public string Commentary { get; set; }
+        public ReproductionState ActualState => States.Any() ? States.Max() : ReproductionState.Undefined ;
 
-        public Calving Calving { get; set; }
+        public List<Calving> Calvings { get; set; } = new List<Calving>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Reproduction"/> class.
@@ -58,7 +57,7 @@ namespace HerdManagement.Domain.Reproduction.Entities
                 Female = null;
                 Male = null;
                 Date = DateTime.MinValue;
-                Type = ReproductionTypeEnum.Artificial;
+                Type = ReproductionTypeEnum.ArtificialInsemination;
             }
         }
 
@@ -99,7 +98,7 @@ namespace HerdManagement.Domain.Reproduction.Entities
                 Female = null;
                 Male = null;
                 Date = DateTime.MinValue;
-                Type = ReproductionTypeEnum.Artificial;
+                Type = ReproductionTypeEnum.ArtificialInsemination;
             }
         }
 

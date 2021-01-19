@@ -1,25 +1,17 @@
 ﻿@page "/animals/female/{AnimalHerdName}/{animalNumber:int}/{animalName}"
 
-@using Applicattion.Data.DTO.SpecieBreed
-@using HerdManagement.Infrastructure.Persistence.Repository
-@using Applicattion.Data.DTO.Reproduction
-@using HerdManagement.Domain.SpecieBreed.Entities
-@using HerdManagement.Domain.Reproduction.Entities
-@using Syncfusion.Blazor.Grids
-@using Syncfusion.Blazor.DropDowns
-@using Applicattion.Data.DTO.SpecieBreed.Assembler
-@using HerdManagement.Domain.SpecieBreed.Repository
-
 @inject ISpecieRepository specieRepository
 @inject NavigationManager navigationManager
 @inject IAnimalRepository animalRepository
 @inject IBreedRepository breedRepository
 @inject IReproductionService reproductionService
+@inject IReproductionRepository reproductionRepository
+@inject BootstrapService bootstrapService
 
 
 <nav class="navbar navbar-light mb-3 horizontal-nav-bar justify-content-between">
     <h6>Troupeaux / @AnimalHerdName / @AnimalName</h6>
-    <span class="oi oi-plus" aria-hidden="true" data-toggle="modal" data-target="#animalModalForm"></span>
+    <span class="oi oi-plus" aria-hidden="true" data-toggle="modal" data-target="#reproductionModalForm"></span>
 </nav>
 
 @if (currentFemale == null || breedDTOs == null)
@@ -32,8 +24,9 @@ else
         <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
             <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Profil</a>
             <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Caracteristiques</a>
-            <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Reproduction</a>
-            <a class="nav-item nav-link" id="nav-alinentation-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Alimentation</a>
+            <a class="nav-item nav-link" id="nav-reproductions-tab" data-toggle="tab" href="#nav-reproductions" role="tab" aria-controls="nav-reproductions" aria-selected="false">Reproduction</a>
+            <a class="nav-item nav-link" id="nav-alimentation-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Alimentation</a>
+            <a class="nav-item nav-link" id="nav-weightings-tab" data-toggle="tab" href="#nav-weightings" role="tab" aria-controls="nav-contact" aria-selected="false">Pesées</a>
         </div>
     </nav>
     <div class="tab-content mt-5" id="nav-tabContent">
@@ -100,9 +93,9 @@ else
                         <div class="col-9">
                             <InputSelect id="origin" @bind-Value="@currentFemale.Origin" class="form-control" disabled=@isNoEditable>
 
-                                @foreach (var origin in Enum.GetValues(typeof(AnimalOrigin)))
+                                @foreach (var origin in Helper.GetKeyValuesAsListFromEnum(typeof(AnimalOrigin)))
                                     {
-                                    <option value="@origin">@origin</option>
+                                    <option value="@origin.Key">@origin.Value</option>
                                     }
                             </InputSelect>
                             <ValidationMessage For="@(() => currentFemale.Origin)" />
@@ -121,7 +114,14 @@ else
                                     <option value="@female.Id">@female.ToString()</option>
                                     }
                             </InputSelect>
-                            @*<ValidationMessage For="@(() => currentFemale.MotherId)" />*@
+                            @if ((int)motherId > 0)
+                            {
+                                <i class="fas fa-eye text-primary" style="cursor: pointer;"
+                                   @onclick="@(() => navigationManager.NavigateTo(females.Where(f => f.Id == motherId).FirstOrDefault()?.GetProfilePageUrl(AnimalHerdName), forceLoad: true))">
+                                    Details
+                                </i>
+                            }
+
                             @if (@canNotBeMother)
                             {
                                 <div class="validation-message">L'animal sélectionné ne peut pas être la mère de "@currentFemale.Name"</div>
@@ -140,7 +140,14 @@ else
                                     <option value="@male.Id">@male.ToString()</option>
                                     }
                             </InputSelect>
-                            @*<ValidationMessage For="@(() => currentFemale.FatherId)" />*@
+                            @if ((int)fatherId > 0)
+                            {
+                                <i class="fas fa-eye text-primary" style="cursor: pointer;"
+                                   @onclick="@(() => navigationManager.NavigateTo(@males.Where(m => m.Id == fatherId).FirstOrDefault()?.GetProfilePageUrl(AnimalHerdName), forceLoad: true))">
+                                    Details
+                                </i>
+                            }
+
                             @if (@canNotBeFather)
                             {
                                 <div class="validation-message">L'animal selectionné ne peut pas être le père de "@currentFemale.Name"</div>
@@ -160,31 +167,429 @@ else
                                 </SfUploader>
                             </div>
                         </div>
-                    }
 
-
-                    @if (isNoEditable)
-                    {
-                        <button @onclick="@MakeEditable" type="button" class="btn btn-secondary">Modifier</button>
-                    }
-                    else
-                    {
                         <button @onclick="@CleanAndMakeNoEditable" type="button" class="btn btn-secondary">Annuler</button>
                         <button @onclick="@SaveAnimalAsync" type="button" class="btn btn-secondary">Enregistrer</button>
                     }
-
+                    else
+                    {
+                        <button @onclick="@MakeEditable" type="button" class="btn btn-secondary">Modifier</button>
+                    }
                 </EditForm>
             </div>
         </div>
         <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">...</div>
-        <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">...</div>
-        <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-alinentation-tab">...</div>
+        <div class="tab-pane fade" id="nav-reproductions" role="tabpanel" aria-labelledby="nav-reproductions-tab">
+            @if (reproductions == null)
+            {
+                <img src="images/dog-alone.gif" class="rounded mx-auto d-block img-fluid" />
+            }
+            else
+            {
+                <SfGrid @ref="reproductionsDataGrid" DataSource=@reproductions AllowFiltering="true" AllowPaging="true" AllowSorting="true" TValue=Reproduction>
+                     <GridSortSettings>
+                         <GridSortColumns>
+                             <GridSortColumn Field=@nameof(Reproduction.Date) Direction="SortDirection.Descending"></GridSortColumn>
+                         </GridSortColumns>
+                    </GridSortSettings>
+                    <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
+                    <GridPageSettings PageCount="5" PageSizes="true" PageSize="12"></GridPageSettings>
+                    <GridColumns>
+                        <GridColumn HeaderText="Partenaire">
+                            <Template>
+                                @{
+                                    var reproduction = (Reproduction)context;
+                                    var partner = males.Where(male => male.Id == reproduction.MaleId).FirstOrDefault();
+                                }
+                                <NavLink href="@partner?.GetProfilePageUrl(AnimalHerdName)">@partner?.ToString()</NavLink>
+                            </Template>
+                        </GridColumn>
+                        <GridColumn Field=@nameof(Reproduction.Date) TextAlign="TextAlign.Center">
+                        </GridColumn>
+                        <GridColumn Field=@nameof(Reproduction.Type) TextAlign="TextAlign.Center">
+                            <Template>
+                                @{
+                                    var reproduction = (Reproduction)context;
+                                }
+                                <span class="@GetClassFromReproductionType(reproduction.Type)">@Helper.GetDisplayName(reproduction.Type)</span>
+                            </Template>
+                        </GridColumn>
+                        <GridColumn Field=@nameof(Reproduction.ActualState) HeaderText="Etat actuel" TextAlign="TextAlign.Center">
+                            <Template>
+                                @{
+                                    var reproduction = (Reproduction)context;
+                                }
+                                <span class="@GetClassFromReproductionState(reproduction.ActualState.State)">@Helper.GetDisplayName(reproduction.ActualState.State)</span>
+                            </Template>
+                        </GridColumn>
+                        <GridColumn HeaderText="Actions" TextAlign="TextAlign.Center">
+                            <Template>
+                                @{
+                                    var reproduction = (Reproduction)context;
+                                }
+                                <button class="btn btn-primary btn-sm" @onclick="@(() => OnReproductionDetailsClickedAsync(reproduction))">Details</button>
+                                <NavLink href="" class="btn btn-danger btn-sm">Supprimer</NavLink>
+                            </Template>
+                        </GridColumn>
+                    </GridColumns>
+                </SfGrid>
+            }
+        </div>
+        <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-alimentation-tab">...</div>
+    <div class="tab-pane fade" id="nav-weightings" role="tabpanel" aria-labelledby="nav-weightings-tab">
+        <Weighings AnimalId="@currentFemale.Id"></Weighings>
+    </div>
+
+
+        <div class="modal fade" id="reproductionModalForm" tabindex="-1" role="dialog" aria-labelledby="Enregistrer une reproduction pour @currentFemale.Name" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="reproductionModalFormLabel">Enregistrer une reproduction pour @currentFemale.Name</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="ClearReproductionModalForm">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <EditForm Model="@_reproductionCreation" OnValidSubmit="SaveReproductionAsync">
+                        <div class="modal-body">
+
+                            <DataAnnotationsValidator />
+                            <div class="form-group row">
+                                <label for="Female-partner" class="col-3 col-form-label">
+                                    Femelle concernée
+                                </label>
+                                <div class="col-9">
+                                    <InputSelect id="Female-partner" @bind-Value="@currentFemale.Id" class="form-control">
+
+                                        <option value="@currentFemale.Id">@currentFemale.ToString()</option>
+                                    </InputSelect>
+                                    @*<ValidationMessage For="@(() => currentFemale.FatherId)" />*@
+                                    @if (reproductionCreationResponse.CouldFemaleBeMated == false)
+                                    {
+                                        <div class="validation-message">@currentFemale.Name n'était pas en mesure de se reproduire à cette date</div>
+                                    }
+
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="partner" class="col-3 col-form-label">
+                                    Partenaire
+                                </label>
+                                <div class="col-9">
+                                    <InputSelect id="partner" @bind-Value="@_reproductionCreation.MaleId" class="form-control">
+                                        @foreach (var male in males)
+                                            {
+                                            <option value="@male.Id">@male.ToString()</option>
+                                            }
+                                    </InputSelect>
+                                    @*<ValidationMessage For="@(() => currentFemale.FatherId)" />*@
+                                    @if (reproductionCreationResponse.WasMaleAdult == false)
+                                    {
+                                        <div class="validation-message">Le mâle selectionné n'était pas en mesure de se reproduire à cette date</div>
+                                    }
+
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="reproductionType" class="col-3 col-form-label">
+                                    Type de reproduction
+                                </label>
+                                <div class="col-9">
+                                    <InputSelect id="reproductionType" @bind-Value="@_reproductionCreation.Type" class="form-control">
+
+                                        @foreach (var reproductionType in Helper.GetKeyValuesAsListFromEnum(typeof(ReproductionTypeEnum)))
+                                            {
+                                            <option value="@reproductionType.Key">@reproductionType.Value</option>
+                                            }
+                                    </InputSelect>
+                                    <ValidationMessage For="@(() => _reproductionCreation.Type)" />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="reproductionDate" class="col-3 col-form-label">
+                                    Date
+                                </label>
+                                <div class="col-sm-9">
+                                    <InputDate id="reproductionDate" class="form-control" placeholder="Date de la reproduction" @bind-Value="_reproductionCreation.Date" />
+                                    <ValidationMessage For="@(() => _reproductionCreation.Date)" />
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="ClearReproductionModalForm">Fermer</button>
+                            <button type="submit" class="btn btn-primary">Enregistrer</button>
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="successNotificationModal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <div class="thank-you-pop">
+                            <img src="images/Green-Round-Tick.png" alt="">
+                            <h1>Enregistrement réussi</h1>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal fade" id="reproductionDetailModal" tabindex="-1" role="dialog" aria-labelledby="Details de reproduction" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="reproductionModalFormLabel">Details de reproduction</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="ClearReproductionModalForm">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <EditForm Model="@_reproductionCreation" OnValidSubmit="SaveUpdatedReproductionAsync">
+                        <div class="modal-body">
+
+                            <DataAnnotationsValidator />
+                            <div class="form-group row">
+                                <label for="Female-partner" class="col-3 col-form-label">
+                                    Femelle concernée
+                                </label>
+                                <div class="col-9">
+                                    <InputSelect id="Female-partner" @bind-Value="@currentFemale.Id" class="form-control">
+
+                                        <option value="@currentFemale.Id">@currentFemale.ToString()</option>
+                                    </InputSelect>
+                                    @*<ValidationMessage For="@(() => currentFemale.FatherId)" />*@
+                                    @if (reproductionCreationResponse.CouldFemaleBeMated == false)
+                                    {
+                                        <div class="validation-message">@currentFemale.Name n'était pas en mesure de se reproduire à cette date</div>
+                                    }
+
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="partner" class="col-3 col-form-label">
+                                    Partenaire
+                                </label>
+                                <div class="col-9">
+                                    <InputSelect id="partner" @bind-Value="@_reproductionCreation.MaleId" class="form-control">
+                                        @foreach (var male in males)
+                                            {
+                                            <option value="@male.Id">@male.ToString()</option>
+                                            }
+                                    </InputSelect>
+                                    @*<ValidationMessage For="@(() => currentFemale.FatherId)" />*@
+                                    @if (reproductionCreationResponse.WasMaleAdult == false)
+                                    {
+                                        <div class="validation-message">Le mâle selectionné n'était pas en mesure de se reproduire à cette date</div>
+                                    }
+
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="reproductionType" class="col-3 col-form-label">
+                                    Type de reproduction
+                                </label>
+                                <div class="col-9">
+                                    <InputSelect id="reproductionType" @bind-Value="@_reproductionCreation.Type" class="form-control">
+
+                                        @foreach (var reproductionType in Helper.GetKeyValuesAsListFromEnum(typeof(ReproductionTypeEnum)))
+                                            {
+                                            <option value="@reproductionType.Key">@reproductionType.Value</option>
+                                            }
+                                    </InputSelect>
+                                    <ValidationMessage For="@(() => _reproductionCreation.Type)" />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="reproductionDate" class="col-3 col-form-label">
+                                    Date
+                                </label>
+                                <div class="col-sm-9">
+                                    <InputDate id="reproductionDate" class="form-control" placeholder="Date de la reproduction" @bind-Value="_reproductionCreation.Date" />
+                                    <ValidationMessage For="@(() => _reproductionCreation.Date)" />
+                                </div>
+                            </div>
+                        <div class="form-group row">
+                            <label for="reproductionCurrentState" class="col-3 col-form-label">
+                                Etat actuel
+                            </label>
+                            <div class="col-sm-9">
+                                <span class="@GetClassFromReproductionState((ReproductionStateEnum)_reproductionCreation?.ActualState?.State)">@Helper.GetDisplayName(_reproductionCreation?.ActualState?.State)</span>
+                            </div>
+                        </div>
+                        
+                        <hr class="reproductionDetailsSeparator">
+                        
+                        <div class="form-group row">
+                                <label for="reproductionStates" class="col-2 col-form-label">
+                                    Etats
+                                </label>
+                                <div class="col-sm-10">
+                                    <SfGrid DataSource=@_reproductionCreation.States TValue=ReproductionState Toolbar="@(new List<string>() { "Add", "Edit", "Delete", "Update", "Cancel" })">
+                                        <GridEditSettings AllowAdding="true" AllowDeleting="true" AllowEditing="true"></GridEditSettings>
+
+                                        <GridColumns>
+                                            <GridColumn Field="@nameof(ReproductionState.Id)" IsPrimaryKey="true" IsIdentity="true" Visible="false"></GridColumn>
+                                            <GridColumn Field=@nameof(ReproductionState.State) HeaderText="Etat">
+                                                <Template Context="reproductionStateContext">
+                                                    @{
+                                                        var reproductionState = (ReproductionState)reproductionStateContext;
+                                                    }
+                                                    <span class="@GetClassFromReproductionState(reproductionState.State)">@Helper.GetDisplayName(reproductionState.State)</span>
+                                                </Template>
+
+                                                <EditTemplate Context="reproductionStateContext">
+                                                    @*ID value should be based on Field name*@
+                                                    <SfDropDownList ID="ReproductionState___State"
+                                                                    TItem="string"
+                                                                    TValue="ReproductionStateEnum"
+                                                                    @bind-Value="@((reproductionStateContext as ReproductionState).State)"
+                                                                    DataSource="@Helper.GetKeyValuesFromEnum(typeof(ReproductionStateEnum)).Keys">
+                                                        <DropDownListTemplates TItem="string">
+                                                            <ItemTemplate Context="ReproductionStateEnumContext">
+                                                                <span>@(Helper.GetKeyValuesFromEnum(typeof(ReproductionStateEnum))[(ReproductionStateEnumContext as string)])</span>
+                                                            </ItemTemplate>
+                                                        </DropDownListTemplates>
+                                                        <DropDownListFieldSettings Text="Name" Value="Name"></DropDownListFieldSettings>
+                                                    </SfDropDownList>
+                                                </EditTemplate>
+                                            </GridColumn>
+                                            <GridColumn Field=@nameof(ReproductionState.Date) TextAlign="TextAlign.Center">
+                                            </GridColumn>
+                                        </GridColumns>
+                                    </SfGrid>
+                                </div>
+                            </div>
+
+                            @if (_reproductionCreation.ActualState.State == ReproductionStateEnum.Complete)
+                            {
+                                <hr class="reproductionDetailsSeparator">
+                                
+                                <div class="form-group row">
+                                    <label for="reproductionCalvings" class="col-2 col-form-label">
+                                        Naissances
+                                    </label>
+                                    <div class="col-sm-10">
+                                        <SfGrid @ref="_calvingsGrid" DataSource=@_reproductionCreation.Calvings.ToCalvingDTOList() TValue=CalvingDTO Toolbar="@(new List<string>() { "Add", "Edit", "Delete", "Update", "Cancel" })">
+                                            <GridEditSettings AllowAdding="true" AllowDeleting="true" AllowEditing="true">
+                                                <Template Context="calvingContext">
+                                                    @{
+                                                        var calvingDTO = (calvingContext as CalvingDTO);
+                                                    }
+
+                                                    <div class="form-group row">
+                                                        <label for="breed" class="col-3 col-form-label">
+                                                            Race
+                                                        </label>
+                                                        <div class="col-9">
+                                                            <InputSelect id="breed" @bind-Value="calvingDTO.BreedId" class="form-control">
+                                                                @foreach (var breed in breedDTOs)
+                                                                {
+                                                                    <option value="@breed.Id">@breed.Label</option>
+                                                                }
+                                                            </InputSelect>
+                                                            <ValidationMessage For="@(() => calvingDTO.BreedId)"/>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label for="name" class="col-3 col-form-label">
+                                                            Nom
+                                                        </label>
+                                                        <div class="col-sm-9">
+                                                            <InputText id="name" class="form-control" placeholder="Nom du troupeau" @bind-Value="calvingDTO.NewBornName"/>
+                                                            <ValidationMessage For="@(() => calvingDTO.NewBornName)"/>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label for="number" class="col-3 col-form-label">
+                                                            Numero
+                                                        </label>
+                                                        <div class="col-sm-9">
+                                                            <InputNumber id="number" class="form-control" placeholder="numero de l'animal" @bind-Value="calvingDTO.NewBornNumber"/>
+                                                            <ValidationMessage For="@(() => calvingDTO.NewBornNumber)"/>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label for="sex" class="col-3 col-form-label">
+                                                            Sexe
+                                                        </label>
+                                                        <div class="col-9">
+                                                            <InputSelect id="sex" @bind-Value="calvingDTO.Sex" class="form-control">
+                                                                @foreach (var sex in Helper.GetKeyValuesAsListFromEnum(typeof(SexEnum)))
+                                                                {
+                                                                    <option value="@sex.Key">@sex.Value</option>
+                                                                }
+                                                            </InputSelect>
+                                                            <ValidationMessage For="@(() => calvingDTO.Sex)"/>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label for="birthWeight" class="col-3 col-form-label">
+                                                            Poids/naissance
+                                                        </label>
+                                                        <div class="col-sm-9">
+                                                            <InputNumber id="birthWeight" class="form-control" placeholder="poids de naissance" @bind-Value="calvingDTO.BirthWeight"/>
+                                                            <ValidationMessage For="@(() => calvingDTO.BirthWeight)"/>
+                                                        </div>
+                                                    </div>
+                                                </Template>
+                                            </GridEditSettings>
+                                            <GridEvents OnActionBegin="OnBeginCalvingsHandlerAsync" TValue="CalvingDTO"></GridEvents>
+
+                                            <GridColumns>
+                                                <GridColumn Field=@nameof(CalvingDTO.Id) IsPrimaryKey="true" IsIdentity="true" Visible="false"></GridColumn>
+                                                <GridColumn Field=@nameof(CalvingDTO.NewBornNumber) HeaderText="Nouveau-né" TextAlign="TextAlign.Center">
+                                                    <Template Context="calvingContext">
+                                                        @{
+                                                            var calvingDTO = (calvingContext as CalvingDTO);
+                                                            var newBorn = _reproductionCreation.Calvings.FirstOrDefault(c => c.AnimalId == calvingDTO?.NewBornId)?.Animal;
+                                                        }
+                                                        <a @onclick="@(() => navigationManager.NavigateTo(newBorn?.GetProfilePageUrl(AnimalHerdName), forceLoad: true))">
+                                                            @newBorn?.Name
+                                                        </a>
+                                                    </Template>
+                                                </GridColumn>
+                                                <GridColumn Field=@nameof(CalvingDTO.BreedId) HeaderText="Race" TextAlign="TextAlign.Center">
+                                                </GridColumn>
+                                                <GridColumn Field=@nameof(CalvingDTO.BirthWeight) HeaderText="Poids/naissance" TextAlign="TextAlign.Center">
+                                                </GridColumn>
+                                                <GridColumn Field=@nameof(CalvingDTO.Commentary) HeaderText="Commentaire" TextAlign="TextAlign.Center">
+                                                </GridColumn>
+                                            </GridColumns>
+                                        </SfGrid>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="ClearReproductionModalForm">Fermer</button>
+                            <button type="submit" class="btn btn-primary">Enregistrer</button>
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+
     </div>
 }
 
 
 @code {
-
     [Parameter]
     public int AnimalNumber { get; set; }
 
@@ -200,9 +605,9 @@ else
 
     private List<Female> females;
 
-    private int fatherId;
+    private int? fatherId = 0;
 
-    private int motherId;
+    private int? motherId = 0;
 
     private List<BreedDTO> breedDTOs;
 
@@ -212,47 +617,97 @@ else
 
     private bool canNotBeMother;
 
+    private List<Reproduction> reproductions;
+
+    private Reproduction _reproductionCreation = new();
+
+    private Reproduction _selectedReproduction = new();
+
+    private ReproductionCreationResponse reproductionCreationResponse = new()
+    {
+        WasMaleAdult = true, CouldFemaleBeMated = true, IsSuccessful = true
+    };
+
+    private SfGrid<Reproduction> reproductionsDataGrid;
+
+    private SfGrid<CalvingDTO> _calvingsGrid;
+
     protected async override Task OnInitializedAsync()
     {
         currentFemale = animalRepository.GetFemaleByNumber(AnimalNumber);
+
+        motherId = currentFemale?.FromCalving?.FemaleId ?? motherId;
+
+        fatherId = currentFemale?.FromCalving?.MaleId ?? fatherId;
 
         breedDTOs = await breedRepository.GetAllBreeds().ContinueWith(breeds => breeds.Result.ToBreedDTOList().ToList());
 
         males = animalRepository.GetMalesByHerdId(currentFemale.Herd.Id).ToList();
 
-        females = animalRepository.GetFemalesByHerdId(currentFemale.Herd.Id).ToList();
+        females = animalRepository.GetFemalesByHerdId(currentFemale.Herd.Id)
+                                  .Where(female => female.Id != currentFemale.Id)
+                                  .ToList();
+        currentFemale = animalRepository.GetAnimalWithReproductions(currentFemale);
+
+        reproductions = currentFemale.Reproductions;
+
+        _reproductionCreation = new Reproduction { FemaleId = currentFemale.Id, Date = DateTime.UtcNow };
     }
-
-    //private async Task OnInputFileChange(InputFileChangeEventArgs e)
-    //{
-    //    var maxAllowedFiles = 1;
-    //    var format = "image/png";
-
-    //    foreach (var imageFile in e.GetMultipleFiles(maxAllowedFiles))
-    //    {
-    //        var resizedImageFile = await imageFile.RequestImageFileAsync(format,
-    //            100, 100);
-    //        var buffer = new byte[resizedImageFile.Size];
-    //        await resizedImageFile.OpenReadStream().ReadAsync(buffer);
-    //        currentFemale.Picture = buffer;
-    //    }
-
-    //}
 
     private async Task SaveAnimalAsync()
     {
-        canNotBeMother = motherId > 0 ? !reproductionService.CanBeMotherOfAnimalBornIn(motherId, currentFemale.BirthDate) : false;
+        canNotBeMother = motherId > 0 && !reproductionService.CanBeMotherOfAnimalBornIn(motherId.Value, currentFemale.BirthDate);
 
-        canNotBeFather = fatherId > 0 ? !reproductionService.CanBeFatherOfAnimalBornIn(fatherId, currentFemale.BirthDate) : false;
+        canNotBeFather = fatherId > 0 && !reproductionService.CanBeFatherOfAnimalBornIn(fatherId.Value, currentFemale.BirthDate);
 
         if (canNotBeFather || canNotBeMother)
         {
             return;
         }
 
-        currentFemale = (Female)await reproductionService.UpdateAnimalAsync(currentFemale, motherId, fatherId);
+        currentFemale = (Female)await reproductionService.UpdateAnimalAsync(currentFemale, motherId.Value, fatherId.Value);
 
         CleanAndMakeNoEditable();
+    }
+
+    private async Task SaveReproductionAsync()
+    {
+        reproductionCreationResponse = await reproductionService.CreateOrUpdateReproductionAsync(_reproductionCreation);
+
+        if (reproductionCreationResponse.IsSuccessful)
+        {
+            if (reproductions.Any(r => r.Id == reproductionCreationResponse.Reproduction.Id) == false)
+            {
+                reproductions.Insert(0, reproductionCreationResponse.Reproduction);
+            }
+
+            reproductionsDataGrid.Refresh();
+
+            await bootstrapService.HideModal("#reproductionModalForm");
+
+            ClearReproductionModalForm();
+
+            await bootstrapService.ShowModal("#successNotificationModal");
+        }
+    }
+
+    private async Task SaveUpdatedReproductionAsync()
+    {
+        reproductionCreationResponse = await reproductionService
+                                             .CreateOrUpdateReproductionAsync(_reproductionCreation
+                                                 .ToReproductionUpdateDTO());
+
+        if (reproductionCreationResponse.IsSuccessful)
+        {
+            reproductionsDataGrid.Refresh();
+        }
+    }
+
+    private async Task OnReproductionDetailsClickedAsync(Reproduction reproduction)
+    {
+        _reproductionCreation = reproduction;
+
+        await bootstrapService.ShowModal("#reproductionDetailModal");
     }
 
     private void MakeEditable()
@@ -266,8 +721,8 @@ else
         canNotBeMother = false;
         canNotBeFather = false;
 
-        motherId = 0;
-        fatherId = 0;
+        motherId = currentFemale?.FromCalving?.FemaleId ?? 0;
+        fatherId = currentFemale?.FromCalving?.MaleId ?? 0;
 
         isNoEditable = true;
 
@@ -278,6 +733,89 @@ else
         foreach (var file in args.Files)
         {
             currentFemale.Picture = file.Stream.ToArray();
+        }
+    }
+
+    private string GetClassFromReproductionState(ReproductionStateEnum reproductionState)
+    {
+        return reproductionState switch
+        {
+            ReproductionStateEnum.Aborted => "badge badge-danger",
+            ReproductionStateEnum.Gestating => "badge badge-primary",
+            ReproductionStateEnum.Complete => "badge badge-success",
+            ReproductionStateEnum.Undefined => "badge badge-warning",
+            _ => "badge badge-secondary",
+        };
+    }
+
+    private string GetClassFromReproductionType(ReproductionTypeEnum reproductionType)
+    {
+        return reproductionType switch
+        {
+            ReproductionTypeEnum.Undefined => "badge badge-warning",
+            _ => "",
+        };
+    }
+
+    private void ClearReproductionModalForm()
+    {
+        _reproductionCreation = new Reproduction { FemaleId = currentFemale.Id, Date = DateTime.UtcNow };
+
+        reproductionCreationResponse = new ReproductionCreationResponse { WasMaleAdult = true, CouldFemaleBeMated = true, IsSuccessful = true };
+    }
+
+    private async Task OnBeginCalvingsHandlerAsync(ActionEventArgs<CalvingDTO> Args)
+    {
+        switch (Args.Action)
+        {
+            case "Add":
+            {
+                CalvingDTO calvingDTO = Args.Data;
+
+                calvingDTO.HerdId = currentFemale.Herd.Id;
+
+                calvingDTO.DateTime = _reproductionCreation.ActualState.Date;
+
+                Calving calving = calvingDTO.ToCalving();
+
+                calving.ReproductionId = _reproductionCreation.Id;
+
+                calving.FemaleId = _reproductionCreation.FemaleId;
+
+                calving.MaleId = _reproductionCreation.MaleId;
+
+                calving.Animal.Breed = breedDTOs.FirstOrDefault(b => b.Id == calving.Animal.BreedId).ToBreed();
+            
+                var animal = await reproductionService.AddNewAnimalAsync(calving.Animal.ToAnimalDTO());
+
+                calving.Animal = null;
+
+                calving.AnimalId = animal.Id;
+
+                calving = await reproductionRepository.CreateOrUpdateCalvingAsync(calving);
+
+                _reproductionCreation.Calvings.Add(calving);
+
+                _calvingsGrid.Refresh();
+                break;
+            }
+            case "Edit":
+            {
+                CalvingDTO calvingDTO = Args.Data;
+            
+                Calving calving = calvingDTO.ToCalving();
+
+                calving.Animal.Breed = breedDTOs.FirstOrDefault(b => b.Id == calving.Animal.BreedId).ToBreed();
+
+                calving = await reproductionRepository.CreateOrUpdateCalvingAsync(calving.ToCalvingUpdateDTOWithFullAnimal());
+
+                int calvingIndex = _reproductionCreation.Calvings.FindIndex(c => c.Id == calving.Id);
+
+                _reproductionCreation.Calvings[calvingIndex] = calving;
+
+                _calvingsGrid.Refresh();
+                break;
+            }
         }
     }
 }

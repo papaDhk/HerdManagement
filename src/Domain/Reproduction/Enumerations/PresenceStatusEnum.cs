@@ -5,7 +5,7 @@ namespace HerdManagement.Domain.Reproduction.Enumerations
     public enum PresenceStatusEnum
     {
         [Display(Name="En vie")]
-        Alive,
+        Alive = 0,
 
         [Display(Name = "Mort naturelle")]
         NaturalDeath,

@@ -20,11 +20,21 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
             _animalDbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
+        public Animal GetAnimalById(int animalId)
+        {
+            return _animalDbContext.Animals
+                .Include(animal => animal.Herd)
+                .Include(animal => animal.Breed)
+                .ThenInclude(breed => breed.Specie)
+                .Include(animal => animal.FromCalving)
+                .FirstOrDefault(animal => animal.Id == animalId);
+        }
+
         //Females
 
         public async Task<Female> AddNewFemaleAsync(Female female)
         {
-            var savedFemale = _animalDbContext.Females.Attach(female);
+            _animalDbContext.AttachGraphForAdditionWithoutDuplicates(female);
 
             _ = await _animalDbContext.SaveChangesAsync();
 
@@ -68,28 +78,61 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
         public Female GetFemaleByNumber(int femaleNumber)
         {
             return _animalDbContext.Females
-                    .Include(female => female.Herd)
-                   .Include(female => female.Breed)
-                   .ThenInclude(breed => breed.Specie)                  
-                   .Where(female => female.Number == femaleNumber)
-                   .FirstOrDefault();
+                .Include(female => female.Herd)
+                .Include(female => female.Breed)
+                .ThenInclude(breed => breed.Specie)
+                .Include(female => female.FromCalving)
+                .FirstOrDefault(female => female.Number == femaleNumber);
         }
 
         public Female GetFemaleById(int femaleId)
         {
             return _animalDbContext.Females
-                    .Include(female => female.Herd)
-                   .Include(female => female.Breed)
-                   .ThenInclude(breed => breed.Specie)
-                   .Where(female => female.Id == femaleId)
-                   .FirstOrDefault();
+                .Include(female => female.Herd)
+                .Include(female => female.Breed)
+                .ThenInclude(breed => breed.Specie)
+                .Include(female => female.FromCalving)
+                .FirstOrDefault(female => female.Id == femaleId);
         }
 
+        public Female GetFemaleWithReproductionsById(int femaleId)
+        {
+            return _animalDbContext.Females
+                .Include(female => female.Herd)
+                .Include(female => female.Breed)
+                .ThenInclude(breed => breed.Specie)
+                .Include(female => female.FromCalving)
+                .Include(female => female.Reproductions)
+                .FirstOrDefault(female => female.Id == femaleId);
+        }
+
+        public Female GetAnimalWithReproductions(Female female)
+        {
+            _animalDbContext.Entry(female).State = EntityState.Unchanged;
+            _animalDbContext.Entry(female).Collection(female => female.Reproductions).Load();
+
+            foreach (var reproduction in female.Reproductions)
+            {
+                _animalDbContext.Entry(reproduction).Collection(r => r.States).Load();
+                _animalDbContext.Entry(reproduction).Collection(r => r.Calvings).Load();
+
+                foreach (var calving in reproduction.Calvings)
+                {
+                    _animalDbContext.Entry(calving).Reference(r => r.Animal).Load();
+                    _animalDbContext.Entry(calving.Animal).Reference(a => a.Breed).Load();
+                    _animalDbContext.Entry(calving.Animal).Reference(a => a.Herd).Load();
+                    _animalDbContext.Entry(calving.Animal.Breed).Reference(b => b.Specie).Load();
+                }
+            }
+
+            _animalDbContext.UntrackEntities();
+            return female;
+        }
         //Males
 
         public async Task<Male> AddNewMaleAsync(Male male)
         {
-            var savedMale = _animalDbContext.Males.Attach(male);
+             _animalDbContext.AttachGraphForAdditionWithoutDuplicates(male);
 
             _ = await _animalDbContext.SaveChangesAsync();
 
@@ -136,21 +179,36 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
         public Male GetMaleByNumber(int maleNumber)
         {
             return _animalDbContext.Males
-                   .Include(male => male.Herd)
-                   .Include(male => male.Breed)
-                   .ThenInclude(breed => breed.Specie)
-                   .Where(male => male.Number == maleNumber)
-                   .FirstOrDefault();
+                .Include(male => male.Herd)
+                .Include(male => male.Breed)
+                .ThenInclude(breed => breed.Specie)
+                .Include(male => male.FromCalving)
+                .FirstOrDefault(male => male.Number == maleNumber);
         }
 
         public Male GetMaleById(int maleId)
         {
             return _animalDbContext.Males
-                   .Include(male => male.Herd)
-                   .Include(male => male.Breed)
-                   .ThenInclude(breed => breed.Specie)
-                   .Where(male => male.Id == maleId)
-                   .FirstOrDefault();
+                .Include(male => male.Herd)
+                .Include(male => male.Breed)
+                .ThenInclude(breed => breed.Specie)
+                .Include(male => male.FromCalving)
+                .FirstOrDefault(male => male.Id == maleId);
+        }
+
+        public Male GetAnimalWithReproductions(Male male)
+        {
+            _animalDbContext.Entry(male).State = EntityState.Unchanged;
+            _animalDbContext.Entry(male).Collection(male => male.Reproductions).Load();
+
+            foreach (var reproduction in male.Reproductions)
+            {
+                _animalDbContext.Entry(reproduction).Collection(r => r.States).Load();
+            }
+
+            _animalDbContext.UntrackEntities();
+
+            return male;
         }
 
 
@@ -158,7 +216,7 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
 
         public async Task<YoungAnimal> AddNewYoungAnimalAsync(YoungAnimal youngAnimal)
         {
-            var savedYoungAnimal = _animalDbContext.YoungAnimals.Attach(youngAnimal);
+            _animalDbContext.AttachGraphForAdditionWithoutDuplicates(youngAnimal);
 
             _ = await _animalDbContext.SaveChangesAsync();
 
@@ -204,21 +262,21 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
         public YoungAnimal GetYoungAnimalByNumber(int youngAnimalNumber)
         {
             return _animalDbContext.YoungAnimals
-                   .Include(youngAnimal => youngAnimal.Herd)
-                   .Include(youngAnimal => youngAnimal.Breed)
-                   .ThenInclude(youngAnimal => youngAnimal.Specie)
-                   .Where(youngAnimal => youngAnimal.Number == youngAnimalNumber)
-                   .FirstOrDefault();
+                .Include(youngAnimal => youngAnimal.Herd)
+                .Include(youngAnimal => youngAnimal.Breed)
+                .ThenInclude(youngAnimal => youngAnimal.Specie)
+                .Include(youngAnimal => youngAnimal.FromCalving)
+                .FirstOrDefault(youngAnimal => youngAnimal.Number == youngAnimalNumber);
         }
 
         public YoungAnimal GetYoungAnimalById(int youngAnimalId)
         {
             return _animalDbContext.YoungAnimals
-                   .Include(youngAnimal => youngAnimal.Herd)
-                   .Include(youngAnimal => youngAnimal.Breed)
-                   .ThenInclude(youngAnimal => youngAnimal.Specie)
-                   .Where(youngAnimal => youngAnimal.Id == youngAnimalId)
-                   .FirstOrDefault();
+                .Include(youngAnimal => youngAnimal.Herd)
+                .Include(youngAnimal => youngAnimal.Breed)
+                .ThenInclude(youngAnimal => youngAnimal.Specie)
+                .Include(youngAnimal => youngAnimal.FromCalving)
+                .FirstOrDefault(youngAnimal => youngAnimal.Id == youngAnimalId);
         }
 
 

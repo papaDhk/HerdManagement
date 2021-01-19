@@ -51,6 +51,11 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
             return MeasurementUnit;
         }
 
+        public IEnumerable<MeasurementUnit> GetMeasurementUnitsByCategory(MeasurementUnitCategory measurementUnitCategory)
+        {
+            throw new System.NotImplementedException();
+        }
+
         /// <summary>
         /// Delete a measurementUnit
         /// </summary>

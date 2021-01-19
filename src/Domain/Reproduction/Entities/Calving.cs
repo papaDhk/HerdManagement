@@ -15,24 +15,21 @@ namespace HerdManagement.Domain.Reproduction.Entities
 
         public DateTime Date { get;  set; }
         public Reproduction Reproduction { get;  set; }
-        public uint NumberOfNewborn { get;  set; }
         public string Commentary { get;  set; }
         public int ReproductionId { get; set; }
         public int MaleId { get; set; }
         public int FemaleId { get; set; }
-        public Female Female { get; set; }
-        public List<YoungAnimal> YoungAnimals { get; set; }
-
+        public int AnimalId { get; set; }
+        public Animal Animal { get; set; }
         /// <summary>
         /// Expresses equality of two Calving objects.
         /// </summary>
-        /// <param name="obj">The object.</param>
+        /// <param name="obj">The object.</param>F
         /// <returns></returns>
         protected override bool EqualsCore(Calving obj)
         {
             return Date == obj.Date
-                   && Reproduction == obj.Reproduction
-                   && NumberOfNewborn == obj.NumberOfNewborn;
+                   && Reproduction == obj.Reproduction;
         }
 
         /// <summary>
@@ -41,7 +38,7 @@ namespace HerdManagement.Domain.Reproduction.Entities
         /// <returns></returns>
         protected override int GetHashCodeCore()
         {
-            return Date.GetHashCode() ^ Reproduction.GetHashCode() ^ (int)NumberOfNewborn;
+            return Date.GetHashCode() ^ Reproduction.GetHashCode();
         }
     }
 }

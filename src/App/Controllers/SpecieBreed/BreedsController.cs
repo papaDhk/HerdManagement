@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using HerdManagement.Domain.SpecieBreed.Repository;
 using HerdManagement.Domain.SpecieBreed.Service;
-using Applicattion.Data.Messages;
-using Applicattion.Data.DTO.SpecieBreed;
-using Applicattion.Data.DTO.SpecieBreed.Assembler;
+using Application.Data.Messages;
+using Application.Data.DTO.SpecieBreed;
+using Application.Data.DTO.SpecieBreed.Assembler;
 
 namespace App.Controllers.SpecieBreed
 {

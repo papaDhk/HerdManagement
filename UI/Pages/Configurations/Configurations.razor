@@ -1,0 +1,119 @@
+﻿@page "/configurations"
+
+@using Application.Data.DTO.MeasurementUnit
+@using HerdManagement.Domain.Common.Entities
+@using Application.Data.DTO.MeasurementUnitBreed.Assembler
+@using HerdManagement.Domain.Common.Repositories
+@using Syncfusion.Blazor.Grids
+
+@inject IMeasurementUnitRepository measurementUnitRepository
+@inject NavigationManager navigationManager
+
+<nav class="navbar navbar-light mb-3 horizontal-nav-bar">
+    <h6>Configurations</h6>
+</nav>
+
+@if (measurementUnitDTOs == null)
+{
+    <img src="images/dog-alone.gif" class="rounded mx-auto d-block img-fluid"/>
+}
+else
+{
+    <div class="control-section">
+        <div class="row">
+            <div class="col-sm-12 col-md-8 mb-2">
+                <div class="card">
+                    <div class="card-header">
+                        Unités de mesure
+                    </div>
+                    <div class="card-body">
+                        <SfGrid @ref="measurementUnitDataGrid" DataSource="@measurementUnitDTOs" AllowSorting="true" Toolbar="@_toolbarItems">
+                            <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog"></GridEditSettings>
+                            <GridEvents OnActionBegin="OnBeginHandlerAsync" CommandClicked="OnDetailButtonClicked" TValue="MeasurementUnitDTO"></GridEvents>
+                            <GridColumns>
+                                <GridColumn Field=@nameof(MeasurementUnitDTO.Id) IsPrimaryKey="true" IsIdentity="true" Visible="false"></GridColumn>
+                                <GridColumn Field=@nameof(MeasurementUnitDTO.Label)>
+                                </GridColumn>
+                                <GridColumn Field=@nameof(MeasurementUnitDTO.Symbol) HeaderText="Symbole">
+                                </GridColumn>
+                                <GridColumn Field=@nameof(MeasurementUnitDTO.MeasurementUnitCategory) HeaderText="Catégorie">
+                                    <Template Context="MeasurementUnitContext">
+                                                                                        @{
+                                                                                            var measurementUnit = (MeasurementUnitDTO)MeasurementUnitContext;
+                                                                                        }
+                                                                                        <span>@Helper.GetDisplayName(measurementUnit.MeasurementUnitCategory)</span>
+                                                                                    </Template>
+                                    <EditTemplate Context="MeasurementUnitContext">
+                                        @*ID value should be based on Field name*@
+                                        <SfDropDownList ID="MeasurementUnit___Category"
+                                                        TItem="string"
+                                                        TValue="MeasurementUnitCategory"
+                                                        @bind-Value="@((MeasurementUnitContext as MeasurementUnitDTO).MeasurementUnitCategory)"
+                                                        DataSource="@Helper.GetKeyValuesFromEnum(typeof(MeasurementUnitCategory)).Keys">
+                                            <DropDownListTemplates TItem="string">
+                                                <ItemTemplate Context="MeasurementUnitCategoryContext">
+                                                    <span>@(Helper.GetKeyValuesFromEnum(typeof(MeasurementUnitCategory))[(MeasurementUnitCategoryContext as string)])</span>
+                                                </ItemTemplate>
+                                            </DropDownListTemplates>
+                                            <DropDownListFieldSettings Text="Name" Value="Name"></DropDownListFieldSettings>
+                                        </SfDropDownList>
+                                    </EditTemplate>
+                                </GridColumn>
+                                <GridColumn Field=@nameof(MeasurementUnitDTO.Commentary) HeaderText="Commentaire">
+                                </GridColumn>
+                                <GridColumn HeaderText="Actions">
+                                    <GridCommandColumns>
+                                        <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() {IconCss = "e-icons e-edit", CssClass = "e-flat"})"></GridCommandColumn>
+                                        <GridCommandColumn Type="CommandButtonType.Save" ButtonOption="@(new CommandButtonOptions() {IconCss = "e-icons e-update", CssClass = "e-flat"})"></GridCommandColumn>
+                                        <GridCommandColumn Type="CommandButtonType.Cancel" ButtonOption="@(new CommandButtonOptions() {IconCss = "e-icons e-cancel-icon", CssClass = "e-flat"})"></GridCommandColumn>
+                                    </GridCommandColumns>
+                                </GridColumn>
+                            </GridColumns>
+                        </SfGrid>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+@code {
+    private List<MeasurementUnitDTO> measurementUnitDTOs;
+
+    private SfGrid<MeasurementUnitDTO> measurementUnitDataGrid;
+
+    protected override async Task OnInitializedAsync()
+    {
+        IEnumerable<MeasurementUnit> measurementUnits = await measurementUnitRepository.GetAllMeasurementUnits();
+
+        measurementUnitDTOs = measurementUnits.ToMeasurementUnitDTOList().ToList();
+    }
+
+    private readonly string[] _toolbarItems = {"Add"};
+
+    private async Task OnBeginHandlerAsync(ActionEventArgs<MeasurementUnitDTO> Args)
+    {
+        if (Args.Action == "Add")
+        {
+            MeasurementUnitDTO newMeasurementUnitDTO = Args.Data;
+            Args.Data = await measurementUnitRepository.CreateMeasurementUnit(newMeasurementUnitDTO.ToMeasurementUnit())
+                              .ContinueWith(r => r.Result.ToMeasurementUnitDTO());
+
+        }
+        else if (Args.Action == "Edit")
+        {
+            MeasurementUnitDTO newMeasurementUnitDTO = Args.Data;
+            int result = await measurementUnitRepository.UpdateMeasurementUnit(newMeasurementUnitDTO.ToMeasurementUnit());
+        }
+    }
+
+    private void OnDetailButtonClicked(CommandClickEventArgs<MeasurementUnitDTO> args)
+    {
+        if (args.CommandColumn.ButtonOption.Content == "Details")
+        {
+            navigationManager.NavigateTo($"measurementUnits/{args.RowData.Id}");
+        }
+    }
+
+}

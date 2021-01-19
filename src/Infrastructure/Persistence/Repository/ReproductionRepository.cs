@@ -20,17 +20,56 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
             _animalDbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
-        public Calving GetCalvingByParentsIdsAndDate(int femaleId, int maleId, DateTime datetime)
+        public async Task<Reproduction> CreateOrUpdateReproductionAsync(Reproduction reproduction)
         {
-            var calving = _animalDbContext.Calvings
-                .Select(calving => calving)
-                .Where(calving => calving.Reproduction.FemaleId == femaleId && calving.Reproduction.MaleId == maleId && calving.Date.Date == datetime.Date)
-                .Include(calving => calving.Reproduction).FirstOrDefault();
+            if(reproduction is null)
+            {
+                return null;
+            }
+
+            _animalDbContext.AttachGraphWithoutDuplicates(reproduction);
+
+            await _animalDbContext.SaveChangesAsync();
+
+            _animalDbContext.UntrackEntities();
+
+            return reproduction;
+        }
+
+        public Reproduction GetReproductionByPartnersIdsAndDate(int femaleId, int maleId, DateTime datetime)
+        {
+            var reproduction = _animalDbContext.Reproductions
+                .Select(reproduction => reproduction)
+                .Include(reproduction => reproduction.Calvings)
+                .FirstOrDefault(reproduction => reproduction.FemaleId == femaleId && reproduction.MaleId == maleId &&
+                                                reproduction.Date >= datetime.Date.AddDays(-10) &&
+                                                reproduction.Date <= datetime.Date.AddDays(10));
+
+
+            _animalDbContext.UntrackEntities();
+
+            return reproduction;
+        }
+
+        public async Task<Calving> CreateOrUpdateCalvingAsync(Calving calving)
+        {
+            if (calving is null)
+            {
+                return null;
+            }
+
+            _animalDbContext.Update(calving);
+
+            await _animalDbContext.SaveChangesAsync();
+
+            await _animalDbContext.Entry(calving).Reference(r => r.Animal).LoadAsync();
+            await _animalDbContext.Entry(calving.Animal).Reference(a => a.Breed).LoadAsync();
+            await _animalDbContext.Entry(calving.Animal).Reference(a => a.Herd).LoadAsync();
+            await _animalDbContext.Entry(calving.Animal.Breed).Reference(b => b.Specie).LoadAsync();
 
             _animalDbContext.UntrackEntities();
 
             return calving;
         }
-
     }
 }

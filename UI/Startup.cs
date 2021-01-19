@@ -1,4 +1,4 @@
-using Applicattion.Services;
+using Application.Services;
 using HerdManagement.Domain.Characteristic.Repositories;
 using HerdManagement.Domain.Reproduction.Repository;
 using HerdManagement.Domain.SpecieBreed.Repository;
@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Syncfusion.Blazor;
+using HerdManagement.Domain.Common.Repositories;
 
 namespace UI
 {
@@ -41,6 +42,9 @@ namespace UI
             services.AddTransient<ISpecieBreedService, SpecieBreedService>();
             services.AddTransient<IReproductionService, ReproductionService>();
             services.AddTransient<IReproductionRepository, ReproductionRepository>();
+            services.AddTransient<IMeasurementUnitRepository, MeasurementUnitRepositoryEF>();
+            services.AddTransient<IWeighingRepository, WeighingRepository>();
+            services.AddScoped<BootstrapService, BootstrapService>();
             services.AddTransient<ICharacteristicRepository, CharacteristicRepository>();
 
             services.AddSyncfusionBlazor();

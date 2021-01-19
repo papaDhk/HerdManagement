@@ -7,7 +7,7 @@ namespace HerdManagement.Domain.Reproduction.Enumerations
 {
     public enum SexEnum
     {
-        [Display(Name = "Male")]
+        [Display(Name = "Mâle")]
         Male,
 
         [Display(Name = "Femelle")]

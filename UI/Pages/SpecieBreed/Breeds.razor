@@ -1,8 +1,5 @@
 ﻿@page "/breeds"
-
-@using Applicattion.Data.DTO.SpecieBreed
 @using HerdManagement.Infrastructure.Persistence.Repository
-@using Applicattion.Data.DTO.SpecieBreed.Assembler
 @using HerdManagement.Domain.SpecieBreed.Entities
 @using Syncfusion.Blazor.Grids
 @using Newtonsoft.Json
@@ -25,7 +22,7 @@
 }
 else
 {
-    <SfGrid DataSource="@breedDTOs" AllowSorting="true" AllowFiltering="true" Toolbar="@ToolbarItems" TValue="BreedDTO">
+    <SfGrid DataSource="@breedDTOs" AllowSorting="true" Toolbar="@ToolbarItems" TValue="BreedDTO">
         <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true"></GridEditSettings>
         <GridEvents OnActionBegin="OnBeginHandlerAsync" TValue="BreedDTO"></GridEvents>
         <GridColumns>

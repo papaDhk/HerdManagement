@@ -6,7 +6,6 @@ using System.Linq;
 
 namespace HerdManagement.Domain.Reproduction.Entities
 {
-    [Table("Females")]
     public class Female : AdultAnimal
     {
         public Female()
@@ -21,7 +20,7 @@ namespace HerdManagement.Domain.Reproduction.Entities
         /// <summary>
         /// Different female's calvings
         /// </summary>
-        public IEnumerable<Calving> Calvings { get; } = new List<Calving>();
+        public List<Calving> Calvings { get; } = new List<Calving>();
 
         /// <summary>
         /// Indicates wether this female can be mated or not at the given date
@@ -31,7 +30,7 @@ namespace HerdManagement.Domain.Reproduction.Entities
         public bool CanBeMated(DateTime date)
         {   bool wasAdult = WasAdult(date);
 
-            DateTime lastCalvingDate = Calvings.Any()? Calvings.Max(calving => calving.Date).Date : DateTime.MinValue;
+            DateTime lastCalvingDate = Calvings.Any()? Calvings.Max(calving => calving.Date).Date : DateTime.MinValue; //TODO: take last calving at the given date
 
             return wasAdult && TimeSpan.FromDays(Breed.Specie.MinimumTimeSpanBetweenCalvingAndHeatInDays) < date.Subtract(lastCalvingDate);
         }
