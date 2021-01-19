@@ -1,4 +1,5 @@
 ﻿using HerdManagement.Domain.Characteristic.Entities;
+using HerdManagement.Domain.Common.Entities;
 using HerdManagement.Domain.Reproduction.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,7 +19,8 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
         public virtual DbSet<ReproductionState> ReproductionStates { get; set; }
         public virtual DbSet<Reproduction> Reproductions { get; set; }
         public virtual DbSet<Calving> Calvings { get; set; }
-
+        public virtual DbSet<Weighing> Weighings { get; set; }
+        public virtual DbSet<MeasurementUnit> MeasurementUnits { get; set; }
         public virtual DbSet<SpecieCharacteristic> SpecieCharacteristics { get; set; }
         public virtual DbSet<BreedCharacteristic> BreedCharacteristics { get; set; }
         public virtual DbSet<SpecieCharacteristicValue> SpecieCharacteristicValues { get; set; }

@@ -15,12 +15,12 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
 {
     public class MeasurementUnitRepositoryEF : IMeasurementUnitRepository
     {
-        private readonly AnimalDbContext _animalDbContext;
+        private readonly HerdManagementDbContext _herdManagementDbContext;
         
-        public MeasurementUnitRepositoryEF(AnimalDbContext animalDbContext)
+        public MeasurementUnitRepositoryEF(HerdManagementDbContext animalDbContext)
         {
-            _animalDbContext = animalDbContext ?? throw new ArgumentNullException(nameof(animalDbContext));
-            _animalDbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+            _herdManagementDbContext = animalDbContext ?? throw new ArgumentNullException(nameof(animalDbContext));
+            _herdManagementDbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
         /// <summary>
@@ -30,11 +30,11 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
         /// <returns></returns>
         public async Task<MeasurementUnit> CreateMeasurementUnit(MeasurementUnit measurementUnit)
         {
-            var createdMeasurementUnitEntry = await _animalDbContext.MeasurementUnits.AddAsync(measurementUnit);
+            var createdMeasurementUnitEntry = await _herdManagementDbContext.MeasurementUnits.AddAsync(measurementUnit);
             
-            await _animalDbContext.SaveChangesAsync();
+            await _herdManagementDbContext.SaveChangesAsync();
 
-            _animalDbContext.UntrackEntities();
+            _herdManagementDbContext.UntrackEntities();
             
             return createdMeasurementUnitEntry.Entity;
         }
@@ -56,7 +56,7 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
         /// <returns></returns>
         public async Task<MeasurementUnit> GetMeasurementUnitById(int id)
         {
-           return _animalDbContext.MeasurementUnits.FirstOrDefault(m => m.Id == id);
+           return _herdManagementDbContext.MeasurementUnits.FirstOrDefault(m => m.Id == id);
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
         {
             return string.IsNullOrWhiteSpace(label)
                 ? null
-                : _animalDbContext.MeasurementUnits.FirstOrDefault(m => m.Label == label);
+                : _herdManagementDbContext.MeasurementUnits.FirstOrDefault(m => m.Label == label);
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
         /// <returns></returns>
         public async Task<IEnumerable<MeasurementUnit>> GetAllMeasurementUnits()
         {
-            return _animalDbContext.MeasurementUnits.Select(m => m);
+            return _herdManagementDbContext.MeasurementUnits.Select(m => m);
         }
         
         //TODO
@@ -88,7 +88,7 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
         /// <returns></returns>
         public IEnumerable<MeasurementUnit> GetMeasurementUnitsByCategory(MeasurementUnitCategory measurementUnitCategory)
         {
-            return _animalDbContext.MeasurementUnits.Where(m => m.Category == measurementUnitCategory);
+            return _herdManagementDbContext.MeasurementUnits.Where(m => m.Category == measurementUnitCategory);
         }
 
         /// <summary>
@@ -101,11 +101,11 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
             if (measurementUnit is null)
                 return 0;
 
-            _animalDbContext.MeasurementUnits.Update(measurementUnit);
+            _herdManagementDbContext.MeasurementUnits.Update(measurementUnit);
 
-            await _animalDbContext.SaveChangesAsync();
+            await _herdManagementDbContext.SaveChangesAsync();
             
-            _animalDbContext.UntrackEntities();
+            _herdManagementDbContext.UntrackEntities();
 
             return 1;
         }

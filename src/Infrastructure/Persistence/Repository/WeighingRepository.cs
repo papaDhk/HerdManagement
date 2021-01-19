@@ -17,18 +17,18 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
 {
     public class WeighingRepository : IWeighingRepository
     {
-        private readonly AnimalDbContext _animalDbContext;
+        private readonly HerdManagementDbContext _herdManagementDbContext;
         
-        public WeighingRepository(AnimalDbContext animalDbContext)
+        public WeighingRepository(HerdManagementDbContext animalDbContext)
         {
-            _animalDbContext = animalDbContext ?? throw new ArgumentNullException(nameof(animalDbContext));
-            _animalDbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+            _herdManagementDbContext = animalDbContext ?? throw new ArgumentNullException(nameof(animalDbContext));
+            _herdManagementDbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
 
         public IEnumerable<Weighing> GetWeighingsByAnimalId(int animalId)
         {
-            return _animalDbContext.Weighings
+            return _herdManagementDbContext.Weighings
                 .Where(weighing => weighing.AnimalId == animalId)
                 .Include(weighing => weighing.MeasurementUnit);
         }
@@ -38,13 +38,13 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
             if (weighing is null)
                 return null;
 
-            var entityEntry = _animalDbContext.Weighings.Update(weighing);
+            var entityEntry = _herdManagementDbContext.Weighings.Update(weighing);
 
-            await _animalDbContext.SaveChangesAsync();
+            await _herdManagementDbContext.SaveChangesAsync();
             
             await entityEntry.Reference(weighing => weighing.MeasurementUnit).LoadAsync();
 
-            _animalDbContext.UntrackEntities();
+            _herdManagementDbContext.UntrackEntities();
 
             return entityEntry.Entity;
         }
