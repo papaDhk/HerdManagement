@@ -116,11 +116,8 @@ else
 @code {
     private List<HerdDTO> herdDTOs;
     private List<SpecieDTO> specieDTOs;
-    private List<String> specieLabels;
     private SpecieDTO selectedSpecie;
-    private string selectedColor;
-    private string SpecieId = "";
-    private HerdCreationDTO herdCreationDTO = new HerdCreationDTO();
+    private HerdCreationDTO herdCreationDTO = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -142,14 +139,12 @@ else
         {
             HerdDTO newHerdDTO = Args.Data;
             newHerdDTO.Specie = selectedSpecie;
-            newHerdDTO.Color = selectedColor;
             Herd createdHerd = await herdRepository.CreateHerd(newHerdDTO.ToHerd());
         }
         else if (Args.Action == "Edit")
         {
             HerdDTO newHerdDTO = Args.Data;
             newHerdDTO.Specie = selectedSpecie;
-            newHerdDTO.Color = selectedColor;
             int result = await herdRepository.UpdateHerd(newHerdDTO.ToHerd());
         }
     }

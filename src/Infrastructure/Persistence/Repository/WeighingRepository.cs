@@ -42,6 +42,8 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
 
             await _animalDbContext.SaveChangesAsync();
             
+            await entityEntry.Reference(weighing => weighing.MeasurementUnit).LoadAsync();
+
             _animalDbContext.UntrackEntities();
 
             return entityEntry.Entity;

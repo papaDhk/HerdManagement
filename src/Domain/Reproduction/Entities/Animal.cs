@@ -4,6 +4,8 @@ using HerdManagement.Domain.Reproduction.Enumerations;
 using HerdManagement.Domain.SpecieBreed.Entities;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
+using HerdManagement.Domain.Characteristic.Entities;
 
 namespace HerdManagement.Domain.Reproduction.Entities
 {
@@ -22,9 +24,11 @@ namespace HerdManagement.Domain.Reproduction.Entities
         public  Breed Breed { get; set; }
         public int HerdId { get; set; }
         public  Herd.Entities.Herd Herd { get; set; }
-        public  string BreedCharacteristics { get; set; }
-        public  string SpecieCharacteristics { get; set; }
         public Calving FromCalving { get; set; }
+
+        public List<BreedCharacteristicValue> BreedCharacteristicValues { get; set; }
+
+        public List<SpecieCharacteristicValue> SpecieCharacteristicValues { get; set; }
 
         private string _categoryType;
         

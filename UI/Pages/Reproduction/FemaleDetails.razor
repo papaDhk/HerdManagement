@@ -251,7 +251,7 @@ else
                         </button>
                     </div>
 
-                    <EditForm Model="@reproductionCreation" OnValidSubmit="SaveReproductionAsync">
+                    <EditForm Model="@_reproductionCreation" OnValidSubmit="SaveReproductionAsync">
                         <div class="modal-body">
 
                             <DataAnnotationsValidator />
@@ -277,7 +277,7 @@ else
                                     Partenaire
                                 </label>
                                 <div class="col-9">
-                                    <InputSelect id="partner" @bind-Value="@reproductionCreation.MaleId" class="form-control">
+                                    <InputSelect id="partner" @bind-Value="@_reproductionCreation.MaleId" class="form-control">
                                         @foreach (var male in males)
                                             {
                                             <option value="@male.Id">@male.ToString()</option>
@@ -296,14 +296,14 @@ else
                                     Type de reproduction
                                 </label>
                                 <div class="col-9">
-                                    <InputSelect id="reproductionType" @bind-Value="@reproductionCreation.Type" class="form-control">
+                                    <InputSelect id="reproductionType" @bind-Value="@_reproductionCreation.Type" class="form-control">
 
                                         @foreach (var reproductionType in Helper.GetKeyValuesAsListFromEnum(typeof(ReproductionTypeEnum)))
                                             {
                                             <option value="@reproductionType.Key">@reproductionType.Value</option>
                                             }
                                     </InputSelect>
-                                    <ValidationMessage For="@(() => reproductionCreation.Type)" />
+                                    <ValidationMessage For="@(() => _reproductionCreation.Type)" />
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -311,8 +311,8 @@ else
                                     Date
                                 </label>
                                 <div class="col-sm-9">
-                                    <InputDate id="reproductionDate" class="form-control" placeholder="Date de la reproduction" @bind-Value="reproductionCreation.Date" />
-                                    <ValidationMessage For="@(() => reproductionCreation.Date)" />
+                                    <InputDate id="reproductionDate" class="form-control" placeholder="Date de la reproduction" @bind-Value="_reproductionCreation.Date" />
+                                    <ValidationMessage For="@(() => _reproductionCreation.Date)" />
                                 </div>
                             </div>
                         </div>
@@ -359,7 +359,7 @@ else
                         </button>
                     </div>
 
-                    <EditForm Model="@reproductionCreation" OnValidSubmit="SaveUpdatedReproductionAsync">
+                    <EditForm Model="@_reproductionCreation" OnValidSubmit="SaveUpdatedReproductionAsync">
                         <div class="modal-body">
 
                             <DataAnnotationsValidator />
@@ -385,7 +385,7 @@ else
                                     Partenaire
                                 </label>
                                 <div class="col-9">
-                                    <InputSelect id="partner" @bind-Value="@reproductionCreation.MaleId" class="form-control">
+                                    <InputSelect id="partner" @bind-Value="@_reproductionCreation.MaleId" class="form-control">
                                         @foreach (var male in males)
                                             {
                                             <option value="@male.Id">@male.ToString()</option>
@@ -404,14 +404,14 @@ else
                                     Type de reproduction
                                 </label>
                                 <div class="col-9">
-                                    <InputSelect id="reproductionType" @bind-Value="@reproductionCreation.Type" class="form-control">
+                                    <InputSelect id="reproductionType" @bind-Value="@_reproductionCreation.Type" class="form-control">
 
                                         @foreach (var reproductionType in Helper.GetKeyValuesAsListFromEnum(typeof(ReproductionTypeEnum)))
                                             {
                                             <option value="@reproductionType.Key">@reproductionType.Value</option>
                                             }
                                     </InputSelect>
-                                    <ValidationMessage For="@(() => reproductionCreation.Type)" />
+                                    <ValidationMessage For="@(() => _reproductionCreation.Type)" />
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -419,8 +419,8 @@ else
                                     Date
                                 </label>
                                 <div class="col-sm-9">
-                                    <InputDate id="reproductionDate" class="form-control" placeholder="Date de la reproduction" @bind-Value="reproductionCreation.Date" />
-                                    <ValidationMessage For="@(() => reproductionCreation.Date)" />
+                                    <InputDate id="reproductionDate" class="form-control" placeholder="Date de la reproduction" @bind-Value="_reproductionCreation.Date" />
+                                    <ValidationMessage For="@(() => _reproductionCreation.Date)" />
                                 </div>
                             </div>
                         <div class="form-group row">
@@ -428,7 +428,7 @@ else
                                 Etat actuel
                             </label>
                             <div class="col-sm-9">
-                                <span class="@GetClassFromReproductionState((ReproductionStateEnum)reproductionCreation?.ActualState?.State)">@Helper.GetDisplayName(reproductionCreation?.ActualState?.State)</span>
+                                <span class="@GetClassFromReproductionState((ReproductionStateEnum)_reproductionCreation?.ActualState?.State)">@Helper.GetDisplayName(_reproductionCreation?.ActualState?.State)</span>
                             </div>
                         </div>
                         
@@ -439,7 +439,7 @@ else
                                     Etats
                                 </label>
                                 <div class="col-sm-10">
-                                    <SfGrid DataSource=@reproductionCreation.States TValue=ReproductionState Toolbar="@(new List<string>() { "Add", "Edit", "Delete", "Update", "Cancel" })">
+                                    <SfGrid DataSource=@_reproductionCreation.States TValue=ReproductionState Toolbar="@(new List<string>() { "Add", "Edit", "Delete", "Update", "Cancel" })">
                                         <GridEditSettings AllowAdding="true" AllowDeleting="true" AllowEditing="true"></GridEditSettings>
 
                                         <GridColumns>
@@ -475,7 +475,7 @@ else
                                 </div>
                             </div>
 
-                            @if (reproductionCreation.ActualState.State == ReproductionStateEnum.Complete)
+                            @if (_reproductionCreation.ActualState.State == ReproductionStateEnum.Complete)
                             {
                                 <hr class="reproductionDetailsSeparator">
                                 
@@ -484,7 +484,7 @@ else
                                         Naissances
                                     </label>
                                     <div class="col-sm-10">
-                                        <SfGrid @ref="calvingsGrid" DataSource=@reproductionCreation.Calvings.ToCalvingDTOList() TValue=CalvingDTO Toolbar="@(new List<string>() { "Add", "Edit", "Delete", "Update", "Cancel" })">
+                                        <SfGrid @ref="_calvingsGrid" DataSource=@_reproductionCreation.Calvings.ToCalvingDTOList() TValue=CalvingDTO Toolbar="@(new List<string>() { "Add", "Edit", "Delete", "Update", "Cancel" })">
                                             <GridEditSettings AllowAdding="true" AllowDeleting="true" AllowEditing="true">
                                                 <Template Context="calvingContext">
                                                     @{
@@ -502,7 +502,7 @@ else
                                                                     <option value="@breed.Id">@breed.Label</option>
                                                                 }
                                                             </InputSelect>
-                                                            <ValidationMessage For="@(() => calvingDTO.BreedId)" />
+                                                            <ValidationMessage For="@(() => calvingDTO.BreedId)"/>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
@@ -510,8 +510,8 @@ else
                                                             Nom
                                                         </label>
                                                         <div class="col-sm-9">
-                                                            <InputText id="name" class="form-control" placeholder="Nom du troupeau" @bind-Value="calvingDTO.NewBornName" />
-                                                            <ValidationMessage For="@(() => calvingDTO.NewBornName)" />
+                                                            <InputText id="name" class="form-control" placeholder="Nom du troupeau" @bind-Value="calvingDTO.NewBornName"/>
+                                                            <ValidationMessage For="@(() => calvingDTO.NewBornName)"/>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
@@ -519,8 +519,8 @@ else
                                                             Numero
                                                         </label>
                                                         <div class="col-sm-9">
-                                                            <InputNumber id="number" class="form-control" placeholder="numero de l'animal" @bind-Value="calvingDTO.NewBornNumber" />
-                                                            <ValidationMessage For="@(() => calvingDTO.NewBornNumber)" />
+                                                            <InputNumber id="number" class="form-control" placeholder="numero de l'animal" @bind-Value="calvingDTO.NewBornNumber"/>
+                                                            <ValidationMessage For="@(() => calvingDTO.NewBornNumber)"/>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
@@ -534,7 +534,7 @@ else
                                                                     <option value="@sex.Key">@sex.Value</option>
                                                                 }
                                                             </InputSelect>
-                                                            <ValidationMessage For="@(() => calvingDTO.Sex)" />
+                                                            <ValidationMessage For="@(() => calvingDTO.Sex)"/>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
@@ -542,8 +542,8 @@ else
                                                             Poids/naissance
                                                         </label>
                                                         <div class="col-sm-9">
-                                                            <InputNumber id="birthWeight" class="form-control" placeholder="poids de naissance" @bind-Value="calvingDTO.BirthWeight" />
-                                                            <ValidationMessage For="@(() => calvingDTO.BirthWeight)" />
+                                                            <InputNumber id="birthWeight" class="form-control" placeholder="poids de naissance" @bind-Value="calvingDTO.BirthWeight"/>
+                                                            <ValidationMessage For="@(() => calvingDTO.BirthWeight)"/>
                                                         </div>
                                                     </div>
                                                 </Template>
@@ -556,7 +556,7 @@ else
                                                     <Template Context="calvingContext">
                                                         @{
                                                             var calvingDTO = (calvingContext as CalvingDTO);
-                                                            var newBorn = reproductionCreation.Calvings.FirstOrDefault(c => c.AnimalId == calvingDTO?.NewBornId)?.Animal;
+                                                            var newBorn = _reproductionCreation.Calvings.FirstOrDefault(c => c.AnimalId == calvingDTO?.NewBornId)?.Animal;
                                                         }
                                                         <a @onclick="@(() => navigationManager.NavigateTo(newBorn?.GetProfilePageUrl(AnimalHerdName), forceLoad: true))">
                                                             @newBorn?.Name
@@ -573,7 +573,7 @@ else
                                         </SfGrid>
                                     </div>
                                 </div>
-                             }
+                            }
                         </div>
 
                         <div class="modal-footer">
@@ -619,9 +619,9 @@ else
 
     private List<Reproduction> reproductions;
 
-    private Reproduction reproductionCreation = new();
+    private Reproduction _reproductionCreation = new();
 
-    private Reproduction selectedReproduction = new();
+    private Reproduction _selectedReproduction = new();
 
     private ReproductionCreationResponse reproductionCreationResponse = new()
     {
@@ -630,7 +630,7 @@ else
 
     private SfGrid<Reproduction> reproductionsDataGrid;
 
-    private SfGrid<CalvingDTO> calvingsGrid;
+    private SfGrid<CalvingDTO> _calvingsGrid;
 
     protected async override Task OnInitializedAsync()
     {
@@ -651,7 +651,7 @@ else
 
         reproductions = currentFemale.Reproductions;
 
-        reproductionCreation = new Reproduction { FemaleId = currentFemale.Id, Date = DateTime.UtcNow };
+        _reproductionCreation = new Reproduction { FemaleId = currentFemale.Id, Date = DateTime.UtcNow };
     }
 
     private async Task SaveAnimalAsync()
@@ -672,7 +672,7 @@ else
 
     private async Task SaveReproductionAsync()
     {
-        reproductionCreationResponse = await reproductionService.CreateOrUpdateReproductionAsync(reproductionCreation);
+        reproductionCreationResponse = await reproductionService.CreateOrUpdateReproductionAsync(_reproductionCreation);
 
         if (reproductionCreationResponse.IsSuccessful)
         {
@@ -694,7 +694,7 @@ else
     private async Task SaveUpdatedReproductionAsync()
     {
         reproductionCreationResponse = await reproductionService
-                                             .CreateOrUpdateReproductionAsync(reproductionCreation
+                                             .CreateOrUpdateReproductionAsync(_reproductionCreation
                                                  .ToReproductionUpdateDTO());
 
         if (reproductionCreationResponse.IsSuccessful)
@@ -705,7 +705,7 @@ else
 
     private async Task OnReproductionDetailsClickedAsync(Reproduction reproduction)
     {
-        reproductionCreation = reproduction;
+        _reproductionCreation = reproduction;
 
         await bootstrapService.ShowModal("#reproductionDetailModal");
     }
@@ -759,59 +759,63 @@ else
 
     private void ClearReproductionModalForm()
     {
-        reproductionCreation = new Reproduction { FemaleId = currentFemale.Id, Date = DateTime.UtcNow };
+        _reproductionCreation = new Reproduction { FemaleId = currentFemale.Id, Date = DateTime.UtcNow };
 
         reproductionCreationResponse = new ReproductionCreationResponse { WasMaleAdult = true, CouldFemaleBeMated = true, IsSuccessful = true };
     }
 
     private async Task OnBeginCalvingsHandlerAsync(ActionEventArgs<CalvingDTO> Args)
     {
-        if (Args.Action == "Add")
+        switch (Args.Action)
         {
-            CalvingDTO calvingDTO = Args.Data;
+            case "Add":
+            {
+                CalvingDTO calvingDTO = Args.Data;
 
-            calvingDTO.HerdId = currentFemale.Herd.Id;
+                calvingDTO.HerdId = currentFemale.Herd.Id;
 
-            calvingDTO.DateTime = reproductionCreation.ActualState.Date;
+                calvingDTO.DateTime = _reproductionCreation.ActualState.Date;
 
-            Calving calving = calvingDTO.ToCalving();
+                Calving calving = calvingDTO.ToCalving();
 
-            calving.ReproductionId = reproductionCreation.Id;
+                calving.ReproductionId = _reproductionCreation.Id;
 
-            calving.FemaleId = reproductionCreation.FemaleId;
+                calving.FemaleId = _reproductionCreation.FemaleId;
 
-            calving.MaleId = reproductionCreation.MaleId;
+                calving.MaleId = _reproductionCreation.MaleId;
 
-            calving.Animal.Breed = breedDTOs.FirstOrDefault(b => b.Id == calving.Animal.BreedId).ToBreed();
+                calving.Animal.Breed = breedDTOs.FirstOrDefault(b => b.Id == calving.Animal.BreedId).ToBreed();
             
-            var animal = await reproductionService.AddNewAnimalAsync(calving.Animal.ToAnimalDTO());
+                var animal = await reproductionService.AddNewAnimalAsync(calving.Animal.ToAnimalDTO());
 
-            calving.Animal = null;
+                calving.Animal = null;
 
-            calving.AnimalId = animal.Id;
+                calving.AnimalId = animal.Id;
 
-            calving = await reproductionRepository.CreateOrUpdateCalvingAsync(calving);
+                calving = await reproductionRepository.CreateOrUpdateCalvingAsync(calving);
 
-            reproductionCreation.Calvings.Add(calving);
+                _reproductionCreation.Calvings.Add(calving);
 
-            calvingsGrid.Refresh();
-
-        }
-        else if (Args.Action == "Edit")
-        {
-            CalvingDTO calvingDTO = Args.Data;
+                _calvingsGrid.Refresh();
+                break;
+            }
+            case "Edit":
+            {
+                CalvingDTO calvingDTO = Args.Data;
             
-            Calving calving = calvingDTO.ToCalving();
+                Calving calving = calvingDTO.ToCalving();
 
-            calving.Animal.Breed = breedDTOs.FirstOrDefault(b => b.Id == calving.Animal.BreedId).ToBreed();
+                calving.Animal.Breed = breedDTOs.FirstOrDefault(b => b.Id == calving.Animal.BreedId).ToBreed();
 
-            calving = await reproductionRepository.CreateOrUpdateCalvingAsync(calving.ToCalvingUpdateDTOWithFullAnimal());
+                calving = await reproductionRepository.CreateOrUpdateCalvingAsync(calving.ToCalvingUpdateDTOWithFullAnimal());
 
-            int calvingIndex = reproductionCreation.Calvings.FindIndex(c => c.Id == calving.Id);
+                int calvingIndex = _reproductionCreation.Calvings.FindIndex(c => c.Id == calving.Id);
 
-            reproductionCreation.Calvings[calvingIndex] = calving;
+                _reproductionCreation.Calvings[calvingIndex] = calving;
 
-            calvingsGrid.Refresh();
+                _calvingsGrid.Refresh();
+                break;
+            }
         }
     }
 }

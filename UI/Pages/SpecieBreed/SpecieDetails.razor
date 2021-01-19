@@ -13,11 +13,11 @@
 </nav>
 @if (breedDTOs == null)
 {
-    <p><em>En cours de chargement...</em></p>
+    <img src="images/dog-alone.gif" class="rounded mx-auto d-block img-fluid" />
 }
 else
 {
-    <SfGrid DataSource="@breedDTOs" AllowSorting="true" Toolbar="@ToolbarItems" TValue="BreedDTO">
+    <SfGrid DataSource="@breedDTOs" AllowSorting="true" Toolbar="@_toolbarItems" TValue="BreedDTO">
         <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true"></GridEditSettings>
         <GridEvents OnActionBegin="OnBeginHandlerAsync" CommandClicked="OnDetailButtonClicked" TValue="BreedDTO"></GridEvents>
         <GridColumns>
@@ -42,8 +42,6 @@ else
     private string pageTitle;
     private Specie specie;
     private List<BreedDTO> breedDTOs;
-    private List<String> specieLabels;
-    private SpecieDTO selectedSpecie;
     protected override async Task OnInitializedAsync()
     {
         specie = await specieRepository.GetSpecieById(specieId);
@@ -52,7 +50,7 @@ else
         breedDTOs = breeds.ToBreedDTOList().ToList();
     }
 
-    public string[] ToolbarItems = new string[] { "Add", "Edit", "Update", "Cancel" };
+    private readonly string[] _toolbarItems = { "Add", "Edit", "Update", "Cancel" };
 
     private async Task OnBeginHandlerAsync(ActionEventArgs<BreedDTO> Args)
     {
@@ -61,6 +59,7 @@ else
             BreedDTO newBreedDTO = Args.Data;
             newBreedDTO.Specie = specie.ToSpecieDTO();
             Breed createdBreed = await breedRepository.CreateBreed(newBreedDTO.ToBreed());
+            Args.Data = createdBreed.ToBreedDTO();
         }
         else if (Args.Action == "Edit")
         {

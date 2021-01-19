@@ -17,7 +17,7 @@
 }
 else
 {
-    <SfGrid DataSource="@specieDTOs" AllowSorting="true" Toolbar="@ToolbarItems">
+    <SfGrid DataSource="@specieDTOs" AllowSorting="true" Toolbar="@_toolbarItems">
         <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true"></GridEditSettings>
         <GridEvents OnActionBegin="OnBeginHandlerAsync" CommandClicked="OnDetailButtonClicked" TValue="SpecieDTO"></GridEvents>
         <GridColumns>
@@ -52,7 +52,7 @@ else
         specieDTOs = species.ToSpecieDTOList().ToList();
     }
 
-    private string[] ToolbarItems = new string[] { "Add" };
+    private readonly string[] _toolbarItems = { "Add" };
 
     private async Task OnBeginHandlerAsync(ActionEventArgs<SpecieDTO> Args)
     {
@@ -60,6 +60,7 @@ else
         {
             SpecieDTO newSpecieDTO = Args.Data;
             Specie createdSpecie = await specieRepository.CreateSpecie(newSpecieDTO.ToSpecie());
+            Args.Data = createdSpecie.ToSpecieDTO();
         }
         else if (Args.Action == "Edit")
         {

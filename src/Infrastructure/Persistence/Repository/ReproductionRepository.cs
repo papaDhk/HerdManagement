@@ -12,9 +12,9 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
 {
     public class ReproductionRepository : IReproductionRepository
     {
-        private readonly AnimalDbContext _animalDbContext;
+        private HerdManagementDbContext _animalDbContext;
 
-        public ReproductionRepository(AnimalDbContext animalDbContext)
+        public ReproductionRepository(HerdManagementDbContext animalDbContext)
         {
             _animalDbContext = animalDbContext ?? throw new ArgumentNullException(nameof(animalDbContext));
             _animalDbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;

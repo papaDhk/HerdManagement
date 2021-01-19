@@ -27,7 +27,7 @@ else
                         Unités de mesure
                     </div>
                     <div class="card-body">
-                        <SfGrid @ref="measurementUnitDataGrid" DataSource="@measurementUnitDTOs" AllowSorting="true" Toolbar="@ToolbarItems">
+                        <SfGrid @ref="measurementUnitDataGrid" DataSource="@measurementUnitDTOs" AllowSorting="true" Toolbar="@_toolbarItems">
                             <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog"></GridEditSettings>
                             <GridEvents OnActionBegin="OnBeginHandlerAsync" CommandClicked="OnDetailButtonClicked" TValue="MeasurementUnitDTO"></GridEvents>
                             <GridColumns>
@@ -90,14 +90,16 @@ else
         measurementUnitDTOs = measurementUnits.ToMeasurementUnitDTOList().ToList();
     }
 
-    public string[] ToolbarItems = new string[] {"Add"};
+    private readonly string[] _toolbarItems = {"Add"};
 
     private async Task OnBeginHandlerAsync(ActionEventArgs<MeasurementUnitDTO> Args)
     {
         if (Args.Action == "Add")
         {
             MeasurementUnitDTO newMeasurementUnitDTO = Args.Data;
-            MeasurementUnit createdMeasurementUnit = await measurementUnitRepository.CreateMeasurementUnit(newMeasurementUnitDTO.ToMeasurementUnit());
+            Args.Data = await measurementUnitRepository.CreateMeasurementUnit(newMeasurementUnitDTO.ToMeasurementUnit())
+                              .ContinueWith(r => r.Result.ToMeasurementUnitDTO());
+
         }
         else if (Args.Action == "Edit")
         {

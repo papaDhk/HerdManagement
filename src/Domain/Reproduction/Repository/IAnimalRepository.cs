@@ -31,10 +31,6 @@ namespace HerdManagement.Domain.Reproduction.Repository
         YoungAnimal GetYoungAnimalById(int youngAnimalId);
         Task<YoungAnimal> UpdateYoungAnimalAsync(YoungAnimal youngAnimal);
 
-         
-         
-         
-
     }
 
 }
