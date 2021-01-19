@@ -50,7 +50,7 @@ namespace HerdManagement.Domain.Reproduction.Entities
                 return "young_animal";
             }
 
-            set => _categoryType = CategoryType;
+            set => _categoryType = value;
         }
 
         protected override bool EqualsCore(Animal animalToCompareWith)
