@@ -44,15 +44,19 @@ namespace HerdManagement.Domain.Reproduction.Entities
                 
                 if (IsAdult)
                 {
-                    return Sex == SexEnum.Male ? "male" : "female";
+                    return Sex == SexEnum.Male ? MALE_TYPE : FEMALE_TYPE;
                 }
 
-                return "young_animal";
+                return YOUNG_ANIMAL_TYPE;
             }
 
-            set => _categoryType = CategoryType;
+            set => _categoryType = value;
         }
 
+        public const string YOUNG_ANIMAL_TYPE = "young_animal";
+        public const string MALE_TYPE = "male";
+        public const string FEMALE_TYPE = "female";
+        
         protected override bool EqualsCore(Animal animalToCompareWith)
         {
             return Id == animalToCompareWith.Id && Number == animalToCompareWith.Number;

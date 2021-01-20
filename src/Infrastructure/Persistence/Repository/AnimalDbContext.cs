@@ -28,9 +28,7 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
         public virtual DbSet<Weighing> Weighings { get; set; }
         
         public virtual DbSet<MeasurementUnit> MeasurementUnits { get; set; }
-
-
-
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Calving>()

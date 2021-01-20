@@ -9,5 +9,7 @@ namespace HerdManagement.Domain.Reproduction.Repository
         Entities.Reproduction GetReproductionByPartnersIdsAndDate(int femaleId, int maleId, DateTime datetime);
         Task<Entities.Reproduction> CreateOrUpdateReproductionAsync(Entities.Reproduction reproduction);
         Task<Calving> CreateOrUpdateCalvingAsync(Calving calving);
+        Task DeleteCalving(int calvingId);
+        Task DeleteReproduction(int reproductionId);
     }
 }

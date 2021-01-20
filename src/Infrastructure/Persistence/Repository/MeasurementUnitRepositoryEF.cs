@@ -46,7 +46,11 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
         /// <returns></returns>
         public async Task<int> DeleteMeasurementUnit(int id)
         {
-            throw new NotImplementedException();
+            _herdManagementDbContext.Remove(new MeasurementUnit {Id = id});
+
+            await _herdManagementDbContext.SaveChangesAsync();
+
+            return 1;
         }
 
         /// <summary>

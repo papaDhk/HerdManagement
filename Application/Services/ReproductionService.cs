@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 using Application.Data.DTO.Reproduction;
 using Application.Data.DTO.SpecieBreed.Assembler;
 using Application.Data.Messages;
@@ -17,11 +18,11 @@ namespace Application.Services
 {
     public class ReproductionService : IReproductionService
     {
-        private IAnimalRepository _animalRepository;
+        private readonly IAnimalRepository _animalRepository;
 
-        private IBreedRepository _breedRepository;
+        private readonly IBreedRepository _breedRepository;
 
-        private IReproductionRepository _reproductionRepository;
+        private readonly IReproductionRepository _reproductionRepository;
 
         public ReproductionService(IAnimalRepository animalRepository, IBreedRepository breedRepository, IReproductionRepository reproductionRepository)
         {
@@ -113,30 +114,36 @@ namespace Application.Services
 
         public async Task<Animal> UpdateAnimalAsync(Animal animal, int motherId, int fatherId)
         {
-            if (fatherId != 0 && motherId != 0)
+            using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
-                Calving animalOriginCalving = GetOrCreateParentRelationShip(motherId, fatherId, animal.BirthDate, animal.ApproximativeOriginReproductionDate, animal.Id);
+                Calving animalOriginCalving = new();
+                if (fatherId != 0 && motherId != 0)
+                {
+                     animalOriginCalving = GetOrCreateParentRelationShip(motherId, fatherId, animal.BirthDate, animal.ApproximativeOriginReproductionDate, animal.Id);
+                }
+
+                if (animal.FromCalving != null && animalOriginCalving.Id != animal.FromCalving.Id)
+                {
+                    await _reproductionRepository.DeleteCalving(animal.FromCalving.Id);
+                }
 
                 animal.FromCalving = animalOriginCalving;
-            }
 
-            if (animal.IsAdult == false)
-            {
-                animal = await _animalRepository.UpdateYoungAnimalAsync((YoungAnimal)animal).ContinueWith(youngAnimal => (Animal)youngAnimal.Result);
-            }
-            else
-            {
-                switch (animal.Sex)
+                animal = animal.CategoryType switch
                 {
-                    case SexEnum.Male:
-                        animal = await _animalRepository.UpdateMaleAsync((Male)animal).ContinueWith(male => (Animal)male.Result);
-                        break;
-                    case SexEnum.Female:
-                        animal = await _animalRepository.UpdateFemaleAsync((Female)animal).ContinueWith(female => (Animal)female.Result);
-                        break;
-                }
+                    Animal.MALE_TYPE => await _animalRepository.UpdateMaleAsync(animal.ToMaleUpdateDTO())
+                        .ContinueWith(male => (Animal) male.Result),
+                
+                    Animal.FEMALE_TYPE => await _animalRepository.UpdateFemaleAsync((Female) animal.ToFemaleUpdateDTO())
+                        .ContinueWith(female => (Animal) female.Result),
+                     
+                    _ => await _animalRepository.UpdateYoungAnimalAsync(animal.ToYoungAnimalUpdateDTO())
+                    .ContinueWith(youngAnimal => (Animal) youngAnimal.Result),
+                };
+                
+                scope.Complete();
             }
-
+            
             return animal;
         }
 

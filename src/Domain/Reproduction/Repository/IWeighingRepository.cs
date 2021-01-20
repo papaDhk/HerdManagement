@@ -9,5 +9,7 @@ namespace HerdManagement.Domain.Reproduction.Repository
     {
         IEnumerable<Weighing> GetWeighingsByAnimalId(int animalId);
         Task<Entities.Weighing> CreateOrUpdateWeighingAsync(Weighing weighing);
+        Task DeleteWeighing(int id);
+        Task<Weighing> GetLatestWeighingByAnimalId(int animalId);
     }
 }

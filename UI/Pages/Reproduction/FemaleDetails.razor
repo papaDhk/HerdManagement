@@ -1,4 +1,5 @@
 ﻿@page "/animals/female/{AnimalHerdName}/{animalNumber:int}/{animalName}"
+@using Action = Syncfusion.Blazor.Grids.Action
 
 @inject ISpecieRepository specieRepository
 @inject NavigationManager navigationManager
@@ -537,18 +538,9 @@ else
                                                             <ValidationMessage For="@(() => calvingDTO.Sex)"/>
                                                         </div>
                                                     </div>
-                                                    <div class="form-group row">
-                                                        <label for="birthWeight" class="col-3 col-form-label">
-                                                            Poids/naissance
-                                                        </label>
-                                                        <div class="col-sm-9">
-                                                            <InputNumber id="birthWeight" class="form-control" placeholder="poids de naissance" @bind-Value="calvingDTO.BirthWeight"/>
-                                                            <ValidationMessage For="@(() => calvingDTO.BirthWeight)"/>
-                                                        </div>
-                                                    </div>
                                                 </Template>
                                             </GridEditSettings>
-                                            <GridEvents OnActionBegin="OnBeginCalvingsHandlerAsync" TValue="CalvingDTO"></GridEvents>
+                                            <GridEvents OnActionBegin="OnBeginCalvingsHandlerAsync" OnActionComplete="OnActionCalvingsHandlerComplete" TValue="CalvingDTO"></GridEvents>
 
                                             <GridColumns>
                                                 <GridColumn Field=@nameof(CalvingDTO.Id) IsPrimaryKey="true" IsIdentity="true" Visible="false"></GridColumn>
@@ -564,8 +556,6 @@ else
                                                     </Template>
                                                 </GridColumn>
                                                 <GridColumn Field=@nameof(CalvingDTO.BreedId) HeaderText="Race" TextAlign="TextAlign.Center">
-                                                </GridColumn>
-                                                <GridColumn Field=@nameof(CalvingDTO.BirthWeight) HeaderText="Poids/naissance" TextAlign="TextAlign.Center">
                                                 </GridColumn>
                                                 <GridColumn Field=@nameof(CalvingDTO.Commentary) HeaderText="Commentaire" TextAlign="TextAlign.Center">
                                                 </GridColumn>
@@ -766,6 +756,13 @@ else
 
     private async Task OnBeginCalvingsHandlerAsync(ActionEventArgs<CalvingDTO> Args)
     {
+        if (Args.RequestType == Action.Delete)
+        {
+            CalvingDTO calvingDTO = Args.Data;
+
+            await reproductionRepository.DeleteCalving(calvingDTO.Id);
+        }
+        
         switch (Args.Action)
         {
             case "Add":
@@ -794,9 +791,8 @@ else
 
                 calving = await reproductionRepository.CreateOrUpdateCalvingAsync(calving);
 
-                _reproductionCreation.Calvings.Add(calving);
-
-                _calvingsGrid.Refresh();
+                Args.Data = calving.ToCalvingDTO();
+                
                 break;
             }
             case "Edit":
@@ -809,13 +805,27 @@ else
 
                 calving = await reproductionRepository.CreateOrUpdateCalvingAsync(calving.ToCalvingUpdateDTOWithFullAnimal());
 
-                int calvingIndex = _reproductionCreation.Calvings.FindIndex(c => c.Id == calving.Id);
+                Args.Data = calving.ToCalvingDTO();
 
-                _reproductionCreation.Calvings[calvingIndex] = calving;
-
-                _calvingsGrid.Refresh();
                 break;
             }
         }
     }
+    
+    private void OnActionCalvingsHandlerComplete(ActionEventArgs<CalvingDTO> Args) 
+    { 
+        if(Args.RequestType == Action.Save) 
+        {
+            if (Args.Action == "Edit")
+            {
+                CalvingDTO calvingDTO = Args.Data;
+
+                int calvingIndex = _reproductionCreation.Calvings.FindIndex(c => c.Id == calvingDTO.Id);
+                
+                _reproductionCreation.Calvings[calvingIndex] = calvingDTO.ToCalving();            
+            }
+            
+            _calvingsGrid.Refresh();
+        } 
+    } 
 }

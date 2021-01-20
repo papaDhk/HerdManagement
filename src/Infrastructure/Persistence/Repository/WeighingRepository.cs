@@ -32,6 +32,14 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
                 .Where(weighing => weighing.AnimalId == animalId)
                 .Include(weighing => weighing.MeasurementUnit);
         }
+        
+        public async Task<Weighing> GetLatestWeighingByAnimalId(int animalId)
+        {
+            return await _herdManagementDbContext.Weighings
+                .Where(weighing => weighing.AnimalId == animalId).Include(weighing => weighing.MeasurementUnit)
+                .OrderByDescending(weighing => weighing.DateTime)
+                .FirstOrDefaultAsync();
+        }
 
         public async Task<Weighing> CreateOrUpdateWeighingAsync(Weighing weighing)
         {
@@ -47,6 +55,13 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
             _herdManagementDbContext.UntrackEntities();
 
             return entityEntry.Entity;
+        }
+        
+        public async Task DeleteWeighing(int id)
+        {
+            _herdManagementDbContext.Remove(new Weighing {Id = id});
+
+            await _herdManagementDbContext.SaveChangesAsync();
         }
     }
 }
