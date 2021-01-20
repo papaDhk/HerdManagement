@@ -32,6 +32,14 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
                 .Where(weighing => weighing.AnimalId == animalId)
                 .Include(weighing => weighing.MeasurementUnit);
         }
+        
+        public async Task<Weighing> GetLatestWeighingByAnimalId(int animalId)
+        {
+            return await _herdManagementDbContext.Weighings
+                .Where(weighing => weighing.AnimalId == animalId).Include(weighing => weighing.MeasurementUnit)
+                .OrderByDescending(weighing => weighing.DateTime)
+                .FirstOrDefaultAsync();
+        }
 
         public async Task<Weighing> CreateOrUpdateWeighingAsync(Weighing weighing)
         {

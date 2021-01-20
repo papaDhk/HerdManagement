@@ -23,7 +23,7 @@ else
             {
                 <div class="col-sm-5 col-md-2 mb-3">
                     <div class="card">
-                        <div class="card-body">
+                        <div class="card-body" style="background-color: @herd.Color">
                             <h5 class="card-title">@herd.Name</h5>
                             <p class="card-text">Troupeau avec des animaux de l'espèce @herd.Specie.Label</p>
                             <NavLink href="@{"herds/" + @herd.Id.ToString() + "/" + herd.Name}" Match="NavLinkMatch.All" class="btn btn-primary mx-auto">Gerer</NavLink>
@@ -61,13 +61,14 @@ else
                                     <div class="col-9">
                                         <InputSelect id="specie" @bind-Value="herdCreationDTO.SpecieId" class="form-control">
                                             @foreach (var specie in specieDTOs)
-                                                {
+                                            {
                                                 <option value="@specie.Id">@specie.Label</option>
-                                                }
+                                            }
                                         </InputSelect>
                                         <ValidationMessage For="@(() => herdCreationDTO.SpecieId)" />
                                     </div>
                                 </div>
+                                <SfColorPicker @bind-value="herdCreationDTO.Color" ></SfColorPicker>
                                 <div class="form-group row">
                                     <label for="description" class="col-3 col-form-label">
                                         Description

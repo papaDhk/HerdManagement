@@ -87,9 +87,10 @@ else
         
     }
 
+    //TODO On creation there is a problem
     private void OnActionComplete(ActionEventArgs<Weighing> Args) 
     { 
-        if(Args.RequestType == Syncfusion.Blazor.Grids.Action.Save) 
+        if(Args.RequestType == Action.Save) 
         {
             if (Args.Action == "Edit")
             {
