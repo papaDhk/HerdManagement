@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using Syncfusion.Blazor.Notifications
 
 @inject IHerdRepository herdRepository
 @inject ISpecieRepository specieRepository
@@ -88,30 +89,12 @@ else
                 </div>
             </div>
         </div>
-
-        <div class="modal fade" id="successNotificationModal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-
-                    <div class="modal-body">
-
-                        <div class="thank-you-pop">
-                            <img src="images/Green-Round-Tick.png" alt="">
-                            <h1>Nouveau troupeau créé!</h1>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
+        
+        <SfToast @ref="_toast" ID="toast_type" Timeout="2000" ShowCloseButton="true" ShowProgressBar="true">
+            <ToastPosition X="Center" Y="bottom"></ToastPosition>
+        </SfToast>
     </div>
-
-
+    
 }
 
 @code {
@@ -119,6 +102,8 @@ else
     private List<SpecieDTO> specieDTOs;
     private SpecieDTO selectedSpecie;
     private HerdCreationDTO herdCreationDTO = new();
+    SfToast _toast;
+    ToastModel _successToast = new ToastModel() {Title = "Succés!", Content = "Troupeau créé avec succés.", CssClass = "e-toast-success", Icon = "e-success toast-icons"};
 
     protected override async Task OnInitializedAsync()
     {
@@ -165,8 +150,8 @@ else
 
             ClearModalForm();
 
-            await bootstrapService.ShowModal("#successNotificationModal");
-
+            await _toast.Show(_successToast);
+            
             herdDTOs.Add(response.Core.ToHerdDTO());
         }
     }

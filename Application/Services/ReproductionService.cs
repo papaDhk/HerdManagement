@@ -116,13 +116,13 @@ namespace Application.Services
         {
             using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
-                Calving animalOriginCalving = new();
+                Calving animalOriginCalving = null;
                 if (fatherId != 0 && motherId != 0)
                 {
                      animalOriginCalving = GetOrCreateParentRelationShip(motherId, fatherId, animal.BirthDate, animal.ApproximativeOriginReproductionDate, animal.Id);
                 }
 
-                if (animal.FromCalving != null && animalOriginCalving.Id != animal.FromCalving.Id)
+                if (animal.FromCalving != null && animalOriginCalving?.Id != animal.FromCalving?.Id)
                 {
                     await _reproductionRepository.DeleteCalving(animal.FromCalving.Id);
                 }

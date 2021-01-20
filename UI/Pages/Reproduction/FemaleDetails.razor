@@ -1,5 +1,6 @@
 ﻿@page "/animals/female/{AnimalHerdName}/{animalNumber:int}/{animalName}"
 @using Action = Syncfusion.Blazor.Grids.Action
+@using Syncfusion.Blazor.Notifications
 
 @inject ISpecieRepository specieRepository
 @inject NavigationManager navigationManager
@@ -486,13 +487,13 @@ else
                                     </label>
                                     <div class="col-sm-10">
                                         <SfGrid @ref="_calvingsGrid" DataSource=@_reproductionCreation.Calvings.ToCalvingDTOList() TValue=CalvingDTO Toolbar="@(new List<string>() { "Add", "Edit", "Delete", "Update", "Cancel" })">
-                                            <GridEditSettings AllowAdding="true" AllowDeleting="true" AllowEditing="true">
+                                            <GridEditSettings AllowAdding="true" AllowDeleting="true" AllowEditing="true" Mode="EditMode.Dialog">
                                                 <Template Context="calvingContext">
                                                     @{
                                                         var calvingDTO = (calvingContext as CalvingDTO);
                                                     }
 
-                                                    <div class="form-group row">
+                                                    <div class="form-group row" style="z-index: 10000">
                                                         <label for="breed" class="col-3 col-form-label">
                                                             Race
                                                         </label>
@@ -576,6 +577,26 @@ else
         </div>
 
     </div>
+    
+    <div aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px;">
+        <!-- Position it -->
+        <div style="position: absolute; top: 0; right: 0; z-index: 10000;">
+            <div class="toast" id="myToast">
+                <div class="toast-header">
+                    <strong class="mr-auto"><i class="fa fa-grav"></i> We miss you!</strong>
+                    <small>11 mins ago</small>
+                    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast">&times;</button>
+                </div>
+                <div class="toast-body">
+                    It's been a long time since you visited us. We've something special for you. <a href="#">Click here!</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <SfToast @ref="_toast" ID="toast_type">
+        <ToastPosition X="@ToastPosition"></ToastPosition>
+    </SfToast>
 }
 
 
@@ -621,7 +642,13 @@ else
     private SfGrid<Reproduction> reproductionsDataGrid;
 
     private SfGrid<CalvingDTO> _calvingsGrid;
+    
+    SfToast _toast;
+    
+    private string ToastPosition = "Right";
 
+    ToastModel _successToast = new ToastModel() {Title = "Succés!", Content = "Modifications enregistrées avec succés.", CssClass = "e-toast-success", Icon = "e-success toast-icons"};
+    
     protected async override Task OnInitializedAsync()
     {
         currentFemale = animalRepository.GetFemaleByNumber(AnimalNumber);
@@ -658,6 +685,8 @@ else
         currentFemale = (Female)await reproductionService.UpdateAnimalAsync(currentFemale, motherId.Value, fatherId.Value);
 
         CleanAndMakeNoEditable();
+        
+        await _toast.Show(_successToast);
     }
 
     private async Task SaveReproductionAsync()
@@ -677,8 +706,7 @@ else
 
             ClearReproductionModalForm();
 
-            await bootstrapService.ShowModal("#successNotificationModal");
-        }
+            await  _toast.Show(_successToast);}
     }
 
     private async Task SaveUpdatedReproductionAsync()
@@ -689,6 +717,8 @@ else
 
         if (reproductionCreationResponse.IsSuccessful)
         {
+            await  _toast.Show(_successToast);
+            
             reproductionsDataGrid.Refresh();
         }
     }
@@ -761,6 +791,8 @@ else
             CalvingDTO calvingDTO = Args.Data;
 
             await reproductionRepository.DeleteCalving(calvingDTO.Id);
+            
+            await  _toast.Show(_successToast);
         }
         
         switch (Args.Action)
@@ -793,6 +825,8 @@ else
 
                 Args.Data = calving.ToCalvingDTO();
                 
+                await  _toast.Show(_successToast);
+                
                 break;
             }
             case "Edit":
@@ -806,6 +840,8 @@ else
                 calving = await reproductionRepository.CreateOrUpdateCalvingAsync(calving.ToCalvingUpdateDTOWithFullAnimal());
 
                 Args.Data = calving.ToCalvingDTO();
+                
+                await  _toast.Show(_successToast);
 
                 break;
             }

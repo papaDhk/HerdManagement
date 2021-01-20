@@ -5,3 +5,7 @@
 window.showModal = (identifier) => {
     $(identifier).modal('show');
 };
+
+window.toast = (identifier) => {
+    $(identifier).toast('show');
+};

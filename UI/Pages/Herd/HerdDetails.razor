@@ -1,4 +1,5 @@
 ﻿@page "/herds/{herdId:int}/{herdName}"
+@using Syncfusion.Blazor.Notifications
 
 @inject ISpecieRepository specieRepository
 @inject IBreedRepository breedRepository
@@ -220,27 +221,9 @@ else
             </div>
         </div>
     </div>
-
-    <div class="modal fade" id="successNotificationModal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-
-                <div class="modal-body">
-
-                    <div class="thank-you-pop">
-                        <img src="images/Green-Round-Tick.png" alt="">
-                        <h1>Enregistrement réussi!</h1>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
+    <SfToast @ref="_toast" ID="toast_type" Timeout="2000" ShowCloseButton="true" ShowProgressBar="true">
+        <ToastPosition X="Center" Y="bottom"></ToastPosition>
+    </SfToast>
 }
 
 
@@ -274,9 +257,11 @@ else
     private bool canNotBeFather;
 
     private bool canNotBeMother;
-
-
-
+    
+    private SfToast _toast;
+    
+    ToastModel _successToast = new ToastModel() {Title = "Succés!", Content = "Aniaml créé avec succés.", CssClass = "e-toast-success", Icon = "e-success toast-icons"};
+    
     protected async override Task OnInitializedAsync()
     {
         currentHerd = await herdRepository.GetHerdById(herdId).ContinueWith(herd => herd.Result.ToHerdDTO());
@@ -340,7 +325,9 @@ else
 
         ClearModalForm();
 
-        await bootstrapService.ShowModal("#successNotificationModal");
+        _toast.ShowCloseButton = true;
+
+        await _toast.Show(_successToast);
 
     }
 
@@ -363,4 +350,5 @@ else
         int selectedMotherId = int.Parse(changedEventArgs.Value);
         canNotBeMother = !reproductionService.CanBeMotherOfAnimalBornIn(selectedMotherId, animalDTO.BirthDate);
     }
+
 }

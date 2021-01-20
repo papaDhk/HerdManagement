@@ -25,5 +25,10 @@ namespace UI
         {
             await _js.InvokeVoidAsync("showModal", identifier);
         }
+        
+        public async Task Toast(string identifier)
+        {
+            await _js.InvokeVoidAsync("toast", identifier);
+        }
     }
 }
