@@ -1,5 +1,6 @@
 ﻿@using HerdManagement.Domain.Common.Entities
 @using HerdManagement.Domain.Common.Repositories
+@using Action = Syncfusion.Blazor.Grids.Action
 @inject IWeighingRepository _weighingRepository;
 @inject IMeasurementUnitRepository _measurementUnitRepository;
 
@@ -9,7 +10,7 @@
 }
 else
 {
-    <SfGrid @ref="_weighingsDataGrid" DataSource="@_weighings" AllowSorting="true" Toolbar="@ToolbarItems">
+    <SfGrid @ref="_weighingsDataGrid" DataSource="@_weighings" AllowSorting="true" Toolbar="@_toolbarItems">
         <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog"></GridEditSettings>
         <GridEvents OnActionBegin="OnBeginHandlerAsync" OnActionComplete="OnActionComplete"TValue="Weighing"></GridEvents>
         <GridColumns>
@@ -60,10 +61,14 @@ else
             .ToList();
     }
 
-    private readonly string[] ToolbarItems = {"Add"};
+    private readonly string[] _toolbarItems = {"Add","Edit","Delete"};
 
     private async Task OnBeginHandlerAsync(ActionEventArgs<Weighing> Args)
     {
+        if (Args.RequestType == Action.Delete)
+        {
+            await _weighingRepository.DeleteWeighing(Args.Data.Id);
+        }
         
         if (Args.Action == "Add")
         {

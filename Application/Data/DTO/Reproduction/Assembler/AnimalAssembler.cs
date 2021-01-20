@@ -26,10 +26,8 @@ namespace Application.Data.DTO.Reproduction.Assembler
                     FromCalving = animalDTO.FromCalving
                 };
             }
-            else
-            {
-                return new Male();
-            }
+
+            return new Male();
         }
         
         public static Male ToMaleUpdateDTO(this AnimalDTO animalDTO)
@@ -43,6 +41,7 @@ namespace Application.Data.DTO.Reproduction.Assembler
                     BirthDate = animalDTO.BirthDate,
                     Origin = animalDTO.Origin,
                     Number = animalDTO.Number,
+                    FromCalving = animalDTO.FromCalving,
                     DeathDate = animalDTO.DeathDate,
                     Picture = animalDTO.Picture,
                     PresenceStatus = animalDTO.PresenceStatus,
@@ -53,10 +52,8 @@ namespace Application.Data.DTO.Reproduction.Assembler
                     CategoryType = animalDTO.CategoryType ?? 
                                    Animal.GetCategory(animalDTO.Breed?.Specie?.ToSpecie(), animalDTO.Sex, animalDTO.BirthDate)                };
             }
-            else
-            {
-                return new Male();
-            }
+
+            return new Male();
         }
 
         public static Female ToFemale(this AnimalDTO animalDTO)
@@ -79,10 +76,8 @@ namespace Application.Data.DTO.Reproduction.Assembler
                     FromCalving = animalDTO.FromCalving
                 };
             }
-            else
-            {
-                return new Female();
-            }
+
+            return new Female();
         }
         
         public static Female ToFemaleUpdateDTO(this AnimalDTO animalDTO)
@@ -96,6 +91,7 @@ namespace Application.Data.DTO.Reproduction.Assembler
                     BirthDate = animalDTO.BirthDate,
                     Origin = animalDTO.Origin,
                     Number = animalDTO.Number,
+                    FromCalving = animalDTO.FromCalving,
                     DeathDate = animalDTO.DeathDate,
                     Picture = animalDTO.Picture,
                     PresenceStatus = animalDTO.PresenceStatus,
@@ -106,10 +102,8 @@ namespace Application.Data.DTO.Reproduction.Assembler
                     CategoryType = animalDTO.CategoryType ?? 
                                    Animal.GetCategory(animalDTO.Breed?.Specie?.ToSpecie(), animalDTO.Sex, animalDTO.BirthDate)                };
             }
-            else
-            {
-                return new Female();
-            }
+
+            return new Female();
         }
 
         public static Animal ToAnimal(this AnimalDTO animalDTO)
@@ -135,10 +129,8 @@ namespace Application.Data.DTO.Reproduction.Assembler
                     BreedId = animalDTO.Breed?.Id ?? animalDTO.BreedId
                 };
             }
-            else
-            {
-                return new Animal();
-            }
+
+            return new Animal();
         }
         
         public static Animal ToAnimalUpdateDTO(this AnimalDTO animalDTO)
@@ -151,6 +143,7 @@ namespace Application.Data.DTO.Reproduction.Assembler
                     Name = animalDTO.Name,
                     BirthDate = animalDTO.BirthDate,
                     Origin = animalDTO.Origin,
+                    FromCalving = animalDTO.FromCalving,
                     Number = animalDTO.Number,
                     DeathDate = animalDTO.DeathDate,
                     Picture = animalDTO.Picture,
@@ -163,10 +156,8 @@ namespace Application.Data.DTO.Reproduction.Assembler
                                    Animal.GetCategory(animalDTO.Breed?.Specie?.ToSpecie(), animalDTO.Sex, animalDTO.BirthDate)
                 };
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
 
         public static Animal ToAnimalUpdateDTO(this Animal animal)
@@ -180,6 +171,7 @@ namespace Application.Data.DTO.Reproduction.Assembler
                     BirthDate = animal.BirthDate,
                     Origin = animal.Origin,
                     Number = animal.Number,
+                    FromCalving = animal.FromCalving,
                     DeathDate = animal.DeathDate,
                     Picture = animal.Picture,
                     PresenceStatus = animal.PresenceStatus,
@@ -187,13 +179,11 @@ namespace Application.Data.DTO.Reproduction.Assembler
                     Sex = animal.Sex,
                     HerdId = animal.Herd?.Id ?? animal.HerdId,
                     BreedId = animal.Breed?.Id ?? animal.BreedId,
-                    CategoryType = animal.CategoryType
+                    CategoryType = animal.CategoryType,
                 };
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
         public static AnimalDTO ToAnimalDTO(this Animal animal)
         {
@@ -218,10 +208,8 @@ namespace Application.Data.DTO.Reproduction.Assembler
                     BreedId = animal.Breed?.Id ?? animal.BreedId
                 };
             }
-            else
-            {
-                return new AnimalDTO();
-            }
+
+            return new AnimalDTO();
         }
         
         public static YoungAnimal ToYoungAnimal(this AnimalDTO animalDTO)
@@ -244,10 +232,8 @@ namespace Application.Data.DTO.Reproduction.Assembler
                     FromCalving = animalDTO.FromCalving
                 };
             }
-            else
-            {
-                return new YoungAnimal();
-            }
+
+            return new YoungAnimal();
         }
         
         public static YoungAnimal ToYoungAnimalUpdateDTO(this AnimalDTO animalDTO)
@@ -260,6 +246,7 @@ namespace Application.Data.DTO.Reproduction.Assembler
                     Name = animalDTO.Name,
                     BirthDate = animalDTO.BirthDate,
                     Origin = animalDTO.Origin,
+                    FromCalving = animalDTO.FromCalving,
                     Number = animalDTO.Number,
                     DeathDate = animalDTO.DeathDate,
                     Picture = animalDTO.Picture,
@@ -269,13 +256,90 @@ namespace Application.Data.DTO.Reproduction.Assembler
                     HerdId = animalDTO.Herd?.Id ?? animalDTO.HerdId,
                     BreedId = animalDTO.Breed?.Id ?? animalDTO.BreedId,
                     CategoryType = animalDTO.CategoryType ?? 
-                                   Animal.GetCategory(animalDTO.Breed?.Specie?.ToSpecie(), animalDTO.Sex, animalDTO.BirthDate)                };
+                                   Animal.GetCategory(animalDTO.Breed?.Specie?.ToSpecie(), animalDTO.Sex, animalDTO.BirthDate)
+                };
             }
-            else
-            {
-                return new YoungAnimal();
-            }
+
+            return new YoungAnimal();
         }
-              
+        
+        public static Female ToFemaleUpdateDTO(this Animal animal)
+        {
+            if (animal != null)
+            {
+                return new Female
+                {
+                    Id = animal.Id,
+                    Name = animal.Name,
+                    BirthDate = animal.BirthDate,
+                    Origin = animal.Origin,
+                    Number = animal.Number,
+                    FromCalving = animal.FromCalving,
+                    DeathDate = animal.DeathDate,
+                    Picture = animal.Picture,
+                    PresenceStatus = animal.PresenceStatus,
+                    Weight = animal.Weight,
+                    Sex = animal.Sex,
+                    HerdId = animal.Herd?.Id ?? animal.HerdId,
+                    BreedId = animal.Breed?.Id ?? animal.BreedId,
+                    CategoryType = animal.CategoryType,
+                };
+            }
+
+            return null;
+        }
+        
+        public static Male ToMaleUpdateDTO(this Animal animal)
+        {
+            if (animal != null)
+            {
+                return new Male
+                {
+                    Id = animal.Id,
+                    Name = animal.Name,
+                    BirthDate = animal.BirthDate,
+                    Origin = animal.Origin,
+                    Number = animal.Number,
+                    FromCalving = animal.FromCalving,
+                    DeathDate = animal.DeathDate,
+                    Picture = animal.Picture,
+                    PresenceStatus = animal.PresenceStatus,
+                    Weight = animal.Weight,
+                    Sex = animal.Sex,
+                    HerdId = animal.Herd?.Id ?? animal.HerdId,
+                    BreedId = animal.Breed?.Id ?? animal.BreedId,
+                    CategoryType = animal.CategoryType,
+                };
+            }
+
+            return null;
+        }
+        
+        
+        public static YoungAnimal ToYoungAnimalUpdateDTO(this Animal animal)
+        {
+            if (animal != null)
+            {
+                return new YoungAnimal
+                {
+                    Id = animal.Id,
+                    Name = animal.Name,
+                    BirthDate = animal.BirthDate,
+                    Origin = animal.Origin,
+                    Number = animal.Number,
+                    FromCalving = animal.FromCalving,
+                    DeathDate = animal.DeathDate,
+                    Picture = animal.Picture,
+                    PresenceStatus = animal.PresenceStatus,
+                    Weight = animal.Weight,
+                    Sex = animal.Sex,
+                    HerdId = animal.Herd?.Id ?? animal.HerdId,
+                    BreedId = animal.Breed?.Id ?? animal.BreedId,
+                    CategoryType = animal.CategoryType,
+                };
+            }
+
+            return null;
+        }
     }
 }

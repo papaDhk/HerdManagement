@@ -1,4 +1,5 @@
 ﻿@page "/animals/female/{AnimalHerdName}/{animalNumber:int}/{animalName}"
+@using Action = Syncfusion.Blazor.Grids.Action
 
 @inject ISpecieRepository specieRepository
 @inject NavigationManager navigationManager
@@ -766,6 +767,13 @@ else
 
     private async Task OnBeginCalvingsHandlerAsync(ActionEventArgs<CalvingDTO> Args)
     {
+        if (Args.RequestType == Action.Delete)
+        {
+            CalvingDTO calvingDTO = Args.Data;
+
+            await reproductionRepository.DeleteCalving(calvingDTO.Id);
+        }
+        
         switch (Args.Action)
         {
             case "Add":
@@ -797,6 +805,7 @@ else
                 _reproductionCreation.Calvings.Add(calving);
 
                 _calvingsGrid.Refresh();
+                
                 break;
             }
             case "Edit":
@@ -814,6 +823,7 @@ else
                 _reproductionCreation.Calvings[calvingIndex] = calving;
 
                 _calvingsGrid.Refresh();
+                
                 break;
             }
         }

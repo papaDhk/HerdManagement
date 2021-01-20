@@ -48,5 +48,12 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
 
             return entityEntry.Entity;
         }
+        
+        public async Task DeleteWeighing(int id)
+        {
+            _herdManagementDbContext.Remove(new Weighing {Id = id});
+
+            await _herdManagementDbContext.SaveChangesAsync();
+        }
     }
 }

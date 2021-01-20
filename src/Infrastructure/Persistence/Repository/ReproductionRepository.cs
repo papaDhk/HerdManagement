@@ -3,16 +3,14 @@ using HerdManagement.Domain.Reproduction.Repository;
 using HerdManagement.Infrastructure.Persistence.Utils;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace HerdManagement.Infrastructure.Persistence.Repository
 {
     public class ReproductionRepository : IReproductionRepository
     {
-        private HerdManagementDbContext _animalDbContext;
+        private readonly HerdManagementDbContext _animalDbContext;
 
         public ReproductionRepository(HerdManagementDbContext animalDbContext)
         {
@@ -70,6 +68,30 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
             _animalDbContext.UntrackEntities();
 
             return calving;
+        }
+
+        public async Task DeleteCalving(int calvingId)
+        {
+            if (calvingId == 0)
+            {
+                return;
+            }
+            
+            _animalDbContext.Remove(new Calving{Id = calvingId});
+
+            await _animalDbContext.SaveChangesAsync();
+        }
+        
+        public async Task DeleteReproduction(int reproductionId)
+        {
+            if (reproductionId == 0)
+            {
+                return;
+            }
+            
+            _animalDbContext.Remove(new Reproduction{Id = reproductionId});
+
+            await _animalDbContext.SaveChangesAsync();
         }
     }
 }
