@@ -26,7 +26,7 @@ else
     <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
 
     <GridColumns>
-        <GridColumn Field=@nameof(Animal.Picture) HeaderText="Photo de profil">
+        <GridColumn Field=@nameof(Animal.Picture) HeaderText="Photo de profil" AllowFiltering="false">
             <Template>
                 @{
                     var animal = context as Animal;
