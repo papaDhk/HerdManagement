@@ -16,14 +16,14 @@ namespace UI
             {
                 return animal.Sex switch
                 {
-                    SexEnum.Male => $"/animals/male/{herdName}/{animal.Number}/{animal.Name}",
-                    SexEnum.Female => $"/animals/female/{herdName}/{animal.Number}/{animal.Name}"
+                    SexEnum.Male => $"/herds/{herdName}/animals/male/{animal.Number}/{animal.Name}",
+                    SexEnum.Female => $"/herds/{herdName}/animals/female/{herdName}/{animal.Number}/{animal.Name}"
 
                 };
             }
             else
             {
-                return $"/animals/little/{herdName}/{animal.Number}/{animal.Name}";
+                return $"/herds/{herdName}/animals/little/{animal.Number}/{animal.Name}";
             }
         }
 

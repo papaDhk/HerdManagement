@@ -1,11 +1,12 @@
 ﻿@page "/"
+@page "/herds"
 @using Syncfusion.Blazor.Notifications
 
 @inject IHerdRepository herdRepository
 @inject ISpecieRepository specieRepository
 @inject ISpecieBreedService specieBreedService
 @inject BootstrapService bootstrapService
-
+@inject NavigationManager navigationManager
 <nav class="navbar navbar-light mb-3 horizontal-nav-bar justify-content-between">
     <h6>Troupeaux</h6>
     <span class="oi oi-plus" aria-hidden="true" data-toggle="modal" data-target="#herdModalForm"></span>
@@ -32,7 +33,8 @@ else
                             <p class="card-text">Troupeau avec des animaux de l'espèce @herd.Specie.Label</p>
                             <div class="text-center">
                                 <NavLink href="@{"herds/" + @herd.Id.ToString() + "/" + herd.Name}" Match="NavLinkMatch.All"
-                                         class="btn btn-primary mx-auto">Gerer
+                                         class="btn btn-primary mx-auto">
+                                    Gerer
                                 </NavLink>
                             </div>
                         </div>
@@ -69,14 +71,14 @@ else
                                     <div class="col-9">
                                         <InputSelect id="specie" @bind-Value="herdCreationDTO.SpecieId" class="form-control">
                                             @foreach (var specie in specieDTOs)
-                                            {
+                                                {
                                                 <option value="@specie.Id">@specie.Label</option>
-                                            }
+                                                }
                                         </InputSelect>
                                         <ValidationMessage For="@(() => herdCreationDTO.SpecieId)" />
                                     </div>
                                 </div>
-                                <SfColorPicker @bind-value="herdCreationDTO.Color" ></SfColorPicker>
+                                <SfColorPicker @bind-value="herdCreationDTO.Color"></SfColorPicker>
                                 <div class="form-group row">
                                     <label for="description" class="col-3 col-form-label">
                                         Description
@@ -96,12 +98,12 @@ else
                 </div>
             </div>
         </div>
-        
+
         <SfToast @ref="_toast" ID="toast_type" Timeout="2000" ShowCloseButton="true" ShowProgressBar="true">
             <ToastPosition X="Center" Y="bottom"></ToastPosition>
         </SfToast>
     </div>
-    
+
 }
 
 @code {
@@ -110,10 +112,15 @@ else
     private SpecieDTO selectedSpecie;
     private HerdCreationDTO herdCreationDTO = new();
     SfToast _toast;
-    ToastModel _successToast = new ToastModel() {Title = "Succés!", Content = "Troupeau créé avec succés.", CssClass = "e-toast-success", Icon = "e-success toast-icons"};
+    ToastModel _successToast = new ToastModel() { Title = "Succés!", Content = "Troupeau créé avec succés.", CssClass = "e-toast-success", Icon = "e-success toast-icons" };
 
     protected override async Task OnInitializedAsync()
     {
+        if (navigationManager.ToBaseRelativePath(navigationManager.Uri) == "")
+        {
+            navigationManager.NavigateTo("/herds");
+        }
+        
         IEnumerable<Herd> herds = await herdRepository.GetAllHerds();
 
         herdDTOs = herds.ToHerdDTOList().ToList();
@@ -158,7 +165,7 @@ else
             ClearModalForm();
 
             await _toast.Show(_successToast);
-            
+
             herdDTOs.Add(response.Core.ToHerdDTO());
         }
     }
