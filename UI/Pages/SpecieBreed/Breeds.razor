@@ -23,7 +23,7 @@
 else
 {
     <SfGrid DataSource="@breedDTOs" AllowSorting="true" Toolbar="@ToolbarItems" TValue="BreedDTO">
-        <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true"></GridEditSettings>
+        <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog"></GridEditSettings>
         <GridEvents OnActionBegin="OnBeginHandlerAsync" TValue="BreedDTO"></GridEvents>
         <GridColumns>
             <GridColumn Field=@nameof(BreedDTO.Label)>

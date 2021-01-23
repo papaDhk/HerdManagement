@@ -18,7 +18,7 @@
 else
 {
     <SfGrid DataSource="@breedDTOs" AllowSorting="true" Toolbar="@_toolbarItems" TValue="BreedDTO">
-        <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true"></GridEditSettings>
+        <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog"></GridEditSettings>
         <GridEvents OnActionBegin="OnBeginHandlerAsync" CommandClicked="OnDetailButtonClicked" TValue="BreedDTO"></GridEvents>
         <GridColumns>
             <GridColumn Field=@nameof(BreedDTO.Id) IsPrimaryKey="true" IsIdentity="true" Visible="false"></GridColumn>
