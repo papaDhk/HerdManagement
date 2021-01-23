@@ -24,15 +24,16 @@ else
 {
     <nav>
         <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
-            <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Profil</a>
-            <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Caracteristiques</a>
+            <a class="nav-item nav-link active" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="true">Profil</a>
             <a class="nav-item nav-link" id="nav-reproductions-tab" data-toggle="tab" href="#nav-reproductions" role="tab" aria-controls="nav-reproductions" aria-selected="false">Reproduction</a>
-            <a class="nav-item nav-link" id="nav-alimentation-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Alimentation</a>
             <a class="nav-item nav-link" id="nav-weightings-tab" data-toggle="tab" href="#nav-weightings" role="tab" aria-controls="nav-contact" aria-selected="false">Pesées</a>
+            <a class="nav-item nav-link" id="nav-characteristic-tab" data-toggle="tab" href="#nav-characteristic" role="tab" aria-controls="nav-characteristic" aria-selected="false">Caracteristiques</a>
+            <a class="nav-item nav-link" id="nav-alimentation-tab" data-toggle="tab" href="#nav-alimentation" role="tab" aria-controls="nav-alimentation" aria-selected="false">Alimentation</a>
+            
         </div>
     </nav>
     <div class="tab-content mt-5" id="nav-tabContent">
-        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+        <div class="tab-pane fade show active" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
 
             <div class="row">
                 <div class="col-3">
@@ -45,14 +46,14 @@ else
                     }
                     <img src=@imageUrl alt="profilePicture" class="img-thumbnail">
                 </div>
-                <EditForm Model="@currentFemale" OnValidSubmit="SaveAnimalAsync" class="col-9">
+                <EditForm Model="@currentFemale" OnValidSubmit="SaveAnimalAsync" class="col-8">
                     <DataAnnotationsValidator />
                     <div class="form-group row">
                         <label for="name" class="col-3 col-form-label">
                             Nom
                         </label>
                         <div class="col-sm-9">
-                            <InputText id="name" class="form-control" placeholder="Nom du troupeau" @bind-Value="currentFemale.Name" disabled=@isNoEditable />
+                            <InputText id="name" class="form-control hm-width" placeholder="Nom du troupeau" @bind-Value="currentFemale.Name" disabled=@isNoEditable />
                             <ValidationMessage For="@(() => currentFemale.Name)" />
                         </div>
                     </div>
@@ -61,7 +62,7 @@ else
                             Race
                         </label>
                         <div class="col-9">
-                            <InputSelect id="breed" @bind-Value="currentFemale.Breed.Id" disabled class="form-control">
+                            <InputSelect id="breed" @bind-Value="currentFemale.Breed.Id" disabled class="form-control hm-width">
                                 @foreach (var breed in breedDTOs)
                                     {
                                     <option value="@breed.Id">@breed.Label</option>
@@ -74,7 +75,7 @@ else
                             Numero
                         </label>
                         <div class="col-sm-9">
-                            <InputNumber id="number" class="form-control" placeholder="numero de l'animal" @bind-Value="currentFemale.Number" disabled=@isNoEditable />
+                            <InputNumber id="number" class="form-control hm-width" placeholder="numero de l'animal" @bind-Value="currentFemale.Number" disabled=@isNoEditable />
                             <ValidationMessage For="@(() => currentFemale.Number)" />
                         </div>
                     </div>
@@ -83,7 +84,7 @@ else
                             Date de naissance
                         </label>
                         <div class="col-sm-9">
-                            <InputDate id="birthDate" class="form-control" placeholder="Date de naissance" @bind-Value="currentFemale.BirthDate" disabled=@isNoEditable />
+                            <InputDate id="birthDate" class="form-control hm-width" placeholder="Date de naissance" @bind-Value="currentFemale.BirthDate" disabled=@isNoEditable />
                             <ValidationMessage For="@(() => currentFemale.BirthDate)" />
                         </div>
                     </div>
@@ -93,7 +94,7 @@ else
                             Origines
                         </label>
                         <div class="col-9">
-                            <InputSelect id="origin" @bind-Value="@currentFemale.Origin" class="form-control" disabled=@isNoEditable>
+                            <InputSelect id="origin" @bind-Value="@currentFemale.Origin" class="form-control hm-width" disabled=@isNoEditable>
 
                                 @foreach (var origin in Helper.GetKeyValuesAsListFromEnum(typeof(AnimalOrigin)))
                                     {
@@ -109,7 +110,7 @@ else
                             Mere
                         </label>
                         <div class="col-9">
-                            <InputSelect id="mother" @bind-Value="@motherId" class="form-control" placeholder="Quelles sont les origines" disabled=@isNoEditable>
+                            <InputSelect id="mother" @bind-Value="@motherId" class="form-control hm-width" placeholder="Quelles sont les origines" disabled=@isNoEditable>
 
                                 @foreach (var female in females)
                                     {
@@ -136,7 +137,7 @@ else
                             Pere
                         </label>
                         <div class="col-9">
-                            <InputSelect id="father" @bind-Value="@fatherId" class="form-control" disabled=@isNoEditable>
+                            <InputSelect id="father" @bind-Value="@fatherId" class="form-control hm-width" disabled=@isNoEditable>
                                 @foreach (var male in males)
                                     {
                                     <option value="@male.Id">@male.ToString()</option>
@@ -164,14 +165,16 @@ else
                                 Photo
                             </label>
                             <div class="col-sm-9">
+                                <div class="hm-width">
                                 <SfUploader>
                                     <UploaderEvents ValueChange="OnChange"></UploaderEvents>
                                 </SfUploader>
+                                </div>
                             </div>
                         </div>
 
                         <button @onclick="@CleanAndMakeNoEditable" type="button" class="btn btn-secondary">Annuler</button>
-                        <button @onclick="@SaveAnimalAsync" type="button" class="btn btn-secondary">Enregistrer</button>
+                        <button @onclick="@SaveAnimalAsync" type="button" class="btn btn-success">Enregistrer</button>
                     }
                     else
                     {
@@ -180,8 +183,12 @@ else
                 </EditForm>
             </div>
         </div>
-        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">...</div>
-        <div class="tab-pane fade" id="nav-reproductions" role="tabpanel" aria-labelledby="nav-reproductions-tab">
+    
+    <TabComingSoon idTab="nav-characteristic" />
+    
+    <TabComingSoon idTab="nav-alimentation" />
+
+    <div class="tab-pane fade" id="nav-reproductions" role="tabpanel" aria-labelledby="nav-reproductions-tab">
             @if (reproductions == null)
             {
                 <img src="images/dog-alone.gif" class="rounded mx-auto d-block img-fluid" />
@@ -237,7 +244,6 @@ else
                 </SfGrid>
             }
         </div>
-        <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-alimentation-tab">...</div>
     <div class="tab-pane fade" id="nav-weightings" role="tabpanel" aria-labelledby="nav-weightings-tab">
         <Weighings AnimalId="@currentFemale.Id"></Weighings>
     </div>

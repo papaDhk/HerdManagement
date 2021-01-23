@@ -26,7 +26,7 @@ else
     <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
 
     <GridColumns>
-        <GridColumn Field=@nameof(Animal.Picture) HeaderText="Photo de profil">
+        <GridColumn Field=@nameof(Animal.Picture) HeaderText="Photo de profil" AllowFiltering="false">
             <Template>
                 @{
                     var animal = context as Animal;
@@ -91,7 +91,7 @@ else
                                 Nom
                             </label>
                             <div class="col-sm-9">
-                                <InputText id="name" class="form-control" placeholder="Nom du troupeau" @bind-Value="animalDTO.Name" />
+                                <InputText id="name" class="form-control" placeholder="Nom de l'animal" @bind-Value="animalDTO.Name" />
                                 <ValidationMessage For="@(() => animalDTO.Name)" />
                             </div>
                         </div>

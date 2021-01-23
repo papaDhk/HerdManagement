@@ -336,3 +336,12 @@ app {
     font-size: 20px;
 }
 
+.coming-soon {
+    text-align: center;
+    font-size: 25px;
+    font-weight: 700;
+}
+
+.hm-width {
+    width: 50% !important;
+}

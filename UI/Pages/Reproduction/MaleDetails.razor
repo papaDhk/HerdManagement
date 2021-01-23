@@ -26,15 +26,14 @@ else
 {
     <nav>
         <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
-            <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Profil</a>
-            <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Caracteristiques</a>
-            <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Reproduction</a>
-            <a class="nav-item nav-link" id="nav-alimentation-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Alimentation</a>
+            <a class="nav-item nav-link active" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="true">Profil</a>
             <a class="nav-item nav-link" id="nav-weightings-tab" data-toggle="tab" href="#nav-weightings" role="tab" aria-controls="nav-contact" aria-selected="false">Pesées</a>
+            <a class="nav-item nav-link" id="nav-characteristic-tab" data-toggle="tab" href="#nav-characteristic" role="tab" aria-controls="nav-characteristic" aria-selected="false">Caracteristiques</a>
+            <a class="nav-item nav-link" id="nav-alimentation-tab" data-toggle="tab" href="#nav-alimentation" role="tab" aria-controls="nav-alimentation" aria-selected="false">Alimentation</a>
         </div>
     </nav>
     <div class="tab-content mt-5" id="nav-tabContent">
-        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+        <div class="tab-pane fade show active" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
 
             <div class="row">
                 <div class="col-3">
@@ -54,7 +53,7 @@ else
                             Nom
                         </label>
                         <div class="col-sm-9">
-                            <InputText id="name" class="form-control" placeholder="Nom du troupeau" @bind-Value="currentMale.Name" disabled=@isNoEditable />
+                            <InputText id="name" class="form-control hm-width" placeholder="Nom du troupeau" @bind-Value="currentMale.Name" disabled=@isNoEditable />
                             <ValidationMessage For="@(() => currentMale.Name)" />
                         </div>
                     </div>
@@ -63,11 +62,11 @@ else
                             Race
                         </label>
                         <div class="col-9">
-                            <InputSelect id="breed" @bind-Value="currentMale.Breed.Id" disabled class="form-control">
+                            <InputSelect id="breed" @bind-Value="currentMale.Breed.Id" disabled class="form-control hm-width">
                                 @foreach (var breed in breedDTOs)
-                                    {
+                                {
                                     <option value="@breed.Id">@breed.Label</option>
-                                    }
+                                }
                             </InputSelect>
                         </div>
                     </div>
@@ -76,7 +75,7 @@ else
                             Numero
                         </label>
                         <div class="col-sm-9">
-                            <InputNumber id="number" class="form-control" placeholder="numero de l'animal" @bind-Value="currentMale.Number" disabled=@isNoEditable />
+                            <InputNumber id="number" class="form-control hm-width" placeholder="numero de l'animal" @bind-Value="currentMale.Number" disabled=@isNoEditable />
                             <ValidationMessage For="@(() => currentMale.Number)" />
                         </div>
                     </div>
@@ -85,7 +84,7 @@ else
                             Date de naissance
                         </label>
                         <div class="col-sm-9">
-                            <InputDate id="birthDate" class="form-control" placeholder="Date de naissance" @bind-Value="currentMale.BirthDate" disabled=@isNoEditable />
+                            <InputDate id="birthDate" class="form-control hm-width" placeholder="Date de naissance" @bind-Value="currentMale.BirthDate" disabled=@isNoEditable />
                             <ValidationMessage For="@(() => currentMale.BirthDate)" />
                         </div>
                     </div>
@@ -95,11 +94,11 @@ else
                             Origines
                         </label>
                         <div class="col-9">
-                            <InputSelect id="origin" @bind-Value="@currentMale.Origin" class="form-control" disabled=@isNoEditable>
+                            <InputSelect id="origin" @bind-Value="@currentMale.Origin" class="form-control hm-width" disabled=@isNoEditable>
                                 @foreach (var origin in Helper.GetKeyValuesAsListFromEnum(typeof(AnimalOrigin)))
-                                    {
+                                {
                                     <option value="@origin.Key">@origin.Value</option>
-                                    }
+                                }
                             </InputSelect>
                             <ValidationMessage For="@(() => currentMale.Origin)" />
                         </div>
@@ -110,26 +109,26 @@ else
                             Mere
                         </label>
                         <div class="col-9">
-                            <InputSelect id="mother" @bind-Value="@motherId" class="form-control" placeholder="Quelles sont les origines" disabled=@isNoEditable>
+                            <InputSelect id="mother" @bind-Value="@motherId" class="form-control hm-width" placeholder="Quelles sont les origines" disabled=@isNoEditable>
 
                                 @foreach (var female in females)
-                                    {
+                                {
                                     <option value="@female.Id">@female.ToString()</option>
-                                    }
+                                }
                             </InputSelect>
                             @if ((int)motherId > 0)
                             {
-                        <i class="fas fa-eye text-primary" style="cursor: pointer;"
-                           @onclick="@(() => navigationManager.NavigateTo(females.Where(f => f.Id == motherId).FirstOrDefault()?.GetProfilePageUrl(AnimalHerdName), forceLoad:true))">
-                            Details
-                        </i>
+                                <i class="fas fa-eye text-primary" style="cursor: pointer;"
+                                   @onclick="@(() => navigationManager.NavigateTo(females.Where(f => f.Id == motherId).FirstOrDefault()?.GetProfilePageUrl(AnimalHerdName), forceLoad:true))">
+                                    Details
+                                </i>
                             }
 
                             @if (@canNotBeMother)
                             {
                                 <div class="validation-message">L'animal sélectionné ne peut pas être la mère de "@currentMale.Name"</div>
                             }
-                            </div>
+                        </div>
                     </div>
 
                     <div class="form-group row">
@@ -137,11 +136,11 @@ else
                             Pere
                         </label>
                         <div class="col-9">
-                            <InputSelect id="father" @bind-Value="@fatherId" class="form-control" disabled=@isNoEditable>
+                            <InputSelect id="father" @bind-Value="@fatherId" class="form-control hm-width" disabled=@isNoEditable>
                                 @foreach (var male in males)
-                                    {
+                                {
                                     <option value="@male.Id">@male.ToString()</option>
-                                    }
+                                }
                             </InputSelect>
 
                             @if ((int)fatherId > 0)
@@ -166,14 +165,18 @@ else
                                 Photo
                             </label>
                             <div class="col-sm-9">
-                                <SfUploader>
-                                    <UploaderEvents ValueChange="OnChange"></UploaderEvents>
-                                </SfUploader>
+                                <div class="hm-width">
+                                    <SfUploader>
+                                        <UploaderEvents ValueChange="OnChange"></UploaderEvents>
+                                    </SfUploader>
+                                </div>
                             </div>
                         </div>
 
+                        
                         <button @onclick="@CleanAndMakeNoEditable" type="button" class="btn btn-secondary">Annuler</button>
-                        <button @onclick="@SaveAnimalAsync" type="button" class="btn btn-secondary">Enregistrer</button>
+                        <button @onclick="@SaveAnimalAsync" type="button" class="btn btn-success">Enregistrer</button>
+                        
                     }
                     else
                     {
@@ -183,9 +186,9 @@ else
                 </EditForm>
             </div>
         </div>
-        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">...</div>
-        <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">...</div>
-        <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-alimentation-tab">...</div>
+            <TabComingSoon idTab="nav-characteristic" />
+            
+            <TabComingSoon idTab="nav-alimentation" />
         <div class="tab-pane fade" id="nav-weightings" role="tabpanel" aria-labelledby="nav-weightings-tab">
              <Weighings AnimalId="@currentMale.Id"></Weighings>
         </div>
