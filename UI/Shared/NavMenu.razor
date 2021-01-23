@@ -1,28 +1,28 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
-    <a class="navbar-brand" href="">HM</a>
-    <button class="navbar-toggler" @onclick="ToggleNavMenu">
-        <span class="navbar-toggler-icon"></span>
-    </button>
+﻿<div class="top-row navbar navbar-dark" style="width: 60px">
+    <span style="color: white;" @onclick="ToggleNavMenu">
+        <i class="fas fa-bars hm-fa"></i>
+    </span>
+
 </div>
 
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <ul class="nav flex-column">
+    <ul class="nav flex-column" style="width: 60px">
         <li class="nav-item">
-            <NavLink class="nav-link nav-link-content" href="" Match=NavLinkMatch.All>
-                <i class="fas fa-home fa-2x"></i>
-                <p class="nav-title">Accueil</p>
+            <NavLink class="custom-nav-link nav-link-content" href="" Match=NavLinkMatch.All>
+                <i class="fas fa-home hm-fa"></i>
+                @*<p class="nav-title">Accueil</p>*@
             </NavLink>
         </li>
         <li class="nav-item">
-            <NavLink class="nav-link nav-link-content" href="species">
-                <i class="fas fa-paw fa-2x"></i>
-                <p class="nav-title">Especes</p>
+            <NavLink class="custom-nav-link nav-link-content" href="species">
+                <i class="fas fa-paw hm-fa"></i>
+                @*<p class="nav-title">Especes</p>*@
             </NavLink>
         </li>
         <li class="nav-item">
-            <NavLink class="nav-link nav-link-content" href="configurations">
-                <i class="fas fa-cog fa-2x"></i>
-                <p class="nav-title">Configurations</p>
+            <NavLink class="custom-nav-link nav-link-content" href="configurations">
+                <i class="fas fa-cog hm-fa"></i>
+                @*<p class="nav-title">Configurations</p>*@
             </NavLink>
         </li>
 
