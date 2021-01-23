@@ -37,7 +37,7 @@ namespace UI
             services.AddServerSideBlazor();
             services.AddTransient<ISpecieRepository, SpecieRepository>();
             services.AddTransient<IBreedRepository, BreedRepository>();
-            services.AddTransient<IHerdRepository, HerdRepository>();
+            services.AddTransient<IHerdRepository, HerdRepositoryEF>();
             services.AddTransient<IAnimalRepository, AnimalRepository>();
             services.AddTransient<ISpecieBreedService, SpecieBreedService>();
             services.AddTransient<IReproductionService, ReproductionService>();

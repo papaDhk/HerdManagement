@@ -4,14 +4,16 @@ using HerdManagement.Infrastructure.Persistence.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace UI.Migrations
 {
     [DbContext(typeof(HerdManagementDbContext))]
-    partial class HerdManagementDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210122223210_HerdInEF")]
+    partial class HerdInEF
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

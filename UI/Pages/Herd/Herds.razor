@@ -24,10 +24,17 @@ else
             {
                 <div class="col-sm-5 col-md-2 mb-3">
                     <div class="card">
-                        <div class="card-body" style="background-color: @herd.Color">
-                            <h5 class="card-title">@herd.Name</h5>
+                        <div class="card-header text-center" style="background-color: @herd.Color; vertical-align: center">
+                            <h5 class="card-title font-weight-bold">@herd.Name</h5>
+                        </div>
+                        <div class="card-body" style="background-color: @herd.Color;">
+
                             <p class="card-text">Troupeau avec des animaux de l'espèce @herd.Specie.Label</p>
-                            <NavLink href="@{"herds/" + @herd.Id.ToString() + "/" + herd.Name}" Match="NavLinkMatch.All" class="btn btn-primary mx-auto">Gerer</NavLink>
+                            <div class="card-footer text-center">
+                                <NavLink href="@{"herds/" + @herd.Id.ToString() + "/" + herd.Name}" Match="NavLinkMatch.All"
+                                         class="btn btn-primary mx-auto">Gerer
+                                </NavLink>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -98,8 +105,8 @@ else
 }
 
 @code {
-    private List<HerdDTO> herdDTOs;
-    private List<SpecieDTO> specieDTOs;
+    private List<HerdDTO> herdDTOs = new List<HerdDTO>();
+    private List<SpecieDTO> specieDTOs = new List<SpecieDTO>();
     private SpecieDTO selectedSpecie;
     private HerdCreationDTO herdCreationDTO = new();
     SfToast _toast;

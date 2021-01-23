@@ -1,5 +1,6 @@
 ﻿using HerdManagement.Domain.Characteristic.Entities;
 using HerdManagement.Domain.Common.Entities;
+using HerdManagement.Domain.Herd.Entities;
 using HerdManagement.Domain.Reproduction.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,6 +13,7 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
         {
         }
         
+        public virtual DbSet<Herd> Herds { get; set; }
         public virtual DbSet<Animal> Animals { get; set; }
         public virtual DbSet<Male> Males { get; set; }
         public virtual DbSet<Female> Females { get; set; }
