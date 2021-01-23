@@ -24,13 +24,13 @@ else
             {
                 <div class="col-sm-5 col-md-2 mb-3">
                     <div class="card">
-                        <div class="card-header text-center" style="background-color: @herd.Color; vertical-align: center">
+                        <div class="card-header text-center px-0 pt-1, pb-0" style="background-color: @herd.Color;">
                             <h5 class="card-title font-weight-bold">@herd.Name</h5>
                         </div>
                         <div class="card-body" style="background-color: @herd.Color;">
 
                             <p class="card-text">Troupeau avec des animaux de l'espèce @herd.Specie.Label</p>
-                            <div class="card-footer text-center">
+                            <div class="text-center">
                                 <NavLink href="@{"herds/" + @herd.Id.ToString() + "/" + herd.Name}" Match="NavLinkMatch.All"
                                          class="btn btn-primary mx-auto">Gerer
                                 </NavLink>
