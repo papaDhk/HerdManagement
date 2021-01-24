@@ -30,7 +30,7 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
             
             var herdEntry = await _herdManagementDbContext.Herds.AddAsync(herd);
 
-            herdEntry.Reference(h => h.Specie);
+            await herdEntry.Reference(h => h.Specie).LoadAsync();
             
             await _herdManagementDbContext.SaveChangesAsync();
             

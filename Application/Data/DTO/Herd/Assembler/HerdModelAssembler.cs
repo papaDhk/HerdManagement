@@ -14,11 +14,11 @@ namespace Application.Data.DTO.Herd.Assembler
             {
                 return new HerdEntity();
             }
-            
+
             return new HerdEntity
             {
                 Name = herdCreationDTO.Name,
-                Specie = new Specie { Id = herdCreationDTO.SpecieId },
+                SpecieId = herdCreationDTO.SpecieId,
                 Color = herdCreationDTO.Color,
                 Description = herdCreationDTO.Description
             };
@@ -32,14 +32,13 @@ namespace Application.Data.DTO.Herd.Assembler
             }
 
             return new HerdEntity
-                {
-                    Id = herdId,
-                    Name = herdUpdateDTO.Name,
-                    Specie = new Specie { Id = herdUpdateDTO.SpecieId },
-                    Color = herdUpdateDTO.Color,
-                    Description = herdUpdateDTO.Description
-                };
-            
+            {
+                Id = herdId,
+                Name = herdUpdateDTO.Name,
+                SpecieId = herdUpdateDTO.SpecieId,
+                Color = herdUpdateDTO.Color,
+                Description = herdUpdateDTO.Description
+            };
         }
 
         public static HerdEntity ToHerd(this HerdDTO herdDTO)
@@ -48,22 +47,24 @@ namespace Application.Data.DTO.Herd.Assembler
             {
                 return new HerdEntity();
             }
-            
+
             return new HerdEntity
-            {   Id = herdDTO.Id,
+            {
+                Id = herdDTO.Id,
                 Name = herdDTO.Name,
-                Specie = new Specie { Id = herdDTO.Specie?.Id ?? 0},
+                Specie = new Specie {Id = herdDTO.Specie?.Id ?? 0},
                 Color = herdDTO.Color,
                 Description = herdDTO.Description
             };
         }
+
         public static HerdDTO ToHerdDTO(this HerdEntity herd)
         {
             if (herd is null)
             {
                 return new HerdDTO();
             }
-            
+
             return new HerdDTO
             {
                 Id = herd.Id,

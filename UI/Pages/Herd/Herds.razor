@@ -70,6 +70,7 @@ else
                                     </label>
                                     <div class="col-9">
                                         <InputSelect id="specie" @bind-Value="herdCreationDTO.SpecieId" class="form-control">
+                                            <option value="0" selected></option>
                                             @foreach (var specie in specieDTOs)
                                             {
                                                 <option value="@specie.Id">@specie.Label</option>
@@ -164,6 +165,7 @@ else
     private async Task SaveHerdAsync()
     {
         Response<Herd> response = await specieBreedService.CreateHerd(herdCreationDTO);
+        
         if (response.IsOperationSuccessfull)
         {
             await bootstrapService.HideModal("#herdModalForm");
@@ -172,7 +174,7 @@ else
 
             await _toast.Show(_successToast);
 
-            herdDTOs.Add(response.Core.ToHerdDTO());
+            herdDTOs.Insert(0,response.Core.ToHerdDTO());
         }
     }
 

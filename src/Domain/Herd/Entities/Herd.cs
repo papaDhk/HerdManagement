@@ -19,6 +19,8 @@ namespace HerdManagement.Domain.Herd.Entities
         public uint LivingMembersNumber { get; set; }
         public Specie Specie { get; set; }
 
+        public int SpecieId { get; set; }
+
         protected override bool EqualsCore(Herd herdToCompareWith)
         {
             return Id == herdToCompareWith.Id;

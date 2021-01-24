@@ -20,7 +20,8 @@ namespace Application.Services
 
         private IHerdRepository _herdRepository;
 
-        public SpecieBreedService(ISpecieRepository specieRepository, IBreedRepository breedRepository, IHerdRepository herdRepository)
+        public SpecieBreedService(ISpecieRepository specieRepository, IBreedRepository breedRepository,
+            IHerdRepository herdRepository)
         {
             _specieRepository = specieRepository ?? throw new ArgumentNullException(nameof(specieRepository));
             _breedRepository = breedRepository ?? throw new ArgumentNullException(nameof(breedRepository));
@@ -29,7 +30,7 @@ namespace Application.Services
 
         public async Task<Response<Breed>> CreateBreed(BreedCreationDTO breedCreationDTO)
         {
-            Response<Breed> response = new Response<Breed> { IsOperationSuccessfull = false };
+            Response<Breed> response = new Response<Breed> {IsOperationSuccessfull = false};
             if (breedCreationDTO == null)
             {
                 return response;
@@ -46,31 +47,26 @@ namespace Application.Services
                     return response.ToSuccessfull(createdBreed);
                 }
             }
+
             return response;
         }
 
         public async Task<Response<Herd>> CreateHerd(HerdCreationDTO herdCreationDTO)
         {
-            Response<Herd> response = new Response<Herd> { IsOperationSuccessfull = false };
-            if(herdCreationDTO == null)
+            Response<Herd> response = new Response<Herd> {IsOperationSuccessfull = false};
+            if (herdCreationDTO == null)
             {
                 return response;
             }
 
-            Specie relatedSpecie = await _specieRepository.GetSpecieById(herdCreationDTO.SpecieId);
-
-            if (relatedSpecie.Id > 0)
-            {
-                Herd createdHerd = await _herdRepository.CreateHerd(herdCreationDTO.ToHerd());
-                return createdHerd.Id>0 ? response.ToSuccessfull(createdHerd) : response;
-            }
-
-            return response;
+            Herd createdHerd = await _herdRepository.CreateHerd(herdCreationDTO.ToHerd());
+            
+            return createdHerd.Id > 0 ? response.ToSuccessfull(createdHerd) : response;
         }
 
         public async Task<Response<Breed>> UpdateBreed(int id, BreedUpdateDTO breedUpdateDTO)
         {
-            Response<Breed> response = new Response<Breed> { IsOperationSuccessfull = false };
+            Response<Breed> response = new Response<Breed> {IsOperationSuccessfull = false};
             if (breedUpdateDTO == null)
             {
                 return response;
@@ -87,6 +83,7 @@ namespace Application.Services
                     Breed updatedBreed = await _breedRepository.GetBreedById(id);
                     return response.ToSuccessfull(updatedBreed);
                 }
+
                 return response;
             }
 
@@ -95,7 +92,7 @@ namespace Application.Services
 
         public async Task<Response<Herd>> UpdateHerd(int id, HerdUpdateDTO herdUpdateDTO)
         {
-            Response<Herd> response = new Response<Herd> { IsOperationSuccessfull = false };
+            Response<Herd> response = new Response<Herd> {IsOperationSuccessfull = false};
             if (herdUpdateDTO == null)
             {
                 return response;
@@ -120,6 +117,7 @@ namespace Application.Services
                     return response;
                 }
             }
+
             return response;
         }
     }
