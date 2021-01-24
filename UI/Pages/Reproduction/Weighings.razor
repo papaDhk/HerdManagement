@@ -6,12 +6,18 @@
 
 @if (_weighings == null)
 {
-    <img src="images/dog-alone.gif" class="rounded mx-auto d-block img-fluid" />
+    <img src="images/dog-alone.gif" class="rounded mx-auto d-block img-fluid"/>
 }
 else
 {
     <SfGrid @ref="_weighingsDataGrid" DataSource="@_weighings" AllowSorting="true" Toolbar="@_toolbarItems">
-        <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog"></GridEditSettings>
+        <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog">
+            <HeaderTemplate>
+                @{
+                    <span>Enregistrer une pesée</span>
+                }
+            </HeaderTemplate>
+        </GridEditSettings>
         <GridEvents OnActionBegin="OnBeginHandlerAsync" OnActionComplete="OnActionComplete"TValue="Weighing"></GridEvents>
         <GridColumns>
             <GridColumn Field=@nameof(Weighing.Id) IsPrimaryKey="true" IsIdentity="true" Visible="false"></GridColumn>
@@ -52,7 +58,7 @@ else
     private List<MeasurementUnit> _lengthMeasurementUnits;
 
     private SfGrid<Weighing> _weighingsDataGrid;
-    
+
     protected override async Task OnInitializedAsync()
     {
         _weighings = _weighingRepository.GetWeighingsByAnimalId(AnimalId).ToList();
@@ -61,7 +67,7 @@ else
             .ToList();
     }
 
-    private readonly string[] _toolbarItems = {"Add","Edit","Delete"};
+    private readonly string[] _toolbarItems = {"Add", "Edit", "Delete"};
 
     private async Task OnBeginHandlerAsync(ActionEventArgs<Weighing> Args)
     {
@@ -69,28 +75,27 @@ else
         {
             await _weighingRepository.DeleteWeighing(Args.Data.Id);
         }
-        
+
         if (Args.Action == "Add")
         {
             Weighing newWeighing = Args.Data;
-        
+
             newWeighing.AnimalId = AnimalId;
-        
+
             Args.Data = await _weighingRepository.CreateOrUpdateWeighingAsync(newWeighing);
         }
         else if (Args.Action == "Edit")
         {
             Weighing weighingToUpdate = Args.Data;
-            
+
             Args.Data = await _weighingRepository.CreateOrUpdateWeighingAsync(weighingToUpdate.ToWeighingUpdateDTO());
         }
-        
     }
 
     //TODO On creation there is a problem
-    private void OnActionComplete(ActionEventArgs<Weighing> Args) 
-    { 
-        if(Args.RequestType == Action.Save) 
+    private void OnActionComplete(ActionEventArgs<Weighing> Args)
+    {
+        if (Args.RequestType == Action.Save)
         {
             if (Args.Action == "Edit")
             {
@@ -101,7 +106,7 @@ else
                 _weighings[weighingToUpdateIndex] = updatedWeigh;
             }
             _weighingsDataGrid.Refresh();
-        } 
-    } 
+        }
+    }
 
 }

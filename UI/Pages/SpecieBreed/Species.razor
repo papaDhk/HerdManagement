@@ -13,12 +13,18 @@
 
 @if (specieDTOs == null)
 {
-    <img src="images/dog-alone.gif" class="rounded mx-auto d-block img-fluid" />
+    <img src="images/dog-alone.gif" class="rounded mx-auto d-block img-fluid"/>
 }
 else
 {
     <SfGrid DataSource="@specieDTOs" AllowSorting="true" Toolbar="@_toolbarItems">
-        <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog"></GridEditSettings>
+        <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog">
+            <HeaderTemplate>
+                @{
+                    <span>Enregistrer une espèce</span>
+                }
+            </HeaderTemplate>
+        </GridEditSettings>
         <GridEvents OnActionBegin="OnBeginHandlerAsync" CommandClicked="OnDetailButtonClicked" TValue="SpecieDTO"></GridEvents>
         <GridColumns>
             <GridColumn Field=@nameof(SpecieDTO.Id) IsPrimaryKey="true" IsIdentity="true" Visible="false"></GridColumn>
@@ -32,10 +38,10 @@ else
             </GridColumn>
             <GridColumn HeaderText="Actions">
                 <GridCommandColumns>
-                    <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-edit", CssClass = "e-flat" })"></GridCommandColumn>
-                    <GridCommandColumn Type="CommandButtonType.Save" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-update", CssClass = "e-flat" })"></GridCommandColumn>
-                    <GridCommandColumn Type="CommandButtonType.Cancel" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-cancel-icon", CssClass = "e-flat" })"></GridCommandColumn>
-                    <GridCommandColumn ButtonOption="@(new CommandButtonOptions() { Content = "Details", CssClass = "e-flat" })"></GridCommandColumn>
+                    <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() {IconCss = "e-icons e-edit", CssClass = "e-flat"})"></GridCommandColumn>
+                    <GridCommandColumn Type="CommandButtonType.Save" ButtonOption="@(new CommandButtonOptions() {IconCss = "e-icons e-update", CssClass = "e-flat"})"></GridCommandColumn>
+                    <GridCommandColumn Type="CommandButtonType.Cancel" ButtonOption="@(new CommandButtonOptions() {IconCss = "e-icons e-cancel-icon", CssClass = "e-flat"})"></GridCommandColumn>
+                    <GridCommandColumn ButtonOption="@(new CommandButtonOptions() {Content = "Details", CssClass = "e-flat"})"></GridCommandColumn>
                 </GridCommandColumns>
             </GridColumn>
         </GridColumns>
@@ -52,7 +58,7 @@ else
         specieDTOs = species.ToSpecieDTOList().ToList();
     }
 
-    private readonly string[] _toolbarItems = { "Add" };
+    private readonly string[] _toolbarItems = {"Add"};
 
     private async Task OnBeginHandlerAsync(ActionEventArgs<SpecieDTO> Args)
     {
@@ -76,4 +82,5 @@ else
             navigationManager.NavigateTo($"species/{args.RowData.Id}");
         }
     }
+
 }

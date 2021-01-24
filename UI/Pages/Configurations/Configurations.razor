@@ -28,7 +28,13 @@ else
                     </div>
                     <div class="card-body">
                         <SfGrid @ref="measurementUnitDataGrid" DataSource="@measurementUnitDTOs" AllowSorting="true" Toolbar="@_toolbarItems">
-                            <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog"></GridEditSettings>
+                            <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog">
+                                <HeaderTemplate>
+                                    @{
+                                        <span>Enregistrer une unité de mesure</span>
+                                    }
+                                </HeaderTemplate>
+                            </GridEditSettings>
                             <GridEvents OnActionBegin="OnBeginHandlerAsync" CommandClicked="OnDetailButtonClicked" TValue="MeasurementUnitDTO"></GridEvents>
                             <GridColumns>
                                 <GridColumn Field=@nameof(MeasurementUnitDTO.Id) IsPrimaryKey="true" IsIdentity="true" Visible="false"></GridColumn>
@@ -38,11 +44,11 @@ else
                                 </GridColumn>
                                 <GridColumn Field=@nameof(MeasurementUnitDTO.MeasurementUnitCategory) HeaderText="Catégorie">
                                     <Template Context="MeasurementUnitContext">
-                                                                                        @{
-                                                                                            var measurementUnit = (MeasurementUnitDTO)MeasurementUnitContext;
-                                                                                        }
-                                                                                        <span>@Helper.GetDisplayName(measurementUnit.MeasurementUnitCategory)</span>
-                                                                                    </Template>
+                                        @{
+                                            var measurementUnit = (MeasurementUnitDTO) MeasurementUnitContext;
+                                        }
+                                        <span>@Helper.GetDisplayName(measurementUnit.MeasurementUnitCategory)</span>
+                                    </Template>
                                     <EditTemplate Context="MeasurementUnitContext">
                                         @*ID value should be based on Field name*@
                                         <SfDropDownList ID="MeasurementUnit___Category"
@@ -98,8 +104,7 @@ else
         {
             MeasurementUnitDTO newMeasurementUnitDTO = Args.Data;
             Args.Data = await measurementUnitRepository.CreateMeasurementUnit(newMeasurementUnitDTO.ToMeasurementUnit())
-                              .ContinueWith(r => r.Result.ToMeasurementUnitDTO());
-
+                .ContinueWith(r => r.Result.ToMeasurementUnitDTO());
         }
         else if (Args.Action == "Edit")
         {

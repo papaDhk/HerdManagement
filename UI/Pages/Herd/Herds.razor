@@ -14,7 +14,7 @@
 
 @if (herdDTOs == null)
 {
-    <img src="images/dog-alone.gif" class="rounded mx-auto d-block img-fluid" />
+    <img src="images/dog-alone.gif" class="rounded mx-auto d-block img-fluid"/>
 }
 else
 {
@@ -54,14 +54,14 @@ else
                         <EditForm Model="@herdCreationDTO" OnValidSubmit="SaveHerdAsync">
                             <div class="modal-body">
 
-                                <DataAnnotationsValidator />
+                                <DataAnnotationsValidator/>
                                 <div class="form-group row">
                                     <label for="name" class="col-3 col-form-label">
                                         Nom
                                     </label>
                                     <div class="col-sm-9">
-                                        <InputText id="name" class="form-control" placeholder="Nom du troupeau" @bind-Value="herdCreationDTO.Name" />
-                                        <ValidationMessage For="@(() => herdCreationDTO.Name)" />
+                                        <InputText id="name" class="form-control" placeholder="Nom du troupeau" @bind-Value="herdCreationDTO.Name"/>
+                                        <ValidationMessage For="@(() => herdCreationDTO.Name)"/>
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -71,21 +71,30 @@ else
                                     <div class="col-9">
                                         <InputSelect id="specie" @bind-Value="herdCreationDTO.SpecieId" class="form-control">
                                             @foreach (var specie in specieDTOs)
-                                                {
+                                            {
                                                 <option value="@specie.Id">@specie.Label</option>
-                                                }
+                                            }
                                         </InputSelect>
-                                        <ValidationMessage For="@(() => herdCreationDTO.SpecieId)" />
+                                        <ValidationMessage For="@(() => herdCreationDTO.SpecieId)"/>
                                     </div>
                                 </div>
-                                <SfColorPicker @bind-value="herdCreationDTO.Color"></SfColorPicker>
+                                <div class="form-group row">
+                                    <label for="specie" class="col-3 col-form-label">
+                                        Couleur
+                                    </label>
+                                    <div class="col-9">
+                                        <SfColorPicker @bind-value="herdCreationDTO.Color" Mode="ColorPickerMode.Palette" ShowButtons="false">
+                                        </SfColorPicker>
+                                    </div>
+                                </div>
+                                
                                 <div class="form-group row">
                                     <label for="description" class="col-3 col-form-label">
                                         Description
                                     </label>
                                     <div class="col-sm-9">
                                         <InputTextArea id="description" class="form-control" placeholder="Description"
-                                                       @bind-Value="herdCreationDTO.Description" />
+                                                       @bind-Value="herdCreationDTO.Description"/>
                                     </div>
                                 </div>
                             </div>
@@ -103,7 +112,6 @@ else
             <ToastPosition X="Center" Y="bottom"></ToastPosition>
         </SfToast>
     </div>
-
 }
 
 @code {
@@ -112,7 +120,7 @@ else
     private SpecieDTO selectedSpecie;
     private HerdCreationDTO herdCreationDTO = new();
     SfToast _toast;
-    ToastModel _successToast = new ToastModel() { Title = "Succés!", Content = "Troupeau créé avec succés.", CssClass = "e-toast-success", Icon = "e-success toast-icons" };
+    ToastModel _successToast = new ToastModel() {Title = "Succés!", Content = "Troupeau créé avec succés.", CssClass = "e-toast-success", Icon = "e-success toast-icons"};
 
     protected override async Task OnInitializedAsync()
     {
@@ -120,7 +128,7 @@ else
         {
             navigationManager.NavigateTo("/herds");
         }
-        
+
         IEnumerable<Herd> herds = await herdRepository.GetAllHerds();
 
         herdDTOs = herds.ToHerdDTOList().ToList();
@@ -128,10 +136,9 @@ else
         IEnumerable<Specie> species = await specieRepository.GetAllSpecies();
 
         specieDTOs = species.ToSpecieDTOList().ToList();
-
     }
 
-    public string[] ToolbarItems = new string[] { "Add", "Edit", "Update", "Cancel" };
+    public string[] ToolbarItems = new string[] {"Add", "Edit", "Update", "Cancel"};
 
     private async Task OnBeginHandlerAsync(ActionEventArgs<HerdDTO> Args)
     {
@@ -156,7 +163,6 @@ else
 
     private async Task SaveHerdAsync()
     {
-
         Response<Herd> response = await specieBreedService.CreateHerd(herdCreationDTO);
         if (response.IsOperationSuccessfull)
         {
@@ -175,4 +181,5 @@ else
     {
         herdCreationDTO = new HerdCreationDTO();
     }
+
 }

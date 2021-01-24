@@ -232,13 +232,22 @@ else
                             </Template>
                         </GridColumn>
                         <GridColumn HeaderText="Actions" TextAlign="TextAlign.Center">
+                            <GridCommandColumns>
+                                <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-edit", CssClass = "e-flat" })"></GridCommandColumn>
+                                <GridCommandColumn Type="CommandButtonType.Delete" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-delete", CssClass = "e-flat" })"></GridCommandColumn>
+                                <GridCommandColumn Type="CommandButtonType.Save" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-update", CssClass = "e-flat" })"></GridCommandColumn>
+                                <GridCommandColumn Type="CommandButtonType.Cancel" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-cancel-icon", CssClass = "e-flat" })"></GridCommandColumn>
+                            </GridCommandColumns>
+                            
+                        </GridColumn>
+                        <GridColumn>
                             <Template>
-                                @{
-                                    var reproduction = (Reproduction)context;
-                                }
-                                <button class="btn btn-primary btn-sm" @onclick="@(() => OnReproductionDetailsClickedAsync(reproduction))">Details</button>
-                                <NavLink href="" class="btn btn-danger btn-sm">Supprimer</NavLink>
-                            </Template>
+                                                            @{
+                                                                var reproduction = (Reproduction) context;
+                                                            }
+                                                            <button class="btn btn-primary btn-sm" @onclick="@(() => OnReproductionDetailsClickedAsync(reproduction))">Details</button>
+                                                            <NavLink href="" class="btn btn-danger btn-sm">Supprimer</NavLink>
+                                                        </Template>
                         </GridColumn>
                     </GridColumns>
                 </SfGrid>
