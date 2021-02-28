@@ -1,6 +1,8 @@
 ﻿@page "/"
 @page "/herds"
 @using Syncfusion.Blazor.Notifications
+@using System.Net.Http.Json
+@inject HttpClient httpClient
 
 @inject IHerdRepository herdRepository
 @inject ISpecieRepository specieRepository
@@ -130,13 +132,9 @@ else
             navigationManager.NavigateTo("/herds");
         }
 
-        IEnumerable<Herd> herds = await herdRepository.GetAllHerds();
-
-        herdDTOs = herds.ToHerdDTOList().ToList();
-
-        IEnumerable<Specie> species = await specieRepository.GetAllSpecies();
-
-        specieDTOs = species.ToSpecieDTOList().ToList();
+        herdDTOs = (List<HerdDTO>) await httpClient.GetFromJsonAsync<IEnumerable<HerdDTO>>("Herds");
+        
+        specieDTOs = (List<SpecieDTO>) await httpClient.GetFromJsonAsync <IEnumerable<SpecieDTO>>("Species");
     }
 
     public string[] ToolbarItems = new string[] {"Add", "Edit", "Update", "Cancel"};

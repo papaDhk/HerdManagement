@@ -1,3 +1,5 @@
+using System;
+using System.Net.Http;
 using Application.Services;
 using HerdManagement.Domain.Characteristic.Repositories;
 using HerdManagement.Domain.Reproduction.Repository;
@@ -32,6 +34,12 @@ namespace UI
                 options.UseSqlServer(Configuration.GetConnectionString("HERD_CATALOG"), options => options.MigrationsAssembly("UI"))
                 , ServiceLifetime.Transient
             );
+            
+            services.AddScoped(sp => 
+                new HttpClient
+                {
+                    BaseAddress = new Uri("https://localhost:5001/api/")
+                });
 
             services.AddRazorPages();
             services.AddServerSideBlazor();

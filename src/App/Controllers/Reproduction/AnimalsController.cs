@@ -102,6 +102,7 @@ namespace Web.Controllers.Reproduction
             return _animalRepository.GetYoungAnimalByNumber(youngAnimalNumber);
         }
 
+        [HttpPut("CreateOrUpdateReproduction")]
         public async Task<ReproductionCreationResponse> CreateOrUpdateReproductionAsync(HerdManagement.Domain.Reproduction.Entities.Reproduction reproduction)
         {
             return await _reproductionService.CreateOrUpdateReproductionAsync(reproduction);
