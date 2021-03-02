@@ -273,20 +273,18 @@ else
 
     private async Task SaveAnimalAsync()
     {
-        canNotBeMother = animalDTO.MotherId > 0 && !reproductionService.CanBeMotherOfAnimalBornIn(animalDTO.MotherId, animalDTO.BirthDate);
+        animalDTO.Origin = (AnimalOrigin)Enum.Parse(typeof(AnimalOrigin), newAnimalOrigin);
 
-        canNotBeFather = animalDTO.FatherId > 0 && !reproductionService.CanBeFatherOfAnimalBornIn(animalDTO.FatherId, animalDTO.BirthDate);
+        var newAnimalResult = await reproductionService.AddNewAnimalAsync(animalDTO);
 
-        if (canNotBeFather || canNotBeMother)
+        if (newAnimalResult.IsNotSuccessful)
         {
+            canNotBeFather = newAnimalResult.CannotBeFatherOf;
+            canNotBeMother = newAnimalResult.CannotBeMotherOf;
             return;
         }
 
-        animalDTO.Origin = (AnimalOrigin)Enum.Parse(typeof(AnimalOrigin), newAnimalOrigin);
-
-        var newAnimal = await reproductionService.AddNewAnimalAsync(animalDTO);
-
-        animals.Add(newAnimal);
+        animals.Add(newAnimalResult.Animal);
 
         dataGrid.Refresh();
 

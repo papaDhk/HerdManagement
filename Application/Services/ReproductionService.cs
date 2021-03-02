@@ -29,12 +29,13 @@ namespace Application.Services
             _reproductionRepository = reproductionRepository ?? throw new ArgumentNullException(nameof(reproductionRepository));
         }
 
-        public async Task<Animal> AddNewAnimalAsync(AnimalDTO animalDTO)
+        public async Task<AddNewAnimalResult> AddNewAnimalAsync(AnimalDTO animalDTO)
         {
+            AddNewAnimalResult addNewAnimalResult = new();
             Animal animal = null;
 
             if (animalDTO is null)
-                return null;
+                return addNewAnimalResult;
 
 
             var breed = await _breedRepository.GetBreedById(animalDTO.BreedId);
@@ -45,9 +46,17 @@ namespace Application.Services
             {
                 animal = animalDTO.ToAnimal();
                 animal.Breed = breed;
-                Calving animalOriginCalving = GetOrCreateParentRelationShip(animalDTO.MotherId, animalDTO.FatherId, animalDTO.BirthDate, animal.ApproximativeOriginReproductionDate);
+                
+                CalvingCreationResult animalOriginCalvingResult = GetOrCreateParentRelationShip(animalDTO.MotherId, animalDTO.FatherId, animalDTO.BirthDate, animal.ApproximativeOriginReproductionDate);
 
-                animalDTO.FromCalving = animalOriginCalving;
+                if (animalOriginCalvingResult.IsNotSuccessful)
+                {
+                    addNewAnimalResult.CannotBeFatherOf = animalOriginCalvingResult.CannotBeFatherOf;
+                    addNewAnimalResult.CannotBeMotherOf = animalOriginCalvingResult.CannotBeMotherOf;
+                    return addNewAnimalResult;
+                }
+
+                animalDTO.FromCalving = animalOriginCalvingResult.Calving;
             }
 
 
@@ -68,23 +77,29 @@ namespace Application.Services
                 }
             }
 
-            return animal;
+            addNewAnimalResult.Animal = animal;
+            return addNewAnimalResult;
         }
 
-        public async Task<Animal> AddNewAnimalAsync(Animal animal)
+        public async Task<AddNewAnimalResult> AddNewAnimalAsync(Animal animal)
         {
             return await AddNewAnimalAsync(animal?.ToAnimalDTO());
         }
         
-        public Calving GetOrCreateParentRelationShip(int motherId, int fatherId, DateTime birthDate, DateTime inferredOriginReproductionDate, int childId = 0)
+        public CalvingCreationResult GetOrCreateParentRelationShip(int motherId, int fatherId, DateTime birthDate, DateTime inferredOriginReproductionDate, int childId = 0)
         {
+            CalvingCreationResult calvingCreationResult = new();
+            
             var mother = _animalRepository.GetFemaleById(motherId);
 
             var father = _animalRepository.GetMaleById(fatherId);
 
-            if (mother?.CanBeParentOfAnimalBornIn(birthDate) == false || father?.CanBeParentOfAnimalBornIn(birthDate) == false)
+            calvingCreationResult.CannotBeFatherOf = father?.CanBeParentOfAnimalBornIn(birthDate) == false;
+            calvingCreationResult.CannotBeMotherOf = mother?.CanBeParentOfAnimalBornIn(birthDate) == false;
+
+            if (calvingCreationResult.IsNotSuccessful)
             {
-                return null;
+                return calvingCreationResult;
             }
 
             var animalOriginReproduction = _reproductionRepository.GetReproductionByPartnersIdsAndDate(motherId, fatherId, inferredOriginReproductionDate) ??
@@ -96,23 +111,37 @@ namespace Application.Services
                 Date = inferredOriginReproductionDate
             };
 
-            return animalOriginReproduction.Calvings.FirstOrDefault(calving => calving.AnimalId == childId) ?? new Calving
+            calvingCreationResult.Calving = animalOriginReproduction.Calvings.FirstOrDefault(calving => calving.AnimalId == childId) ?? new Calving
             {
                 Date = birthDate,
                 Reproduction = animalOriginReproduction,
                 FemaleId = motherId,
                 MaleId = fatherId
             };
+
+            return calvingCreationResult;
         }
 
-        public async Task<Animal> UpdateAnimalAsync(Animal animal, int motherId, int fatherId)
+        public async Task<UpdateAnimalResult> UpdateAnimalAsync(Animal animal, int motherId, int fatherId)
         {
             using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
             
             Calving animalOriginCalving = null;
+            
             if (fatherId != 0 && motherId != 0)
             {
-                animalOriginCalving = GetOrCreateParentRelationShip(motherId, fatherId, animal.BirthDate, animal.ApproximativeOriginReproductionDate, animal.Id);
+                var result = GetOrCreateParentRelationShip(motherId, fatherId, animal.BirthDate, animal.ApproximativeOriginReproductionDate, animal.Id);
+
+                if (result.IsNotSuccessful)
+                {
+                    return new UpdateAnimalResult
+                    {
+                        CannotBeFatherOf = result.CannotBeFatherOf,
+                        CannotBeMotherOf = result.CannotBeMotherOf
+                    };
+                }
+
+                animalOriginCalving = result.Calving;
             }
 
             if (animal.FromCalving != null && animalOriginCalving?.Id != animal.FromCalving?.Id)
@@ -135,8 +164,8 @@ namespace Application.Services
             };
                 
             scope.Complete();
-
-            return animal;
+            
+            return new UpdateAnimalResult{Animal = animal};
         }
 
         public bool CanBeFatherOfAnimalBornIn(int maleId, DateTime birthDate)
@@ -188,5 +217,31 @@ namespace Application.Services
 
             return response;
         }
+    }
+
+    public class CalvingCreationResult
+    {
+        public bool CannotBeFatherOf { get; set; }
+        public bool CannotBeMotherOf { get; set; }
+        public Calving Calving { get; set; }
+
+        public bool IsNotSuccessful => CannotBeFatherOf || CannotBeMotherOf;
+    }
+
+    public class AddNewAnimalResult
+    {
+        public Animal Animal { get; set; }
+        public bool CannotBeFatherOf { get; set; }
+        public bool CannotBeMotherOf { get; set; }
+        public bool IsNotSuccessful => CannotBeFatherOf || CannotBeMotherOf;
+
+    }
+    public class UpdateAnimalResult
+    {
+        public Animal Animal { get; set; }
+        public bool CannotBeFatherOf { get; set; }
+        public bool CannotBeMotherOf { get; set; }
+        public bool IsNotSuccessful => CannotBeFatherOf || CannotBeMotherOf;
+
     }
 }

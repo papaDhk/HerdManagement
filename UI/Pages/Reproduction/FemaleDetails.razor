@@ -688,17 +688,18 @@ else
 
     private async Task SaveAnimalAsync()
     {
-        canNotBeMother = motherId > 0 && !reproductionService.CanBeMotherOfAnimalBornIn(motherId.Value, currentFemale.BirthDate);
+        // currentFemale = 
+        var updateAnimalResult = await reproductionService.UpdateAnimalAsync(currentFemale, motherId.Value, fatherId.Value);
 
-        canNotBeFather = fatherId > 0 && !reproductionService.CanBeFatherOfAnimalBornIn(fatherId.Value, currentFemale.BirthDate);
-
-        if (canNotBeFather || canNotBeMother)
+        if (updateAnimalResult.IsNotSuccessful)
         {
+            canNotBeFather = updateAnimalResult.CannotBeFatherOf;
+            canNotBeMother = updateAnimalResult.CannotBeMotherOf;
             return;
         }
 
-        currentFemale = (Female)await reproductionService.UpdateAnimalAsync(currentFemale, motherId.Value, fatherId.Value);
-
+        currentFemale = (Female) updateAnimalResult.Animal;
+        
         CleanAndMakeNoEditable();
         
         await _toast.Show(_successToast);
@@ -830,11 +831,11 @@ else
 
                 calving.Animal.Breed = breedDTOs.FirstOrDefault(b => b.Id == calving.Animal.BreedId).ToBreed();
             
-                var animal = await reproductionService.AddNewAnimalAsync(calving.Animal.ToAnimalDTO());
+                var addNewAnimalResult = await reproductionService.AddNewAnimalAsync(calving.Animal.ToAnimalDTO());
 
                 calving.Animal = null;
 
-                calving.AnimalId = animal.Id;
+                calving.AnimalId = addNewAnimalResult.Animal.Id;
 
                 calving = await reproductionRepository.CreateOrUpdateCalvingAsync(calving);
 

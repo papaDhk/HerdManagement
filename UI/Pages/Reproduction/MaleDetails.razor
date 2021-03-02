@@ -119,7 +119,7 @@ else
                             @if ((int)motherId > 0)
                             {
                                 <i class="fas fa-eye text-primary" style="cursor: pointer;"
-                                   @onclick="@(() => navigationManager.NavigateTo(females.Where(f => f.Id == motherId).FirstOrDefault()?.GetProfilePageUrl(AnimalHerdName), forceLoad:true))">
+                                   @onclick="@(() => navigationManager.NavigateTo(females.FirstOrDefault(f => f.Id == motherId)?.GetProfilePageUrl(AnimalHerdName), forceLoad:true))">
                                     Details
                                 </i>
                             }
@@ -146,7 +146,7 @@ else
                             @if ((int)fatherId > 0)
                             {
                                 <i class="fas fa-eye text-primary" style="cursor: pointer;"
-                                   @onclick="@(() => navigationManager.NavigateTo(@males.Where(m => m.Id == fatherId).FirstOrDefault()?.GetProfilePageUrl(AnimalHerdName), forceLoad:true))">
+                                   @onclick="@(() => navigationManager.NavigateTo(@males.FirstOrDefault(m => m.Id == fatherId)?.GetProfilePageUrl(AnimalHerdName) ?? string.Empty, forceLoad:true))">
                                     Details
                                 </i>
                             }
@@ -245,17 +245,14 @@ else
 
     private async Task SaveAnimalAsync()
     {
-        canNotBeMother = motherId > 0 ? !reproductionService.CanBeMotherOfAnimalBornIn(motherId.Value, currentMale.BirthDate) : false;
+        var updateAnimalResult = await reproductionService.UpdateAnimalAsync(currentMale, motherId.Value, fatherId.Value);
 
-        canNotBeFather = fatherId > 0 ? !reproductionService.CanBeFatherOfAnimalBornIn(fatherId.Value, currentMale.BirthDate) : false;
-
-        if (canNotBeFather || canNotBeMother)
+        if (updateAnimalResult.IsNotSuccessful)
         {
-            return;
+            canNotBeFather = updateAnimalResult.CannotBeFatherOf;
+            canNotBeMother = updateAnimalResult.CannotBeMotherOf;
         }
-
-        currentMale = (Male)await reproductionService.UpdateAnimalAsync(currentMale, motherId.Value, fatherId.Value);
-
+        
         CleanAndMakeNoEditable();
     }
 

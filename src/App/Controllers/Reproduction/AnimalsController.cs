@@ -28,14 +28,14 @@ namespace Web.Controllers.Reproduction
         }
 
         [HttpPost("AddNewAnimal")]
-        public async Task<Animal> AddNewAnimalAsync(AnimalDTO animalDTO)
+        public async Task<AddNewAnimalResult> AddNewAnimalAsync(AnimalDTO animalDTO)
         {
             return await _reproductionService.AddNewAnimalAsync(animalDTO);
 
         }
 
         [HttpPut("UpdateAnimal")]
-        public async Task<Animal> UpdateAnimalAsync(Animal animal, int motherId, int fatherId)
+        public async Task<UpdateAnimalResult> UpdateAnimalAsync(Animal animal, int motherId, int fatherId)
         {
             return await _reproductionService.UpdateAnimalAsync(animal, motherId, fatherId);
         }
