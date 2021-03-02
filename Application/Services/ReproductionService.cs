@@ -3,11 +3,9 @@ using HerdManagement.Domain.Reproduction.Entities;
 using HerdManagement.Domain.Reproduction.Enumerations;
 using HerdManagement.Domain.Reproduction.Repository;
 using HerdManagement.Domain.SpecieBreed.Repository;
-using HerdManagement.Infrastructure.Persistence.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
 using Application.Data.DTO.Reproduction;
@@ -36,12 +34,12 @@ namespace Application.Services
             Animal animal = null;
 
             if (animalDTO is null)
-                return animal;
+                return null;
 
 
             var breed = await _breedRepository.GetBreedById(animalDTO.BreedId);
             animalDTO.Breed = breed.ToBreedDTO();
-            bool isYoungAnimal = breed.Specie.ChildhoodDurationInDays > animalDTO.AgeInDays;
+            var isYoungAnimal = breed.Specie.ChildhoodDurationInDays > animalDTO.AgeInDays;
 
             if (animalDTO.Origin == AnimalOrigin.BornInFarm && animalDTO.FatherId != 0 && animalDTO.MotherId != 0)
             {
@@ -89,21 +87,16 @@ namespace Application.Services
                 return null;
             }
 
-            Reproduction animalOriginReproduction = _reproductionRepository.GetReproductionByPartnersIdsAndDate(motherId, fatherId, inferredOriginReproductionDate);
-
-            if (animalOriginReproduction == null)
+            var animalOriginReproduction = _reproductionRepository.GetReproductionByPartnersIdsAndDate(motherId, fatherId, inferredOriginReproductionDate) ??
+            new Reproduction
             {
-                //Set approximativeDate
-                animalOriginReproduction = new Reproduction
-                {
-                    FemaleId = motherId,
-                    MaleId = fatherId,
-                    States = new List<ReproductionState> { new ReproductionState { State = ReproductionStateEnum.Complete, Date = birthDate } },
-                    Date = inferredOriginReproductionDate
-                };
-            }
+                FemaleId = motherId,
+                MaleId = fatherId,
+                States = new List<ReproductionState> { new() { State = ReproductionStateEnum.Complete, Date = birthDate } },
+                Date = inferredOriginReproductionDate
+            };
 
-            return animalOriginReproduction.Calvings.Where(calving => calving.AnimalId == childId).FirstOrDefault() ?? new Calving
+            return animalOriginReproduction.Calvings.FirstOrDefault(calving => calving.AnimalId == childId) ?? new Calving
             {
                 Date = birthDate,
                 Reproduction = animalOriginReproduction,
@@ -114,36 +107,35 @@ namespace Application.Services
 
         public async Task<Animal> UpdateAnimalAsync(Animal animal, int motherId, int fatherId)
         {
-            using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
-            {
-                Calving animalOriginCalving = null;
-                if (fatherId != 0 && motherId != 0)
-                {
-                     animalOriginCalving = GetOrCreateParentRelationShip(motherId, fatherId, animal.BirthDate, animal.ApproximativeOriginReproductionDate, animal.Id);
-                }
-
-                if (animal.FromCalving != null && animalOriginCalving?.Id != animal.FromCalving?.Id)
-                {
-                    await _reproductionRepository.DeleteCalving(animal.FromCalving.Id);
-                }
-
-                animal.FromCalving = animalOriginCalving;
-
-                animal = animal.CategoryType switch
-                {
-                    Animal.MALE_TYPE => await _animalRepository.UpdateMaleAsync(animal.ToMaleUpdateDTO())
-                        .ContinueWith(male => (Animal) male.Result),
-                
-                    Animal.FEMALE_TYPE => await _animalRepository.UpdateFemaleAsync((Female) animal.ToFemaleUpdateDTO())
-                        .ContinueWith(female => (Animal) female.Result),
-                     
-                    _ => await _animalRepository.UpdateYoungAnimalAsync(animal.ToYoungAnimalUpdateDTO())
-                    .ContinueWith(youngAnimal => (Animal) youngAnimal.Result),
-                };
-                
-                scope.Complete();
-            }
+            using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
             
+            Calving animalOriginCalving = null;
+            if (fatherId != 0 && motherId != 0)
+            {
+                animalOriginCalving = GetOrCreateParentRelationShip(motherId, fatherId, animal.BirthDate, animal.ApproximativeOriginReproductionDate, animal.Id);
+            }
+
+            if (animal.FromCalving != null && animalOriginCalving?.Id != animal.FromCalving?.Id)
+            {
+                await _reproductionRepository.DeleteCalving(animal.FromCalving.Id);
+            }
+
+            animal.FromCalving = animalOriginCalving;
+
+            animal = animal.CategoryType switch
+            {
+                Animal.MALE_TYPE => await _animalRepository.UpdateMaleAsync(animal.ToMaleUpdateDTO())
+                    .ContinueWith(male => (Animal) male.Result),
+                
+                Animal.FEMALE_TYPE => await _animalRepository.UpdateFemaleAsync(animal.ToFemaleUpdateDTO())
+                    .ContinueWith(female => (Animal) female.Result),
+                     
+                _ => await _animalRepository.UpdateYoungAnimalAsync(animal.ToYoungAnimalUpdateDTO())
+                    .ContinueWith(youngAnimal => (Animal) youngAnimal.Result),
+            };
+                
+            scope.Complete();
+
             return animal;
         }
 
@@ -151,7 +143,7 @@ namespace Application.Services
         {
             var male = _animalRepository.GetMaleById(maleId);
 
-            var result = male is null ? false : male.CanBeParentOfAnimalBornIn(birthDate);
+            var result = male?.CanBeParentOfAnimalBornIn(birthDate) ?? false;
 
             return result;
         }
@@ -160,7 +152,7 @@ namespace Application.Services
         {
             var female = _animalRepository.GetFemaleById(femaleId);
 
-            bool result = female is null ? false : female.CanBeParentOfAnimalBornIn(birthDate);
+            var result = female?.CanBeParentOfAnimalBornIn(birthDate) ?? false;
 
             return result;
         }
@@ -186,14 +178,13 @@ namespace Application.Services
                 WasMaleAdult = male.WasAdult(reproduction.Date),
             };
 
-            if (canFemaleBeMated && response.WasMaleAdult)
-            {
-                Reproduction createdReproduction = await _reproductionRepository.CreateOrUpdateReproductionAsync(reproduction);
+            if (!canFemaleBeMated || !response.WasMaleAdult) return response;
+            
+            var createdReproduction = await _reproductionRepository.CreateOrUpdateReproductionAsync(reproduction);
 
-                response.IsSuccessful = true;
+            response.IsSuccessful = true;
 
-                response.Reproduction = createdReproduction;
-            }
+            response.Reproduction = createdReproduction;
 
             return response;
         }
