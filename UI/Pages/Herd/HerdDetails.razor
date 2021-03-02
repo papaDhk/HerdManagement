@@ -166,10 +166,10 @@ else
                                 <div class="col-9">
                                     <InputSelect id="mother" @bind-Value="@animalDTO.MotherId" class="form-control" placeholder="Quelles sont les origines">
 
-                                        @foreach (var female in females)
-                                                {
+                                        @foreach (var female in animals.Where(animal => animal.CategoryType == Animal.FEMALE_TYPE))
+                                        {
                                             <option value="@female.Id">@female.ToString()</option>
-                                                }
+                                        }
                                     </InputSelect>
                                     <ValidationMessage For="@(() => animalDTO.MotherId)" />
                                     @if (@canNotBeMother)
@@ -185,10 +185,10 @@ else
                                 </label>
                                 <div class="col-9">
                                     <InputSelect id="father" @bind-Value="@animalDTO.FatherId" class="form-control">
-                                        @foreach (var male in males)
-                                                {
+                                        @foreach (var male in animals.Where(animal => animal.CategoryType == Animal.MALE_TYPE))
+                                        {
                                             <option value="@male.Id">@male.ToString()</option>
-                                                }
+                                        }
                                     </InputSelect>
                                     <ValidationMessage For="@(() => animalDTO.FatherId)" />
                                     @if (@canNotBeFather)
@@ -237,13 +237,7 @@ else
     private HerdDTO currentHerd;
 
     SfGrid<Animal> dataGrid;
-
-    private List<Male> males;
-
-    private List<Female> females;
-
-    private List<YoungAnimal> youngAnimals;
-
+    
     private List<Animal> animals;
 
     private List<BreedDTO> breedDTOs;
@@ -266,18 +260,8 @@ else
     {
         currentHerd = await herdRepository.GetHerdById(herdId).ContinueWith(herd => herd.Result.ToHerdDTO());
         animalDTO.Herd = currentHerd;
-
-        males = animalRepository.GetMalesByHerdId(herdId).ToList();
-
-        females = animalRepository.GetFemalesByHerdId(herdId).ToList();
-
-        youngAnimals = animalRepository.GetYoungAnimalsByHerdId(herdId).ToList();
-
-        animals = males.Cast<Animal>().ToList();
-
-        animals.AddRange(females);
-
-        animals.AddRange(youngAnimals);
+        
+        animals = animalRepository.GetAnimalsByHerdId(herdId).ToList();
 
         breedDTOs = await breedRepository.GetBreedsBySpecie(currentHerd.Specie.Id).ContinueWith(breeds => breeds.Result.ToBreedDTOList().ToList());
     }

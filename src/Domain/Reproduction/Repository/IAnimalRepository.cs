@@ -15,6 +15,7 @@ namespace HerdManagement.Domain.Reproduction.Repository
         Female GetFemaleById(int femaleId);
         Female GetFemaleWithReproductionsById(int femaleId);
         IEnumerable<Female> GetFemales();
+        IEnumerable<Animal> GetAnimalsByHerdId(int herdId);
         Male GetMaleByNumber(int maleNumber);
         Male GetMaleById(int maleId);
         IEnumerable<Male> GetMales();

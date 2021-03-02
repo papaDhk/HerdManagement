@@ -66,6 +66,14 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
         {
             return _animalDbContext.Females;
         }
+        
+        public IEnumerable<Animal>  GetAnimalsByHerdId(int herdId)
+        {
+            return _animalDbContext.Animals
+                .Include(animal => animal.Breed)
+                .ThenInclude(breed => breed.Specie)
+                .Where(animal => animal.Herd.Id == herdId);
+        }
 
         public IEnumerable<Female> GetFemalesByHerdId(int herdId)
         {
