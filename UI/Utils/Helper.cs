@@ -17,8 +17,7 @@ namespace UI
                 return animal.Sex switch
                 {
                     SexEnum.Male => $"/herds/{herdName}/animals/male/{animal.Number}/{animal.Name}",
-                    SexEnum.Female => $"/herds/{herdName}/animals/female/{animal.Number}/{animal.Name}"
-
+                    _ => $"/herds/{herdName}/animals/female/{animal.Number}/{animal.Name}"
                 };
             }
 
