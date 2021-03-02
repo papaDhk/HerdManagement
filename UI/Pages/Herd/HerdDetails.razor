@@ -248,9 +248,9 @@ else
 
     private List<BreedDTO> breedDTOs;
     
-    private AnimalDTO animalDTO = new AnimalDTO { BirthDate = DateTime.UtcNow };
+    private AnimalDTO animalDTO = new() { BirthDate = DateTime.UtcNow };
 
-    public string[] ToolbarItems = new string[] { "Search" };
+    public string[] ToolbarItems = { "Search" };
 
     private string newAnimalOrigin = "";
 
@@ -260,7 +260,7 @@ else
     
     private SfToast _toast;
     
-    ToastModel _successToast = new ToastModel() {Title = "Succés!", Content = "Aniaml créé avec succés.", CssClass = "e-toast-success", Icon = "e-success toast-icons"};
+    ToastModel _successToast = new() {Title = "Succés!", Content = "Aniaml créé avec succés.", CssClass = "e-toast-success", Icon = "e-success toast-icons"};
     
     protected async override Task OnInitializedAsync()
     {
@@ -275,26 +275,11 @@ else
 
         animals = males.Cast<Animal>().ToList();
 
-        animals.AddRange(females.Cast<Animal>());
+        animals.AddRange(females);
 
-        animals.AddRange(youngAnimals.Cast<Animal>());
+        animals.AddRange(youngAnimals);
 
         breedDTOs = await breedRepository.GetBreedsBySpecie(currentHerd.Specie.Id).ContinueWith(breeds => breeds.Result.ToBreedDTOList().ToList());
-    }
-
-    private async Task OnInputFileChange(InputFileChangeEventArgs e)
-    {
-        var maxAllowedFiles = 1;
-        var format = "image/png";
-
-        foreach (var imageFile in e.GetMultipleFiles(maxAllowedFiles))
-        {
-            var resizedImageFile = await imageFile.RequestImageFileAsync(format,
-                300, 300);
-            var buffer = new byte[resizedImageFile.Size];
-            await resizedImageFile.OpenReadStream().ReadAsync(buffer);
-            animalDTO.Picture = buffer;
-        }
     }
 
     private void ClearModalForm()
@@ -338,17 +323,4 @@ else
             animalDTO.Picture = file.Stream.ToArray();
         }
     }
-
-    private void CanBeFather(ChangedEventArgs changedEventArgs)
-    {
-        int selectedFatherId = int.Parse(changedEventArgs.Value);
-        canNotBeFather = !reproductionService.CanBeFatherOfAnimalBornIn(selectedFatherId, animalDTO.BirthDate);
-    }
-
-    private void CanBeMother(ChangedEventArgs changedEventArgs)
-    {
-        int selectedMotherId = int.Parse(changedEventArgs.Value);
-        canNotBeMother = !reproductionService.CanBeMotherOfAnimalBornIn(selectedMotherId, animalDTO.BirthDate);
-    }
-
 }
