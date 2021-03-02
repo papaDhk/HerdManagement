@@ -118,12 +118,12 @@ else
 }
 
 @code {
-    private List<HerdDTO> herdDTOs = new List<HerdDTO>();
-    private List<SpecieDTO> specieDTOs = new List<SpecieDTO>();
+    private List<HerdDTO> herdDTOs = new();
+    private List<SpecieDTO> specieDTOs = new();
     private SpecieDTO selectedSpecie;
     private HerdCreationDTO herdCreationDTO = new();
     SfToast _toast;
-    ToastModel _successToast = new ToastModel() {Title = "Succés!", Content = "Troupeau créé avec succés.", CssClass = "e-toast-success", Icon = "e-success toast-icons"};
+    ToastModel _successToast = new() {Title = "Succés!", Content = "Troupeau créé avec succés.", CssClass = "e-toast-success", Icon = "e-success toast-icons"};
 
     protected override async Task OnInitializedAsync()
     {
@@ -136,35 +136,13 @@ else
         
         specieDTOs = (List<SpecieDTO>) await httpClient.GetFromJsonAsync <IEnumerable<SpecieDTO>>("Species");
     }
-
-    public string[] ToolbarItems = new string[] {"Add", "Edit", "Update", "Cancel"};
-
-    private async Task OnBeginHandlerAsync(ActionEventArgs<HerdDTO> Args)
-    {
-        if (Args.Action == "Add")
-        {
-            HerdDTO newHerdDTO = Args.Data;
-            newHerdDTO.Specie = selectedSpecie;
-            Herd createdHerd = await herdRepository.CreateHerd(newHerdDTO.ToHerd());
-        }
-        else if (Args.Action == "Edit")
-        {
-            HerdDTO newHerdDTO = Args.Data;
-            newHerdDTO.Specie = selectedSpecie;
-            int result = await herdRepository.UpdateHerd(newHerdDTO.ToHerd());
-        }
-    }
-
-    private void OnValueChange(Syncfusion.Blazor.DropDowns.ChangeEventArgs<int, SpecieDTO> args)
-    {
-        selectedSpecie = args.ItemData;
-    }
-
+    
     private async Task SaveHerdAsync()
     {
-        Response<Herd> response = await specieBreedService.CreateHerd(herdCreationDTO);
+        HttpResponseMessage response = await httpClient.PostAsJsonAsync("Herds", herdCreationDTO);
+        HerdDTO newHerd = await response.Content.ReadFromJsonAsync<HerdDTO>();
         
-        if (response.IsOperationSuccessfull)
+        if (response.IsSuccessStatusCode)
         {
             await bootstrapService.HideModal("#herdModalForm");
 
@@ -172,7 +150,7 @@ else
 
             await _toast.Show(_successToast);
 
-            herdDTOs.Insert(0,response.Core.ToHerdDTO());
+            herdDTOs.Insert(0,newHerd);
         }
     }
 

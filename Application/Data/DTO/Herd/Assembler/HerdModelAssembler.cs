@@ -23,6 +23,22 @@ namespace Application.Data.DTO.Herd.Assembler
                 Description = herdCreationDTO.Description
             };
         }
+        
+        public static HerdCreationDTO ToHerdCreationDto(this HerdEntity herdDTO)
+        {
+            if (herdDTO is null)
+            {
+                return new HerdCreationDTO();
+            }
+
+            return new HerdCreationDTO()
+            {
+                Name = herdDTO.Name,
+                SpecieId = herdDTO.SpecieId,
+                Color = herdDTO.Color,
+                Description = herdDTO.Description
+            };
+        }
 
         public static HerdEntity ToHerd(this HerdUpdateDTO herdUpdateDTO, int herdId)
         {

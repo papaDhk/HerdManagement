@@ -81,23 +81,17 @@ namespace App.Controllers.Herds
         [HttpPost]
         public async Task<ActionResult<HerdDTO>> Post([FromBody] HerdCreationDTO herdCreationDTO)
         {
-            if (ModelState.IsValid)
-            {
-                Response<Herd> response = await _specieBreedService.CreateHerd(herdCreationDTO);
+            if (!ModelState.IsValid) return BadRequest(herdCreationDTO);
+            
+            Response<Herd> response = await _specieBreedService.CreateHerd(herdCreationDTO);
 
-                if (response.IsOperationSuccessfull)
-                {
-                    return Ok(response.Core.ToHerdDTO());
-                }
-                else
-                {
-                    return StatusCode(StatusCodes.Status500InternalServerError);
-                }
-            }
-            else
+            if (response.IsOperationSuccessfull)
             {
-                return BadRequest(herdCreationDTO);
+                return Ok(response.Core.ToHerdDTO());
             }
+
+            return StatusCode(StatusCodes.Status500InternalServerError);
+
         }
 
         // PUT: api/Herds/5
