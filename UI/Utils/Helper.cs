@@ -21,10 +21,8 @@ namespace UI
 
                 };
             }
-            else
-            {
-                return $"/herds/{herdName}/animals/little/{animal.Number}/{animal.Name}";
-            }
+
+            return $"/herds/{herdName}/animals/little/{animal.Number}/{animal.Name}";
         }
 
         public static Dictionary<string, string> GetKeyValuesFromEnum(Type enumType)
