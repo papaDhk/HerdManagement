@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Syncfusion.Blazor;
 using HerdManagement.Domain.Common.Repositories;
+using UI.Data;
 
 namespace UI
 {
@@ -54,6 +55,7 @@ namespace UI
             services.AddTransient<IWeighingRepository, WeighingRepository>();
             services.AddScoped<BootstrapService, BootstrapService>();
             services.AddTransient<ICharacteristicRepository, CharacteristicRepository>();
+            services.AddScoped<AnimalService,AnimalService>();
 
             services.AddSyncfusionBlazor();
         }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Application.Services;
 using HerdManagement.Domain.Common.Repositories;
+using HerdManagement.Domain.Reproduction.Repository;
 using HerdManagement.Domain.SpecieBreed.Repository;
 using HerdManagement.Domain.SpecieBreed.Service;
 using HerdManagement.Infrastructure.Persistence.Repository;
@@ -42,6 +43,11 @@ namespace App
             services.AddTransient<IBreedRepository, BreedRepository>();
             services.AddSingleton<ISpecieBreedService, SpecieBreedService>();
             services.AddSingleton<IMeasurementUnitRepository, MeasurementUnitRepositoryEF>();
+            services.AddSingleton<IAnimalRepository, AnimalRepository>();
+            services.AddSingleton<ISpecieBreedService, SpecieBreedService>();
+            services.AddSingleton<IReproductionService, ReproductionService>();
+            services.AddSingleton<IReproductionRepository, ReproductionRepository>();
+            services.AddSingleton<IWeighingRepository, WeighingRepository>();
             services.AddSwaggerGen();
 
             services.AddCors(options =>

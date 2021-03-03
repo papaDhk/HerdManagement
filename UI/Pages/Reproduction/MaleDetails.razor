@@ -5,12 +5,14 @@
 @using Syncfusion.Blazor.Grids
 @using Syncfusion.Blazor.DropDowns
 @using HerdManagement.Domain.SpecieBreed.Repository
+@using UI.Data
 
 @inject ISpecieRepository specieRepository
 @inject NavigationManager navigationManager
 @inject IAnimalRepository animalRepository
 @inject IBreedRepository breedRepository
 @inject IReproductionService reproductionService
+@inject AnimalService animalService
 
 
 <nav class="navbar navbar-light mb-3 horizontal-nav-bar justify-content-between">
@@ -235,22 +237,23 @@ else
 
         breedDTOs = await breedRepository.GetAllBreeds().ContinueWith(breeds => breeds.Result.ToBreedDTOList().ToList());
 
-        males = animalRepository.GetMalesByHerdId(currentMale.Herd.Id)
-                                .Where(male => male.Id != currentMale.Id)
-                                .ToList();
+        var malesList = await animalService.GetMalesByHerdId(currentMale.Herd.Id);
+        males = malesList.Where(male => male.Id != currentMale.Id).ToList();
 
-        females = animalRepository.GetFemalesByHerdId(currentMale.Herd.Id).ToList();
+        var femalesList = await animalService.GetFemalesByHerdId(currentMale.Herd.Id);
+        females = femalesList.ToList();
     }
 
 
     private async Task SaveAnimalAsync()
     {
-        var updateAnimalResult = await reproductionService.UpdateAnimalAsync(currentMale, motherId.Value, fatherId.Value);
+        var updateAnimalResult = await animalService.UpdateAnimal(currentMale, motherId.Value, fatherId.Value);
 
         if (updateAnimalResult.IsNotSuccessful)
         {
             canNotBeFather = updateAnimalResult.CannotBeFatherOf;
             canNotBeMother = updateAnimalResult.CannotBeMotherOf;
+            return;
         }
         
         CleanAndMakeNoEditable();

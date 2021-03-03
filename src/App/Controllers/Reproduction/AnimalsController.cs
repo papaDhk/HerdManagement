@@ -40,7 +40,7 @@ namespace Web.Controllers.Reproduction
             return await _reproductionService.UpdateAnimalAsync(animal, motherId, fatherId);
         }
 
-        [HttpGet(Name = "GetFemalesByHerdId")]
+        [HttpGet( "GetFemalesByHerdId")]
         public  IEnumerable<Female> GetFemalesByHerdIdAsync(int herdId)
         {
             return _animalRepository.GetFemalesByHerdId(herdId);
