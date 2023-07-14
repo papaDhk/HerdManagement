@@ -3,23 +3,21 @@
 -- Create date: <Create Date,,>
 -- Description:	<Description,,>
 -- =============================================
-CREATE PROCEDURE [dbo].[GetHerdByName]
-	-- Add the parameters for the stored procedure here
-	@Name varchar(50)
+CREATE PROCEDURE [dbo].[GetBreedById]
+
+@Id int
+	
 AS
 BEGIN
-SELECT H.[Id]
-      ,H.[Name]
-      ,H.[Color]
-      ,H.[Description]
-      ,H.[LivingMembersNumber]
-      ,H.[SpecieId]
+	SELECT
+	   B.[Id]
+      ,B.[Label]
+      ,B.[SpecieId]
+      ,S.Id
       ,S.[Label]
       ,S.[ChildhoodDurationInDays]
       ,S.[PregnancyDurationInDays]
       ,S.[MinimumTimeSpanBetweenCalvingAndHeatInDays]
-
-  FROM [dbo].[Herds] as H 
-  inner join dbo.Specie S on H.SpecieId =S.Id
-  WHERE H.Name = @Name
+  FROM [dbo].[Breed] as B
+   inner join dbo.Specie S on B.SpecieId =S.Id  WHERE B.Id = @Id
 END

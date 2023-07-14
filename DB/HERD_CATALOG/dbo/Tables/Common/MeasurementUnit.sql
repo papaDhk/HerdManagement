@@ -1,4 +1,4 @@
-﻿CREATE TABLE [dbo].[MeasurementUnit] (
+﻿CREATE TABLE [dbo].[MeasurementUnits] (
     [Label]      VARCHAR (50) NOT NULL,
     [Symbol]       VARCHAR (50) NOT NULL,
     [Commentary] NCHAR (100)  NULL,

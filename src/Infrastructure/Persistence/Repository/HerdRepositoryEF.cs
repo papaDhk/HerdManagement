@@ -11,7 +11,7 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
 {
     public class HerdRepositoryEF : IHerdRepository
     {
-        private HerdManagementDbContext _herdManagementDbContext;
+        private readonly HerdManagementDbContext _herdManagementDbContext;
 
         public HerdRepositoryEF(HerdManagementDbContext herdManagementDbContext)
         {
@@ -61,7 +61,7 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
 
         public async Task<IEnumerable<Herd>> GetAllHerds()
         {
-            return _herdManagementDbContext.Herds.Select(h => h).Include(h => h.Specie);
+            return _herdManagementDbContext.Herds.Select(h => h).Include(h => h.Specie).ToArray();
         }
 
         public async Task<int> UpdateHerd(Herd herd)

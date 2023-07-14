@@ -32,7 +32,7 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
                         herd.Name,
                         herd.Color,
                         herd.Description,
-                        SpecieId = herd.Specie.Id
+                        SpecieId = herd.Specie?.Id ?? herd.SpecieId
                     });
 
                 createdHerdId = await dbConnection.QuerySingleOrDefaultAsync<int>("dbo.InsertNewHerd", parameters, commandType: CommandType.StoredProcedure);

@@ -12,6 +12,6 @@
     [Class]              VARCHAR (30)   NOT NULL,
     CONSTRAINT [PK_Animal] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_Animal_Breed] FOREIGN KEY ([BreedId]) REFERENCES [dbo].[Breed] ([Id]),
-    CONSTRAINT [FK_Animal_Herd] FOREIGN KEY ([HerdId]) REFERENCES [dbo].[Herd] ([Id])
+    CONSTRAINT [FK_Animal_Herd] FOREIGN KEY ([HerdId]) REFERENCES [dbo].[Herds] ([Id])
 );
 

@@ -17,7 +17,7 @@ namespace HerdManagement.Domain.Reproduction.Entities
 
         protected override int GetHashCodeCore()
         {
-            throw new NotImplementedException();
+            return AnimalId.GetHashCode() ^ MeasurementUnitId.GetHashCode() ^ DateTime.GetHashCode();
         }
 
         public int AnimalId { get; set; }

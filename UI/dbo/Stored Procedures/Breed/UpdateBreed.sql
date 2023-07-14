@@ -1,23 +1,19 @@
 ﻿-- =============================================
 -- Author:		Momar
 -- Create date: 
--- Description:	Updaet a row in Herd table
+-- Description:	Updaet a row in Breed table
 -- =============================================
-CREATE PROCEDURE [dbo].UpdateHerd 
+CREATE PROCEDURE [dbo].UpdateBreed 
 	-- Add the parameters for the stored procedure here
     @Id int,
-	@Name nvarchar(50),
-	@Color varchar(7),
-	@Description nvarchar(50),
+	@Label varchar(50),
 	@SpecieId int
 AS
 BEGIN
 
-UPDATE [dbo].[Herds]
+UPDATE [dbo].[Breed]
 
-         SET [Name] = @Name
-           ,[Color] = @Color
-           ,[Description] = @Description
+         SET [Label] = @Label
            ,[SpecieId] = @SpecieId
           WHERE Id = @Id
 END

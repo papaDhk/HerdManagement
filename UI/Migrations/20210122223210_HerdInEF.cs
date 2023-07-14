@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System.IO;
+using System.Linq;
+using System.Reflection;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace UI.Migrations
 {
@@ -47,6 +50,19 @@ namespace UI.Migrations
                 principalTable: "Specie",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
+            
+            var assembly = Assembly.GetExecutingAssembly();
+            var sqlFiles = assembly.GetManifestResourceNames().
+                Where(file => file.EndsWith(".sql"));
+            foreach (var sqlFile in sqlFiles)
+            {
+                using (Stream stream = assembly.GetManifestResourceStream(sqlFile))
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    var sqlScript = reader.ReadToEnd();
+                    migrationBuilder.Sql($"EXEC(N'{sqlScript}')");
+                }
+            }
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

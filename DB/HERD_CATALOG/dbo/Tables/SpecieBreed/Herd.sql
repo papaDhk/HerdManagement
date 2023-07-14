@@ -1,4 +1,4 @@
-﻿CREATE TABLE [dbo].[Herd] (
+﻿CREATE TABLE [dbo].[Herds] (
     [Id]                  INT          IDENTITY (1, 1) NOT NULL,
     [Name]                VARCHAR (50) NOT NULL,
     [Color]               VARCHAR (50) NOT NULL,
@@ -12,5 +12,5 @@
 
 GO
 CREATE NONCLUSTERED INDEX [IX_Herd]
-    ON [dbo].[Herd]([Id] ASC);
+    ON [dbo].[Herds]([Id] ASC);
 

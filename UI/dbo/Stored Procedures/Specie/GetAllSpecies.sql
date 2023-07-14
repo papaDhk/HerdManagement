@@ -3,17 +3,17 @@
 -- Create date: <Create Date,,>
 -- Description:	<Description,,>
 -- =============================================
-CREATE PROCEDURE [dbo].[GetMeasurementUnitById]
-	 @Id int
+CREATE PROCEDURE [dbo].[GetAllSpecies]
+	
 AS
 BEGIN
 
 
 SELECT [Id]
       ,[Label]
-      ,[Symbol]
-      ,[Commentary]
-  FROM [dbo].[MeasurementUnits]
-  WHERE Id = @Id
+      ,[ChildhoodDurationInDays]
+      ,[PregnancyDurationInDays]
+      ,[MinimumTimeSpanBetweenCalvingAndHeatInDays]
+  FROM [dbo].[Specie]
 
 END
