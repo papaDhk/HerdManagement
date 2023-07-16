@@ -1,0 +1,139 @@
+@using HerdManagement.Domain.Common.Entities
+@using HerdManagement.Domain.Common.Repositories
+@using HerdManagement.Domain.Feeding.Assembler
+@using HerdManagement.Domain.Feeding.Entities
+@using HerdManagement.Domain.Feeding.Repository
+@using Action = Syncfusion.Blazor.Grids.Action
+@using AnimalFeedingEntity = HerdManagement.Domain.Feeding.Entities.AnimalFeeding
+@inject IAnimalFeedingRepository AnimalFeedingRepository;
+@inject IMeasurementUnitRepository MeasurementUnitRepository;
+@inject IFoodRepository FoodRepository;
+
+@if (_animalFeedings == null)
+{
+    <img src="images/dog-alone.gif" class="rounded mx-auto d-block img-fluid"/>
+}
+else
+{
+    <SfGrid @ref="_animalFeedingsDataGrid" DataSource="@_animalFeedings" AllowSorting="true" Toolbar="@_toolbarItems">
+        <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog">
+            <HeaderTemplate>
+                @{
+                    <span>Enregistrer une ration</span>
+                }
+            </HeaderTemplate>
+        </GridEditSettings>
+        <GridEvents OnActionBegin="OnBeginHandlerAsync" OnActionComplete="OnActionComplete"TValue="AnimalFeedingEntity"></GridEvents>
+        <GridColumns>
+            <GridColumn Field=@nameof(AnimalFeedingEntity.Id) IsPrimaryKey="true" IsIdentity="true" Visible="false"></GridColumn>
+            <GridColumn Field=@nameof(AnimalFeedingEntity.Food) HeaderText="Aliment">
+                <Template Context="currentAnimalFeedingRow">
+                    @{
+                        var animalFeedingRow = (AnimalFeedingEntity) currentAnimalFeedingRow;
+                    }
+                    <span>@animalFeedingRow?.Food?.Label</span>
+                </Template>
+                <EditTemplate Context="currentAnimalFeedingRow">
+                    @{
+                        var animalFeeding = currentAnimalFeedingRow as AnimalFeedingEntity;
+                    }
+                    <InputSelect id="food" @bind-Value="@animalFeeding.FoodId" class="form-control">
+                        @foreach (var food in _foods)
+                        {
+                            <option value="@food.Id">@food.Label</option>
+                        }
+                    </InputSelect>
+                </EditTemplate>
+                </GridColumn>
+            <GridColumn Field=@nameof(AnimalFeedingEntity.Quantity) HeaderText="Quantite de la ration">
+            </GridColumn>
+            <GridColumn Field=@nameof(AnimalFeedingEntity.MeasurementUnit) HeaderText="Unité">
+                <Template Context="currentAnimalFeedingRow">
+                    @{
+                        var animalFeedingRow = (AnimalFeedingEntity) currentAnimalFeedingRow;
+                    }
+                    <span>@animalFeedingRow?.MeasurementUnit?.ToString()</span>
+                </Template>
+                <EditTemplate Context="currentAnimalFeedingRow">
+                    @{
+                        var animalFeeding = currentAnimalFeedingRow as AnimalFeedingEntity;
+                    }
+                    <InputSelect id="measurementUnit" @bind-Value="@animalFeeding.MeasurementUnitId" class="form-control">
+                        @foreach (var measurementUnit in _massMeasurementUnits)
+                        {
+                            <option value="@measurementUnit.Id">@measurementUnit?.ToString()</option>
+                        }
+                    </InputSelect>
+                </EditTemplate>
+            </GridColumn>
+            <GridColumn Field=@nameof(AnimalFeedingEntity.Cost) HeaderText="Coût de la ration"></GridColumn>
+            <GridColumn Field=@nameof(AnimalFeedingEntity.DateTime) HeaderText="Date de la ration">
+            </GridColumn>
+        </GridColumns>
+    </SfGrid>
+}
+
+@code {
+
+    [Parameter]
+    public int AnimalId { get; set; }
+
+    private List<AnimalFeedingEntity> _animalFeedings;
+
+    private List<MeasurementUnit> _massMeasurementUnits;
+    private List<Food> _foods;
+
+    private SfGrid<AnimalFeedingEntity> _animalFeedingsDataGrid;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _animalFeedings = AnimalFeedingRepository.GetFeedingsByAnimalId(AnimalId).ToList();
+
+        _massMeasurementUnits = MeasurementUnitRepository.GetMeasurementUnitsByCategory(MeasurementUnitCategory.Mass)
+            .ToList();
+        _foods = (await FoodRepository.GetAllFoods()).ToList();
+    }
+
+    private readonly string[] _toolbarItems = {"Add", "Edit", "Delete"};
+
+    private async Task OnBeginHandlerAsync(ActionEventArgs<AnimalFeedingEntity> Args)
+    {
+        if (Args.RequestType == Action.Delete)
+        {
+            await AnimalFeedingRepository.DeleteAnimalFeeding(Args.Data.Id);
+        }
+
+        if (Args.Action == "Add")
+        {
+            AnimalFeedingEntity animalFeeding = Args.Data;
+
+            animalFeeding.AnimalId = AnimalId;
+
+            Args.Data = await AnimalFeedingRepository.CreateOrUpdateAnimalFeedingAsync(animalFeeding);
+        }
+        else if (Args.Action == "Edit")
+        {
+            AnimalFeedingEntity animalFeeding = Args.Data;
+
+            Args.Data = await AnimalFeedingRepository.CreateOrUpdateAnimalFeedingAsync(animalFeeding.ToAnimalFeedingUpdateDTO());
+        }
+    }
+
+    //TODO On creation there is a problem
+    private void OnActionComplete(ActionEventArgs<AnimalFeedingEntity> Args)
+    {
+        if (Args.RequestType == Action.Save)
+        {
+            if (Args.Action == "Edit")
+            {
+                AnimalFeedingEntity updatedAnimalFeeding = Args.Data;
+
+                int weighingToUpdateIndex = _animalFeedings.FindIndex(weighing => weighing.Id == updatedAnimalFeeding.Id);
+
+                _animalFeedings[weighingToUpdateIndex] = updatedAnimalFeeding;
+            }
+            _animalFeedingsDataGrid.Refresh();
+        }
+    }
+
+}

@@ -12,11 +12,11 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
 {
     public class CharacteristicRepository : ICharacteristicRepository
     {
-        private HerdManagementDbContext _herdManagementDbContext;
+        private readonly HerdManagementDbContext _herdManagementDbContext;
 
         public CharacteristicRepository(HerdManagementDbContext herdManagementDbContext)
         {
-            _herdManagementDbContext = _herdManagementDbContext ?? throw new ArgumentNullException(nameof(herdManagementDbContext));
+            _herdManagementDbContext = herdManagementDbContext ?? throw new ArgumentNullException(nameof(herdManagementDbContext));
             _herdManagementDbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
         public Task<BreedCharacteristic> AddBreedCharacteristic(BreedCharacteristic breedCharacteristic)

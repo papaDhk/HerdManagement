@@ -144,10 +144,8 @@ namespace HerdManagement.Domain.Reproduction.Entities
         protected override int GetHashCodeCore()
         {
             return Date.GetHashCode()
-                    ^ Male.Id.GetHashCode()
-                    ^ Female.Id.GetHashCode()
-                    ^ Type.GetHashCode()
-                    ^ States.GetHashCode();
+                   ^ MaleId.GetHashCode()
+                   ^ FemaleId.GetHashCode();
         }
 
         /// <summary>

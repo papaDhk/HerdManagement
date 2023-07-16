@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Application.Services;
 using HerdManagement.Domain.Common.Repositories;
+using HerdManagement.Domain.Feeding.Repository;
 using HerdManagement.Domain.SpecieBreed.Repository;
 using HerdManagement.Domain.SpecieBreed.Service;
 using HerdManagement.Infrastructure.Persistence.Repository;

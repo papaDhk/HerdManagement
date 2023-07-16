@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Syncfusion.Blazor;
 using HerdManagement.Domain.Common.Repositories;
+using HerdManagement.Domain.Feeding.Repository;
 
 namespace UI
 {
@@ -43,10 +44,12 @@ namespace UI
             services.AddTransient<IReproductionService, ReproductionService>();
             services.AddTransient<IReproductionRepository, ReproductionRepository>();
             services.AddTransient<IMeasurementUnitRepository, MeasurementUnitRepositoryEF>();
+            services.AddTransient<IFoodRepository, FoodRepositoryEf>();
             services.AddTransient<IWeighingRepository, WeighingRepository>();
             services.AddScoped<BootstrapService, BootstrapService>();
             services.AddTransient<ICharacteristicRepository, CharacteristicRepository>();
-
+            services.AddTransient<IAnimalFeedingRepository, AnimalFeedingRepository>();
+            services.AddTransient<IFoodRepository, FoodRepositoryEf>();
             services.AddSyncfusionBlazor();
         }
 

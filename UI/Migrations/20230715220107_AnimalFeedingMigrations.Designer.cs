@@ -4,6 +4,7 @@ using HerdManagement.Infrastructure.Persistence.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace UI.Migrations
 {
     [DbContext(typeof(HerdManagementDbContext))]
-    partial class HerdManagementDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230715220107_AnimalFeedingMigrations")]
+    partial class AnimalFeedingMigrations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -196,9 +198,6 @@ namespace UI.Migrations
                     b.Property<DateTime>("DateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("FoodId")
-                        .HasColumnType("int");
-
                     b.Property<int>("MeasurementUnitId")
                         .HasColumnType("int");
 
@@ -208,8 +207,6 @@ namespace UI.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AnimalId");
-
-                    b.HasIndex("FoodId");
 
                     b.HasIndex("MeasurementUnitId");
 
@@ -575,12 +572,6 @@ namespace UI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HerdManagement.Domain.Feeding.Entities.Food", "Food")
-                        .WithMany()
-                        .HasForeignKey("FoodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("HerdManagement.Domain.Common.Entities.MeasurementUnit", "MeasurementUnit")
                         .WithMany()
                         .HasForeignKey("MeasurementUnitId")
@@ -588,8 +579,6 @@ namespace UI.Migrations
                         .IsRequired();
 
                     b.Navigation("Animal");
-
-                    b.Navigation("Food");
 
                     b.Navigation("MeasurementUnit");
                 });

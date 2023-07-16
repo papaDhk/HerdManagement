@@ -186,8 +186,6 @@ else
     
     <TabComingSoon idTab="nav-characteristic" />
     
-    <TabComingSoon idTab="nav-alimentation" />
-
     <div class="tab-pane fade" id="nav-reproductions" role="tabpanel" aria-labelledby="nav-reproductions-tab">
             @if (reproductions == null)
             {
@@ -241,13 +239,13 @@ else
                             
                         </GridColumn>
                         <GridColumn>
-                            <Template>
-                                                            @{
-                                                                var reproduction = (Reproduction) context;
-                                                            }
-                                                            <button class="btn btn-primary btn-sm" @onclick="@(() => OnReproductionDetailsClickedAsync(reproduction))">Details</button>
-                                                            <NavLink href="" class="btn btn-danger btn-sm">Supprimer</NavLink>
-                                                        </Template>
+                        <Template>
+                                        @{
+                                            var reproduction = (Reproduction) context;
+                                        }
+                                        <button class="btn btn-primary btn-sm" @onclick="@(() => OnReproductionDetailsClickedAsync(reproduction))">Details</button>
+                                        <NavLink href="" class="btn btn-danger btn-sm">Supprimer</NavLink>
+                                </Template>
                         </GridColumn>
                     </GridColumns>
                 </SfGrid>
@@ -256,9 +254,10 @@ else
     <div class="tab-pane fade" id="nav-weightings" role="tabpanel" aria-labelledby="nav-weightings-tab">
         <Weighings AnimalId="@currentFemale.Id"></Weighings>
     </div>
-
-
-        <div class="modal fade" id="reproductionModalForm" tabindex="-1" role="dialog" aria-labelledby="Enregistrer une reproduction pour @currentFemale.Name" aria-hidden="true">
+    
+    <div class="tab-pane fade" id="nav-alimentation" role="tabpanel" aria-labelledby="nav-alimentation-tab"><AnimalFeeding AnimalId="@currentFemale.Id"></AnimalFeeding></div>    
+    
+    <div class="modal fade" id="reproductionModalForm" tabindex="-1" role="dialog" aria-labelledby="Enregistrer une reproduction pour @currentFemale.Name" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="dialog">
                 <div class="modal-content">
                     <div class="modal-header">

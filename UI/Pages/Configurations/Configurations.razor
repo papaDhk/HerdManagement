@@ -4,96 +4,179 @@
 @using HerdManagement.Domain.Common.Entities
 @using Application.Data.DTO.MeasurementUnitBreed.Assembler
 @using HerdManagement.Domain.Common.Repositories
-@using Syncfusion.Blazor.Grids
+@using Application.Data.DTO.Feeding
+@using Application.Data.DTO.Feeding.Assembler
+@using HerdManagement.Domain.Feeding.Entities
+@using HerdManagement.Domain.Feeding.Repository
 
 @inject IMeasurementUnitRepository measurementUnitRepository
+@inject IFoodRepository foodRepository
 @inject NavigationManager navigationManager
 
 <nav class="navbar navbar-light mb-3 horizontal-nav-bar">
     <h6>Configurations</h6>
 </nav>
 
-@if (measurementUnitDTOs == null)
+@if (_measurementUnitDtOs == null)
 {
     <img src="images/dog-alone.gif" class="rounded mx-auto d-block img-fluid"/>
 }
 else
 {
-    <div class="control-section">
-        <div class="row">
-            <div class="col-sm-12 col-md-8 mb-2">
-                <div class="card">
-                    <div class="card-header">
-                        Unités de mesure
-                    </div>
-                    <div class="card-body">
-                        <SfGrid @ref="measurementUnitDataGrid" DataSource="@measurementUnitDTOs" AllowSorting="true" Toolbar="@_toolbarItems">
-                            <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog">
-                                <HeaderTemplate>
-                                    @{
-                                        <span>Enregistrer une unité de mesure</span>
-                                    }
-                                </HeaderTemplate>
-                            </GridEditSettings>
-                            <GridEvents OnActionBegin="OnBeginHandlerAsync" CommandClicked="OnDetailButtonClicked" TValue="MeasurementUnitDTO"></GridEvents>
-                            <GridColumns>
-                                <GridColumn Field=@nameof(MeasurementUnitDTO.Id) IsPrimaryKey="true" IsIdentity="true" Visible="false"></GridColumn>
-                                <GridColumn Field=@nameof(MeasurementUnitDTO.Label)>
-                                </GridColumn>
-                                <GridColumn Field=@nameof(MeasurementUnitDTO.Symbol) HeaderText="Symbole">
-                                </GridColumn>
-                                <GridColumn Field=@nameof(MeasurementUnitDTO.MeasurementUnitCategory) HeaderText="Catégorie">
-                                    <Template Context="MeasurementUnitContext">
+    
+    <nav>
+        <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+            <a class="nav-item nav-link active" id="nav-profile-tab" data-toggle="tab" href="#nav-measure-units" role="tab" aria-controls="nav-measure-units" aria-selected="true">Unite de mesures</a>
+            <a class="nav-item nav-link" id="nav-alimentation-tab" data-toggle="tab" href="#nav-alimentation" role="tab" aria-controls="nav-alimentation" aria-selected="false">Alimentation</a>
+            <a class="nav-item nav-link" id="nav-characteristic-tab" data-toggle="tab" href="#nav-characteristic" role="tab" aria-controls="nav-characteristic" aria-selected="false">Caracteristiques</a>
+        </div>
+    </nav>
+    <div class="tab-content mt-5" id="nav-tabContent">
+        
+        <div class="tab-pane fade show active" id="nav-measure-units" role="tabpanel" aria-labelledby="nav-measure-units-tab">
+            <div class="control-section">
+                <div class="row">
+                    <div class="col-sm-12 col-md-8 mb-2">
+                        <div class="card-body">
+                            <SfGrid @ref="_measurementUnitDataGrid" DataSource="@_measurementUnitDtOs" AllowSorting="true" Toolbar="@_toolbarItems">
+                                <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog">
+                                    <HeaderTemplate>
                                         @{
-                                            var measurementUnit = (MeasurementUnitDTO) MeasurementUnitContext;
+                                            <span>Enregistrer une unité de mesure</span>
                                         }
-                                        <span>@Helper.GetDisplayName(measurementUnit.MeasurementUnitCategory)</span>
-                                    </Template>
-                                    <EditTemplate Context="MeasurementUnitContext">
-                                        @*ID value should be based on Field name*@
-                                        <SfDropDownList ID="MeasurementUnit___Category"
-                                                        TItem="string"
-                                                        TValue="MeasurementUnitCategory"
-                                                        @bind-Value="@((MeasurementUnitContext as MeasurementUnitDTO).MeasurementUnitCategory)"
-                                                        DataSource="@Helper.GetKeyValuesFromEnum(typeof(MeasurementUnitCategory)).Keys">
-                                            <DropDownListTemplates TItem="string">
-                                                <ItemTemplate Context="MeasurementUnitCategoryContext">
-                                                    <span>@(Helper.GetKeyValuesFromEnum(typeof(MeasurementUnitCategory))[(MeasurementUnitCategoryContext as string)])</span>
-                                                </ItemTemplate>
-                                            </DropDownListTemplates>
-                                            <DropDownListFieldSettings Text="Name" Value="Name"></DropDownListFieldSettings>
-                                        </SfDropDownList>
-                                    </EditTemplate>
-                                </GridColumn>
-                                <GridColumn Field=@nameof(MeasurementUnitDTO.Commentary) HeaderText="Commentaire">
-                                </GridColumn>
-                                <GridColumn HeaderText="Actions">
-                                    <GridCommandColumns>
-                                        <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() {IconCss = "e-icons e-edit", CssClass = "e-flat"})"></GridCommandColumn>
-                                        <GridCommandColumn Type="CommandButtonType.Save" ButtonOption="@(new CommandButtonOptions() {IconCss = "e-icons e-update", CssClass = "e-flat"})"></GridCommandColumn>
-                                        <GridCommandColumn Type="CommandButtonType.Cancel" ButtonOption="@(new CommandButtonOptions() {IconCss = "e-icons e-cancel-icon", CssClass = "e-flat"})"></GridCommandColumn>
-                                    </GridCommandColumns>
-                                </GridColumn>
-                            </GridColumns>
-                        </SfGrid>
+                                    </HeaderTemplate>
+                                </GridEditSettings>
+                                <GridEvents OnActionBegin="OnBeginHandlerAsync" CommandClicked="OnDetailButtonClicked" TValue="MeasurementUnitDTO"></GridEvents>
+                                <GridColumns>
+                                    <GridColumn Field=@nameof(MeasurementUnitDTO.Id) IsPrimaryKey="true" IsIdentity="true" Visible="false"></GridColumn>
+                                    <GridColumn Field=@nameof(MeasurementUnitDTO.Label)>
+                                    </GridColumn>
+                                    <GridColumn Field=@nameof(MeasurementUnitDTO.Symbol) HeaderText="Symbole">
+                                    </GridColumn>
+                                    <GridColumn Field=@nameof(MeasurementUnitDTO.MeasurementUnitCategory) HeaderText="Catégorie">
+                                        <Template Context="MeasurementUnitContext">
+                                            @{
+                                                var measurementUnit = (MeasurementUnitDTO) MeasurementUnitContext;
+                                            }
+                                            <span>@Helper.GetDisplayName(measurementUnit.MeasurementUnitCategory)</span>
+                                        </Template>
+                                        <EditTemplate Context="MeasurementUnitContext">
+                                            
+                                            @*
+                                            Id value should be based on Field name
+                                            *@
+                                            <SfDropDownList ID="MeasurementUnit___Category"
+                                                            TItem="string"
+                                                            TValue="MeasurementUnitCategory"
+                                                            @bind-Value="@((MeasurementUnitContext as MeasurementUnitDTO).MeasurementUnitCategory)"
+                                                            DataSource="@Helper.GetKeyValuesFromEnum(typeof(MeasurementUnitCategory)).Keys">
+                                                <DropDownListTemplates TItem="string">
+                                                    <ItemTemplate Context="MeasurementUnitCategoryContext">
+                                                        <span>@(Helper.GetKeyValuesFromEnum(typeof(MeasurementUnitCategory))[(MeasurementUnitCategoryContext as string)])</span>
+                                                    </ItemTemplate>
+                                                </DropDownListTemplates>
+                                                <DropDownListFieldSettings Text="Name" Value="Name"></DropDownListFieldSettings>
+                                            </SfDropDownList>
+                                        </EditTemplate>
+                                    </GridColumn>
+                                    <GridColumn Field=@nameof(MeasurementUnitDTO.Commentary) HeaderText="Commentaire">
+                                    </GridColumn>
+                                    <GridColumn HeaderText="Actions">
+                                        <GridCommandColumns>
+                                            <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() {IconCss = "e-icons e-edit", CssClass = "e-flat"})"></GridCommandColumn>
+                                            <GridCommandColumn Type="CommandButtonType.Save" ButtonOption="@(new CommandButtonOptions() {IconCss = "e-icons e-update", CssClass = "e-flat"})"></GridCommandColumn>
+                                            <GridCommandColumn Type="CommandButtonType.Cancel" ButtonOption="@(new CommandButtonOptions() {IconCss = "e-icons e-cancel-icon", CssClass = "e-flat"})"></GridCommandColumn>
+                                        </GridCommandColumns>
+                                    </GridColumn>
+                                </GridColumns>
+                            </SfGrid>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        
+        <div class="tab-pane fade show" id="nav-alimentation" role="tabpanel" aria-labelledby="nav-alimentation-tab">
+            <div class="control-section">
+                <div class="row">
+                    <div class="col-sm-12 col-md-8 mb-2">
+                            <div class="card-body">
+                                <SfGrid @ref="_foodDataGrid" DataSource="@_foodDtOs" AllowSorting="true" Toolbar="@_foodDataGridToolbarItems">
+                                    <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog">
+                                        <HeaderTemplate>
+                                            @{
+                                                <span>Enregistrer un aliment</span>
+                                            }
+                                        </HeaderTemplate>
+                                    </GridEditSettings>
+                                    <GridEvents OnActionBegin="OnFoodBeginHandlerAsync" CommandClicked="OnFoodDetailButtonClicked" TValue="FoodDTO"></GridEvents>
+                                    <GridColumns>
+                                        <GridColumn Field=@nameof(FoodDTO.Id) IsPrimaryKey="true" IsIdentity="true" Visible="false"></GridColumn>
+                                        <GridColumn Field=@nameof(FoodDTO.Label)>
+                                        </GridColumn>
+                                        <GridColumn Field=@nameof(MeasurementUnitDTO.MeasurementUnitCategory) HeaderText="Catégorie">
+                                            <Template Context="currentFoodRow">
+                                                @{
+                                                    var foodDto = (FoodDTO) currentFoodRow;
+                                                }
+                                                <span>@Helper.GetDisplayName(foodDto.MeasurementUnitCategory)</span>
+                                            </Template>
+                                            <EditTemplate Context="MeasurementUnitContext">
+                                                @*ID value should be based on Field name*@
+                                                <SfDropDownList ID="MeasurementUnit___Category"
+                                                                TItem="string"
+                                                                TValue="MeasurementUnitCategory"
+                                                                @bind-Value="@((MeasurementUnitContext as FoodDTO).MeasurementUnitCategory)"
+                                                                DataSource="@Helper.GetKeyValuesFromEnum(typeof(MeasurementUnitCategory)).Keys">
+                                                    <DropDownListTemplates TItem="string">
+                                                        <ItemTemplate Context="MeasurementUnitCategoryContext">
+                                                            <span>@(Helper.GetKeyValuesFromEnum(typeof(MeasurementUnitCategory))[(MeasurementUnitCategoryContext as string)])</span>
+                                                        </ItemTemplate>
+                                                    </DropDownListTemplates>
+                                                    <DropDownListFieldSettings Text="Name" Value="Name"></DropDownListFieldSettings>
+                                                </SfDropDownList>
+                                            </EditTemplate>
+                                        </GridColumn>
+                                        <GridColumn Field=@nameof(FoodDTO.Description) HeaderText="Description">
+                                        </GridColumn>
+                                        <GridColumn HeaderText="Actions">
+                                            <GridCommandColumns>
+                                                <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() {IconCss = "e-icons e-edit", CssClass = "e-flat"})"></GridCommandColumn>
+                                                <GridCommandColumn Type="CommandButtonType.Save" ButtonOption="@(new CommandButtonOptions() {IconCss = "e-icons e-update", CssClass = "e-flat"})"></GridCommandColumn>
+                                                <GridCommandColumn Type="CommandButtonType.Cancel" ButtonOption="@(new CommandButtonOptions() {IconCss = "e-icons e-cancel-icon", CssClass = "e-flat"})"></GridCommandColumn>
+                                            </GridCommandColumns>
+                                        </GridColumn>
+                                    </GridColumns>
+                                </SfGrid>
+                            </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <TabComingSoon idTab="nav-characteristic" />
+
+        <div class="tab-pane fade" id="nav-weightings" role="tabpanel" aria-labelledby="nav-weightings-tab">
+        </div>
     </div>
+    
+    
 }
 
 
 @code {
-    private List<MeasurementUnitDTO> measurementUnitDTOs;
+    private List<MeasurementUnitDTO> _measurementUnitDtOs;
 
-    private SfGrid<MeasurementUnitDTO> measurementUnitDataGrid;
+    private SfGrid<MeasurementUnitDTO> _measurementUnitDataGrid;
 
     protected override async Task OnInitializedAsync()
     {
         IEnumerable<MeasurementUnit> measurementUnits = await measurementUnitRepository.GetAllMeasurementUnits();
-
-        measurementUnitDTOs = measurementUnits.ToMeasurementUnitDTOList().ToList();
+        _measurementUnitDtOs = measurementUnits.ToMeasurementUnitDTOList().ToList();
+        
+        IEnumerable<Food> foods = await foodRepository.GetAllFoods();
+        _foodDtOs = foods.ToFoodDTOList().ToList();
     }
 
     private readonly string[] _toolbarItems = {"Add"};
@@ -102,14 +185,14 @@ else
     {
         if (Args.Action == "Add")
         {
-            MeasurementUnitDTO newMeasurementUnitDTO = Args.Data;
-            Args.Data = await measurementUnitRepository.CreateMeasurementUnit(newMeasurementUnitDTO.ToMeasurementUnit())
+            MeasurementUnitDTO newMeasurementUnitDto = Args.Data;
+            Args.Data = await measurementUnitRepository.CreateMeasurementUnit(newMeasurementUnitDto.ToMeasurementUnit())
                 .ContinueWith(r => r.Result.ToMeasurementUnitDTO());
         }
         else if (Args.Action == "Edit")
         {
-            MeasurementUnitDTO newMeasurementUnitDTO = Args.Data;
-            int result = await measurementUnitRepository.UpdateMeasurementUnit(newMeasurementUnitDTO.ToMeasurementUnit());
+            MeasurementUnitDTO newMeasurementUnitDto = Args.Data;
+            int result = await measurementUnitRepository.UpdateMeasurementUnit(newMeasurementUnitDto.ToMeasurementUnit());
         }
     }
 
@@ -121,4 +204,35 @@ else
         }
     }
 
+    
+    
+    
+    private List<FoodDTO> _foodDtOs;
+
+    private SfGrid<FoodDTO> _foodDataGrid;
+
+    private readonly string[] _foodDataGridToolbarItems = {"Add"};
+
+    private async Task OnFoodBeginHandlerAsync(ActionEventArgs<FoodDTO> Args)
+    {
+        if (Args.Action == "Add")
+        {
+            FoodDTO newFoodDto = Args.Data;
+            Args.Data = await foodRepository.CreateFood(newFoodDto.ToFood())
+                .ContinueWith(r => r.Result.ToFoodDTO());
+        }
+        else if (Args.Action == "Edit")
+        {
+            FoodDTO newFoodDTO = Args.Data;
+            int result = await foodRepository.UpdateFood(newFoodDTO.ToFood());
+        }
+    }
+
+    private void OnFoodDetailButtonClicked(CommandClickEventArgs<FoodDTO> args)
+    {
+        if (args.CommandColumn.ButtonOption.Content == "Details")
+        {
+            navigationManager.NavigateTo($"foods/{args.RowData.Id}");
+        }
+    }
 }

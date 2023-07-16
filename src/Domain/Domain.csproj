@@ -16,10 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Feeding\Entities\" />
     <Folder Include="Feeding\Enumerations\" />
     <Folder Include="Feeding\Exceptions\" />
-    <Folder Include="Feeding\Repository\" />
     <Folder Include="Feeding\Service\" />
     <Folder Include="Herd\Exceptions\" />
     <Folder Include="Herd\Enumerations\" />

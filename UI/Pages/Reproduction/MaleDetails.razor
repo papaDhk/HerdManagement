@@ -1,10 +1,4 @@
 ﻿@page "/herds/{AnimalHerdName}/animals/male/{animalNumber:int}/{animalName}"
-@using HerdManagement.Infrastructure.Persistence.Repository
-@using HerdManagement.Domain.SpecieBreed.Entities
-@using HerdManagement.Domain.Reproduction.Entities
-@using Syncfusion.Blazor.Grids
-@using Syncfusion.Blazor.DropDowns
-@using HerdManagement.Domain.SpecieBreed.Repository
 
 @inject ISpecieRepository specieRepository
 @inject NavigationManager navigationManager
@@ -186,12 +180,20 @@ else
                 </EditForm>
             </div>
         </div>
-            <TabComingSoon idTab="nav-characteristic" />
+        
+        <TabComingSoon idTab="nav-characteristic" />
+
             
-            <TabComingSoon idTab="nav-alimentation" />
-        <div class="tab-pane fade" id="nav-weightings" role="tabpanel" aria-labelledby="nav-weightings-tab">
-             <Weighings AnimalId="@currentMale.Id"></Weighings>
+        <div class="tab-pane fade" id="nav-alimentation" role="tabpanel" aria-labelledby="nav-alimentation-tab">
+            <AnimalFeeding AnimalId="@currentMale.Id"></AnimalFeeding>
         </div>
+        
+            
+        <div class="tab-pane fade" id="nav-weightings" role="tabpanel" aria-labelledby="nav-weightings-tab">
+            <Weighings AnimalId="@currentMale.Id"></Weighings>
+        </div>
+        
+        
     </div>
 }
 
@@ -245,9 +247,9 @@ else
 
     private async Task SaveAnimalAsync()
     {
-        canNotBeMother = motherId > 0 ? !reproductionService.CanBeMotherOfAnimalBornIn(motherId.Value, currentMale.BirthDate) : false;
+        canNotBeMother = motherId > 0 && !reproductionService.CanBeMotherOfAnimalBornIn(motherId.Value, currentMale.BirthDate);
 
-        canNotBeFather = fatherId > 0 ? !reproductionService.CanBeFatherOfAnimalBornIn(fatherId.Value, currentMale.BirthDate) : false;
+        canNotBeFather = fatherId > 0 && !reproductionService.CanBeFatherOfAnimalBornIn(fatherId.Value, currentMale.BirthDate);
 
         if (canNotBeFather || canNotBeMother)
         {
