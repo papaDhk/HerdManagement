@@ -1,5 +1,5 @@
 @using System.ComponentModel.DataAnnotations
-<SfGrid @ref=@dataGrid DataSource=@AnimalList Height="700px" Width="1550px" EnableVirtualization="true" AllowSorting="true" AllowPaging="false" Toolbar=@_toolbarItems AllowFiltering="true" TValue=Animal>
+<SfGrid @ref=@dataGrid DataSource=@AnimalList Height="700px"  AllowSorting="true" AllowPaging="false" Toolbar=@_toolbarItems AllowFiltering="true" TValue=Animal>
     <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
     <GridColumns>
         <GridColumn Field=@nameof(Animal.Picture) HeaderText="Photo de profil" AllowFiltering="false">
