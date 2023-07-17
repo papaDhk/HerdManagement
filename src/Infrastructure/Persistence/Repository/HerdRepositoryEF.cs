@@ -48,20 +48,20 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
             return 1;
         }
 
-        public async Task<Herd> GetHerdById(int id)
+        public Task<Herd> GetHerdById(int id)
         {
-            return _herdManagementDbContext.Herds.Include(h => h.Specie)
-                .FirstOrDefault(h => h.Id == id);
+            return Task.FromResult(_herdManagementDbContext.Herds.Include(h => h.Specie)
+                .FirstOrDefault(h => h.Id == id));
         }
 
-        public async Task<IEnumerable<Herd>> GetHerdByName(string name)
+        public Task<IEnumerable<Herd>> GetHerdByName(string name)
         {
-            return _herdManagementDbContext.Herds.Where(h => h.Name == name).Include(h => h.Specie);
+            return Task.FromResult<IEnumerable<Herd>>(_herdManagementDbContext.Herds.Where(h => h.Name == name).Include(h => h.Specie));
         }
 
-        public async Task<IEnumerable<Herd>> GetAllHerds()
+        public Task<IEnumerable<Herd>> GetAllHerds()
         {
-            return _herdManagementDbContext.Herds.Select(h => h).Include(h => h.Specie).ToArray();
+            return Task.FromResult<IEnumerable<Herd>>(_herdManagementDbContext.Herds.Select(h => h).Include(h => h.Specie).ToArray());
         }
 
         public async Task<int> UpdateHerd(Herd herd)

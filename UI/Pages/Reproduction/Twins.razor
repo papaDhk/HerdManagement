@@ -1,0 +1,17 @@
+@using System.Collections
+@inject IReproductionRepository ReproductionRepository
+
+<AnimalGrid AnimalList="@_twins"></AnimalGrid>
+
+@code {
+    [Parameter]
+    public int AnimalId { get; set; }
+
+    private IEnumerable<Animal> _twins = new List<Animal>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _twins = await ReproductionRepository.GetAnimalTwins(AnimalId);
+    }
+
+}

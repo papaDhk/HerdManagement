@@ -26,10 +26,11 @@ else
         <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
             <a class="nav-item nav-link active" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="true">Profil</a>
             <a class="nav-item nav-link" id="nav-reproductions-tab" data-toggle="tab" href="#nav-reproductions" role="tab" aria-controls="nav-reproductions" aria-selected="false">Reproduction</a>
+            <a class="nav-item nav-link" id="nav-progeny-tab" data-toggle="tab" href="#nav-progeny" role="tab" aria-controls="nav-progeny" aria-selected="false">Progéniture</a>
+            <a class="nav-item nav-link" id="nav-twins-tab" data-toggle="tab" href="#nav-twins" role="tab" aria-controls="nav-twins" aria-selected="false">Jumeaux</a>
             <a class="nav-item nav-link" id="nav-weightings-tab" data-toggle="tab" href="#nav-weightings" role="tab" aria-controls="nav-contact" aria-selected="false">Pesées</a>
             <a class="nav-item nav-link" id="nav-characteristic-tab" data-toggle="tab" href="#nav-characteristic" role="tab" aria-controls="nav-characteristic" aria-selected="false">Caracteristiques</a>
             <a class="nav-item nav-link" id="nav-alimentation-tab" data-toggle="tab" href="#nav-alimentation" role="tab" aria-controls="nav-alimentation" aria-selected="false">Alimentation</a>
-            
         </div>
     </nav>
     <div class="tab-content mt-5" id="nav-tabContent">
@@ -184,78 +185,89 @@ else
             </div>
         </div>
     
-    <TabComingSoon idTab="nav-characteristic" />
+    <TabComingSoon idTab="nav-characteristic"/>
     
     <div class="tab-pane fade" id="nav-reproductions" role="tabpanel" aria-labelledby="nav-reproductions-tab">
-            @if (reproductions == null)
-            {
-                <img src="images/dog-alone.gif" class="rounded mx-auto d-block img-fluid" />
-            }
-            else
-            {
-                <SfGrid @ref="reproductionsDataGrid" DataSource=@reproductions AllowFiltering="true" AllowPaging="true" AllowSorting="true" TValue=Reproduction>
-                     <GridSortSettings>
-                         <GridSortColumns>
-                             <GridSortColumn Field=@nameof(Reproduction.Date) Direction="SortDirection.Descending"></GridSortColumn>
-                         </GridSortColumns>
-                    </GridSortSettings>
-                    <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
-                    <GridPageSettings PageCount="5" PageSizes="true" PageSize="12"></GridPageSettings>
-                    <GridColumns>
-                        <GridColumn HeaderText="Partenaire">
-                            <Template>
-                                @{
-                                    var reproduction = (Reproduction)context;
-                                    var partner = males.Where(male => male.Id == reproduction.MaleId).FirstOrDefault();
-                                }
-                                <NavLink href="@partner?.GetProfilePageUrl(AnimalHerdName)">@partner?.ToString()</NavLink>
-                            </Template>
-                        </GridColumn>
-                        <GridColumn Field=@nameof(Reproduction.Date) TextAlign="TextAlign.Center">
-                        </GridColumn>
-                        <GridColumn Field=@nameof(Reproduction.Type) TextAlign="TextAlign.Center">
-                            <Template>
-                                @{
-                                    var reproduction = (Reproduction)context;
-                                }
-                                <span class="@GetClassFromReproductionType(reproduction.Type)">@Helper.GetDisplayName(reproduction.Type)</span>
-                            </Template>
-                        </GridColumn>
-                        <GridColumn Field=@nameof(Reproduction.ActualState) HeaderText="Etat actuel" TextAlign="TextAlign.Center">
-                            <Template>
-                                @{
-                                    var reproduction = (Reproduction)context;
-                                }
-                                <span class="@GetClassFromReproductionState(reproduction.ActualState.State)">@Helper.GetDisplayName(reproduction.ActualState.State)</span>
-                            </Template>
-                        </GridColumn>
-                        <GridColumn HeaderText="Actions" TextAlign="TextAlign.Center">
-                            <GridCommandColumns>
-                                <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-edit", CssClass = "e-flat" })"></GridCommandColumn>
-                                <GridCommandColumn Type="CommandButtonType.Delete" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-delete", CssClass = "e-flat" })"></GridCommandColumn>
-                                <GridCommandColumn Type="CommandButtonType.Save" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-update", CssClass = "e-flat" })"></GridCommandColumn>
-                                <GridCommandColumn Type="CommandButtonType.Cancel" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-cancel-icon", CssClass = "e-flat" })"></GridCommandColumn>
-                            </GridCommandColumns>
-                            
-                        </GridColumn>
-                        <GridColumn>
+        @if (reproductions == null)
+        {
+            <img src="images/dog-alone.gif" class="rounded mx-auto d-block img-fluid" />
+        }
+        else
+        {
+            <SfGrid @ref="reproductionsDataGrid" DataSource=@reproductions AllowFiltering="true" AllowPaging="true" AllowSorting="true" TValue=Reproduction>
+                <GridSortSettings>
+                    <GridSortColumns>
+                        <GridSortColumn Field=@nameof(Reproduction.Date) Direction="SortDirection.Descending"></GridSortColumn>
+                    </GridSortColumns>
+                </GridSortSettings>
+                <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
+                <GridPageSettings PageCount="5" PageSizes="true" PageSize="12"></GridPageSettings>
+                <GridColumns>
+                    <GridColumn HeaderText="Partenaire">
                         <Template>
-                                        @{
-                                            var reproduction = (Reproduction) context;
-                                        }
-                                        <button class="btn btn-primary btn-sm" @onclick="@(() => OnReproductionDetailsClickedAsync(reproduction))">Details</button>
-                                        <NavLink href="" class="btn btn-danger btn-sm">Supprimer</NavLink>
-                                </Template>
-                        </GridColumn>
-                    </GridColumns>
-                </SfGrid>
-            }
-        </div>
+                            @{
+                                var reproduction = (Reproduction)context;
+                                var partner = males.Where(male => male.Id == reproduction.MaleId).FirstOrDefault();
+                            }
+                            <NavLink href="@partner?.GetProfilePageUrl(AnimalHerdName)">@partner?.ToString()</NavLink>
+                        </Template>
+                    </GridColumn>
+                    <GridColumn Field=@nameof(Reproduction.Date) TextAlign="TextAlign.Center">
+                    </GridColumn>
+                    <GridColumn Field=@nameof(Reproduction.Type) TextAlign="TextAlign.Center">
+                        <Template>
+                            @{
+                                var reproduction = (Reproduction)context;
+                            }
+                            <span class="@GetClassFromReproductionType(reproduction.Type)">@Helper.GetDisplayName(reproduction.Type)</span>
+                        </Template>
+                    </GridColumn>
+                    <GridColumn Field=@nameof(Reproduction.ActualState) HeaderText="Etat actuel" TextAlign="TextAlign.Center">
+                        <Template>
+                            @{
+                                var reproduction = (Reproduction)context;
+                            }
+                            <span class="@GetClassFromReproductionState(reproduction.ActualState.State)">@Helper.GetDisplayName(reproduction.ActualState.State)</span>
+                        </Template>
+                    </GridColumn>
+                    <GridColumn HeaderText="Actions" TextAlign="TextAlign.Center">
+                        <GridCommandColumns>
+                            <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-edit", CssClass = "e-flat" })"></GridCommandColumn>
+                            <GridCommandColumn Type="CommandButtonType.Delete" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-delete", CssClass = "e-flat" })"></GridCommandColumn>
+                            <GridCommandColumn Type="CommandButtonType.Save" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-update", CssClass = "e-flat" })"></GridCommandColumn>
+                            <GridCommandColumn Type="CommandButtonType.Cancel" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-cancel-icon", CssClass = "e-flat" })"></GridCommandColumn>
+                        </GridCommandColumns>
+                            
+                    </GridColumn>
+                    <GridColumn>
+                        <Template>
+                            @{
+                                var reproduction = (Reproduction) context;
+                            }
+                            <button class="btn btn-primary btn-sm" @onclick="@(() => OnReproductionDetailsClickedAsync(reproduction))">Details</button>
+                            <NavLink href="" class="btn btn-danger btn-sm">Supprimer</NavLink>
+                        </Template>
+                    </GridColumn>
+                </GridColumns>
+            </SfGrid>
+        }
+    </div>
+    
+    <div class="tab-pane fade" id="nav-progeny" role="tabpanel" aria-labelledby="nav-progeny-tab">
+        <ProgenyList AnimalId="@currentFemale.Id"></ProgenyList>
+    </div> 
+    
+    <div class="tab-pane fade" id="nav-twins" role="tabpanel" aria-labelledby="nav-twins-tab">
+        <Twins AnimalId="@currentFemale.Id"></Twins>
+    </div> 
+    
     <div class="tab-pane fade" id="nav-weightings" role="tabpanel" aria-labelledby="nav-weightings-tab">
         <Weighings AnimalId="@currentFemale.Id"></Weighings>
     </div>
     
-    <div class="tab-pane fade" id="nav-alimentation" role="tabpanel" aria-labelledby="nav-alimentation-tab"><AnimalFeeding AnimalId="@currentFemale.Id"></AnimalFeeding></div>    
+    <div class="tab-pane fade" id="nav-alimentation" role="tabpanel" aria-labelledby="nav-alimentation-tab">
+        <AnimalFeeding AnimalId="@currentFemale.Id"></AnimalFeeding>
+    </div>    
     
     <div class="modal fade" id="reproductionModalForm" tabindex="-1" role="dialog" aria-labelledby="Enregistrer une reproduction pour @currentFemale.Name" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="dialog">
@@ -663,7 +675,7 @@ else
 
     ToastModel _successToast = new ToastModel() {Title = "Succés!", Content = "Modifications enregistrées avec succés.", CssClass = "e-toast-success", Icon = "e-success toast-icons"};
     
-    protected async override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
         currentFemale = animalRepository.GetFemaleByNumber(AnimalNumber);
 

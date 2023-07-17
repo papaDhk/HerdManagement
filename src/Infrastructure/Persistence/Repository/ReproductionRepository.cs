@@ -3,6 +3,7 @@ using HerdManagement.Domain.Reproduction.Repository;
 using HerdManagement.Infrastructure.Persistence.Utils;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,6 +17,30 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
         {
             _animalDbContext = animalDbContext ?? throw new ArgumentNullException(nameof(animalDbContext));
             _animalDbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+        }
+
+        public async Task<IEnumerable<Animal>> GetAnimalTwins(int animalId)
+        {
+            var twins = await _animalDbContext.Animals.Where(a => a.Id == animalId)
+                .Include(a => a.FromCalving)
+                .ThenInclude(c => c.Reproduction)
+                .ThenInclude(r => r.Calvings)
+                .ThenInclude(c => c.Animal)
+                .SelectMany(a => a.FromCalving.Reproduction.Calvings)
+                    .Where( c => c.AnimalId != animalId)
+                    .Select(c => c.Animal).ToListAsync();
+            
+            _animalDbContext.UntrackEntities();
+
+            return twins;
+        }
+
+        public Task<IEnumerable<Animal>> GetProgeny(int animalId)
+        {
+            return Task.FromResult<IEnumerable<Animal>>(_animalDbContext.Reproductions.Where(r => r.FemaleId == animalId || r.MaleId == animalId)
+                .Include(r => r.Calvings)
+                .ThenInclude(c => c.Animal)
+                .SelectMany(r => r.Calvings.Select(c => c.Animal)).ToList());
         }
 
         public async Task<Reproduction> CreateOrUpdateReproductionAsync(Reproduction reproduction)

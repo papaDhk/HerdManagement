@@ -27,17 +27,18 @@ else
         <GridColumns>
             <GridColumn Field=@nameof(AnimalFeedingEntity.Id) IsPrimaryKey="true" IsIdentity="true" Visible="false"></GridColumn>
             <GridColumn Field=@nameof(AnimalFeedingEntity.Food) HeaderText="Aliment">
-                <Template Context="currentAnimalFeedingRow">
+                <Template Context="currentAnimalFeedingRow" >
                     @{
                         var animalFeedingRow = (AnimalFeedingEntity) currentAnimalFeedingRow;
                     }
                     <span>@animalFeedingRow?.Food?.Label</span>
                 </Template>
                 <EditTemplate Context="currentAnimalFeedingRow">
+                    Aliment
                     @{
                         var animalFeeding = currentAnimalFeedingRow as AnimalFeedingEntity;
                     }
-                    <InputSelect id="food" @bind-Value="@animalFeeding.FoodId" class="form-control">
+                    <InputSelect id="food" @bind-Value="@animalFeeding.FoodId" class="form-control" DisplayName="Aliment">
                         @foreach (var food in _foods)
                         {
                             <option value="@food.Id">@food.Label</option>
@@ -55,6 +56,7 @@ else
                     <span>@animalFeedingRow?.MeasurementUnit?.ToString()</span>
                 </Template>
                 <EditTemplate Context="currentAnimalFeedingRow">
+                    Unité de mesure
                     @{
                         var animalFeeding = currentAnimalFeedingRow as AnimalFeedingEntity;
                     }

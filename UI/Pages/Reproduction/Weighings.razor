@@ -31,6 +31,7 @@ else
                     <span>@weighing?.MeasurementUnit?.ToString()</span>
                 </Template>
                 <EditTemplate Context="WeighingContext">
+                    Unité de mesure
                     @{
                         var weighing = WeighingContext as Weighing;
                     }
@@ -42,7 +43,7 @@ else
                     </InputSelect>
                 </EditTemplate>
             </GridColumn>
-            <GridColumn Field=@nameof(Weighing.DateTime) HeaderText="Date">
+            <GridColumn Field=@nameof(Weighing.DateTime) HeaderText="Date de pesée">
             </GridColumn>
         </GridColumns>
     </SfGrid>
@@ -61,7 +62,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        _weighings = _weighingRepository.GetWeighingsByAnimalId(AnimalId).ToList();
+        _weighings = (await _weighingRepository.GetWeighingsByAnimalId(AnimalId)).ToList();
 
         _lengthMeasurementUnits = _measurementUnitRepository.GetMeasurementUnitsByCategory(MeasurementUnitCategory.Mass)
             .ToList();

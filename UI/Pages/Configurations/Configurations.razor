@@ -9,9 +9,9 @@
 @using HerdManagement.Domain.Feeding.Entities
 @using HerdManagement.Domain.Feeding.Repository
 
-@inject IMeasurementUnitRepository measurementUnitRepository
-@inject IFoodRepository foodRepository
-@inject NavigationManager navigationManager
+@inject IMeasurementUnitRepository MeasurementUnitRepository
+@inject IFoodRepository FoodRepository
+@inject NavigationManager NavigationManager
 
 <nav class="navbar navbar-light mb-3 horizontal-nav-bar">
     <h6>Configurations</h6>
@@ -23,7 +23,6 @@
 }
 else
 {
-    
     <nav>
         <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
             <a class="nav-item nav-link active" id="nav-profile-tab" data-toggle="tab" href="#nav-measure-units" role="tab" aria-controls="nav-measure-units" aria-selected="true">Unite de mesures</a>
@@ -32,12 +31,10 @@ else
         </div>
     </nav>
     <div class="tab-content mt-5" id="nav-tabContent">
-        
         <div class="tab-pane fade show active" id="nav-measure-units" role="tabpanel" aria-labelledby="nav-measure-units-tab">
             <div class="control-section">
                 <div class="row">
-                    <div class="col-sm-12 col-md-8 mb-2">
-                        <div class="card-body">
+                    <div>
                             <SfGrid @ref="_measurementUnitDataGrid" DataSource="@_measurementUnitDtOs" AllowSorting="true" Toolbar="@_toolbarItems">
                                 <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog">
                                     <HeaderTemplate>
@@ -61,7 +58,7 @@ else
                                             <span>@Helper.GetDisplayName(measurementUnit.MeasurementUnitCategory)</span>
                                         </Template>
                                         <EditTemplate Context="MeasurementUnitContext">
-                                            
+                                            Catégorie de mesure
                                             @*
                                             Id value should be based on Field name
                                             *@
@@ -90,7 +87,6 @@ else
                                     </GridColumn>
                                 </GridColumns>
                             </SfGrid>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -100,56 +96,55 @@ else
         <div class="tab-pane fade show" id="nav-alimentation" role="tabpanel" aria-labelledby="nav-alimentation-tab">
             <div class="control-section">
                 <div class="row">
-                    <div class="col-sm-12 col-md-8 mb-2">
-                            <div class="card-body">
-                                <SfGrid @ref="_foodDataGrid" DataSource="@_foodDtOs" AllowSorting="true" Toolbar="@_foodDataGridToolbarItems">
-                                    <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog">
-                                        <HeaderTemplate>
-                                            @{
-                                                <span>Enregistrer un aliment</span>
-                                            }
-                                        </HeaderTemplate>
-                                    </GridEditSettings>
-                                    <GridEvents OnActionBegin="OnFoodBeginHandlerAsync" CommandClicked="OnFoodDetailButtonClicked" TValue="FoodDTO"></GridEvents>
-                                    <GridColumns>
-                                        <GridColumn Field=@nameof(FoodDTO.Id) IsPrimaryKey="true" IsIdentity="true" Visible="false"></GridColumn>
-                                        <GridColumn Field=@nameof(FoodDTO.Label)>
-                                        </GridColumn>
-                                        <GridColumn Field=@nameof(MeasurementUnitDTO.MeasurementUnitCategory) HeaderText="Catégorie">
-                                            <Template Context="currentFoodRow">
-                                                @{
-                                                    var foodDto = (FoodDTO) currentFoodRow;
-                                                }
-                                                <span>@Helper.GetDisplayName(foodDto.MeasurementUnitCategory)</span>
-                                            </Template>
-                                            <EditTemplate Context="MeasurementUnitContext">
-                                                @*ID value should be based on Field name*@
-                                                <SfDropDownList ID="MeasurementUnit___Category"
-                                                                TItem="string"
-                                                                TValue="MeasurementUnitCategory"
-                                                                @bind-Value="@((MeasurementUnitContext as FoodDTO).MeasurementUnitCategory)"
-                                                                DataSource="@Helper.GetKeyValuesFromEnum(typeof(MeasurementUnitCategory)).Keys">
-                                                    <DropDownListTemplates TItem="string">
-                                                        <ItemTemplate Context="MeasurementUnitCategoryContext">
-                                                            <span>@(Helper.GetKeyValuesFromEnum(typeof(MeasurementUnitCategory))[(MeasurementUnitCategoryContext as string)])</span>
-                                                        </ItemTemplate>
-                                                    </DropDownListTemplates>
-                                                    <DropDownListFieldSettings Text="Name" Value="Name"></DropDownListFieldSettings>
-                                                </SfDropDownList>
-                                            </EditTemplate>
-                                        </GridColumn>
-                                        <GridColumn Field=@nameof(FoodDTO.Description) HeaderText="Description">
-                                        </GridColumn>
-                                        <GridColumn HeaderText="Actions">
-                                            <GridCommandColumns>
-                                                <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() {IconCss = "e-icons e-edit", CssClass = "e-flat"})"></GridCommandColumn>
-                                                <GridCommandColumn Type="CommandButtonType.Save" ButtonOption="@(new CommandButtonOptions() {IconCss = "e-icons e-update", CssClass = "e-flat"})"></GridCommandColumn>
-                                                <GridCommandColumn Type="CommandButtonType.Cancel" ButtonOption="@(new CommandButtonOptions() {IconCss = "e-icons e-cancel-icon", CssClass = "e-flat"})"></GridCommandColumn>
-                                            </GridCommandColumns>
-                                        </GridColumn>
-                                    </GridColumns>
-                                </SfGrid>
-                            </div>
+                    <div>
+                        <SfGrid @ref="_foodDataGrid" DataSource="@_foodDtOs" AllowSorting="true" Toolbar="@_foodDataGridToolbarItems">
+                            <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog">
+                                <HeaderTemplate>
+                                    @{
+                                        <span>Enregistrer un aliment</span>
+                                    }
+                                </HeaderTemplate>
+                            </GridEditSettings>
+                            <GridEvents OnActionBegin="OnFoodBeginHandlerAsync" CommandClicked="OnFoodDetailButtonClicked" TValue="FoodDTO"></GridEvents>
+                            <GridColumns>
+                                <GridColumn Field=@nameof(FoodDTO.Id) IsPrimaryKey="true" IsIdentity="true" Visible="false"></GridColumn>
+                                <GridColumn Field=@nameof(FoodDTO.Label)>
+                                </GridColumn>
+                                <GridColumn Field=@nameof(MeasurementUnitDTO.MeasurementUnitCategory) HeaderText="Catégorie">
+                                    <Template Context="currentFoodRow">
+                                        @{
+                                            var foodDto = (FoodDTO) currentFoodRow;
+                                        }
+                                        <span>@Helper.GetDisplayName(foodDto.MeasurementUnitCategory)</span>
+                                    </Template>
+                                    <EditTemplate Context="MeasurementUnitContext">
+                                        Catégorie de mesure
+                                        @*ID value should be based on Field name*@
+                                        <SfDropDownList ID="MeasurementUnit___Category"
+                                                        TItem="string"
+                                                        TValue="MeasurementUnitCategory"
+                                                        @bind-Value="@((MeasurementUnitContext as FoodDTO).MeasurementUnitCategory)"
+                                                        DataSource="@Helper.GetKeyValuesFromEnum(typeof(MeasurementUnitCategory)).Keys">
+                                            <DropDownListTemplates TItem="string" >
+                                                <ItemTemplate Context="MeasurementUnitCategoryContext">
+                                                    <span>@(Helper.GetKeyValuesFromEnum(typeof(MeasurementUnitCategory))[(MeasurementUnitCategoryContext as string)])</span>
+                                                </ItemTemplate>
+                                            </DropDownListTemplates>
+                                            <DropDownListFieldSettings Text="Name" Value="Name"></DropDownListFieldSettings>
+                                        </SfDropDownList>
+                                    </EditTemplate>
+                                </GridColumn>
+                                <GridColumn Field=@nameof(FoodDTO.Description) HeaderText="Description">
+                                </GridColumn>
+                                <GridColumn HeaderText="Actions">
+                                    <GridCommandColumns>
+                                        <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() {IconCss = "e-icons e-edit", CssClass = "e-flat"})"></GridCommandColumn>
+                                        <GridCommandColumn Type="CommandButtonType.Save" ButtonOption="@(new CommandButtonOptions() {IconCss = "e-icons e-update", CssClass = "e-flat"})"></GridCommandColumn>
+                                        <GridCommandColumn Type="CommandButtonType.Cancel" ButtonOption="@(new CommandButtonOptions() {IconCss = "e-icons e-cancel-icon", CssClass = "e-flat"})"></GridCommandColumn>
+                                    </GridCommandColumns>
+                                </GridColumn>
+                            </GridColumns>
+                        </SfGrid>
                     </div>
                 </div>
             </div>
@@ -157,8 +152,7 @@ else
 
         <TabComingSoon idTab="nav-characteristic" />
 
-        <div class="tab-pane fade" id="nav-weightings" role="tabpanel" aria-labelledby="nav-weightings-tab">
-        </div>
+        <div class="tab-pane fade" id="nav-weightings" role="tabpanel" aria-labelledby="nav-weightings-tab"></div>
     </div>
     
     
@@ -172,10 +166,10 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        IEnumerable<MeasurementUnit> measurementUnits = await measurementUnitRepository.GetAllMeasurementUnits();
+        IEnumerable<MeasurementUnit> measurementUnits = await MeasurementUnitRepository.GetAllMeasurementUnits();
         _measurementUnitDtOs = measurementUnits.ToMeasurementUnitDTOList().ToList();
         
-        IEnumerable<Food> foods = await foodRepository.GetAllFoods();
+        IEnumerable<Food> foods = await FoodRepository.GetAllFoods();
         _foodDtOs = foods.ToFoodDTOList().ToList();
     }
 
@@ -186,13 +180,13 @@ else
         if (Args.Action == "Add")
         {
             MeasurementUnitDTO newMeasurementUnitDto = Args.Data;
-            Args.Data = await measurementUnitRepository.CreateMeasurementUnit(newMeasurementUnitDto.ToMeasurementUnit())
+            Args.Data = await MeasurementUnitRepository.CreateMeasurementUnit(newMeasurementUnitDto.ToMeasurementUnit())
                 .ContinueWith(r => r.Result.ToMeasurementUnitDTO());
         }
         else if (Args.Action == "Edit")
         {
             MeasurementUnitDTO newMeasurementUnitDto = Args.Data;
-            int result = await measurementUnitRepository.UpdateMeasurementUnit(newMeasurementUnitDto.ToMeasurementUnit());
+            int result = await MeasurementUnitRepository.UpdateMeasurementUnit(newMeasurementUnitDto.ToMeasurementUnit());
         }
     }
 
@@ -200,7 +194,7 @@ else
     {
         if (args.CommandColumn.ButtonOption.Content == "Details")
         {
-            navigationManager.NavigateTo($"measurementUnits/{args.RowData.Id}");
+            NavigationManager.NavigateTo($"measurementUnits/{args.RowData.Id}");
         }
     }
 
@@ -218,13 +212,13 @@ else
         if (Args.Action == "Add")
         {
             FoodDTO newFoodDto = Args.Data;
-            Args.Data = await foodRepository.CreateFood(newFoodDto.ToFood())
+            Args.Data = await FoodRepository.CreateFood(newFoodDto.ToFood())
                 .ContinueWith(r => r.Result.ToFoodDTO());
         }
         else if (Args.Action == "Edit")
         {
             FoodDTO newFoodDTO = Args.Data;
-            int result = await foodRepository.UpdateFood(newFoodDTO.ToFood());
+            int result = await FoodRepository.UpdateFood(newFoodDTO.ToFood());
         }
     }
 
@@ -232,7 +226,7 @@ else
     {
         if (args.CommandColumn.ButtonOption.Content == "Details")
         {
-            navigationManager.NavigateTo($"foods/{args.RowData.Id}");
+            NavigationManager.NavigateTo($"foods/{args.RowData.Id}");
         }
     }
 }

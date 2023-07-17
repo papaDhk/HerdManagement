@@ -21,58 +21,8 @@
 }
 else
 {
-<SfGrid @ref=@dataGrid DataSource=@animals AllowSorting=true AllowPaging="true" Toolbar=@ToolbarItems AllowFiltering="true" TValue=Animal>
-    <GridPageSettings PageCount="5" PageSizes="true" PageSize="5"></GridPageSettings>
-    <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
-
-    <GridColumns>
-        <GridColumn Field=@nameof(Animal.Picture) HeaderText="Photo de profil" AllowFiltering="false">
-            <Template>
-                @{
-                    var animal = context as Animal;
-                    var imageUrl = string.Empty;
-                    if (animal?.Picture != null && animal.Picture.Length > 0)
-                    {
-                        imageUrl = $"data:image/png;base64,{Convert.ToBase64String(animal.Picture)}";
-                    }
-
-                }
-                <img src="@imageUrl" class="img-thumbnail"/>
-            </Template>
-        </GridColumn>
-        <GridColumn Field=@nameof(Animal.Number) HeaderText="Numéro" TextAlign="TextAlign.Center">
-        </GridColumn>
-        <GridColumn Field=@nameof(Animal.Name) HeaderText="Nom" TextAlign="TextAlign.Center">
-        </GridColumn>
-        <GridColumn Field=@nameof(Animal.Sex) HeaderText="Sexe" TextAlign="TextAlign.Center">
-            <Template>
-                @{
-                    var animal = context as Animal;
-                }
-                <span>@Helper.GetDisplayName(animal?.Sex)</span>
-            </Template>
-        </GridColumn>
-        <GridColumn Field=@nameof(Animal.PresenceStatus) HeaderText="Présence" TextAlign="TextAlign.Center">
-            <Template>
-                @{
-                    var animal = context as Animal;
-                }
-                <span>@Helper.GetDisplayName(animal?.PresenceStatus)</span>
-            </Template>
-        </GridColumn>
-        <GridColumn Field=@nameof(Animal.AgeInString) HeaderText="Age" TextAlign="TextAlign.Center">
-        </GridColumn>
-        <GridColumn>
-            <Template>
-                @{
-                    var animal = (Animal)context;
-                }
-                <NavLink href=@animal.GetProfilePageUrl(currentHerd.Name) class="btn btn-primary btn-sm">Details</NavLink>
-            </Template>
-        </GridColumn>
-    </GridColumns>
-</SfGrid>
-
+    <AnimalGrid @ref=@animalGrid AnimalList="@animals" HerdName="@currentHerd.Name"></AnimalGrid>
+    
     <div class="modal fade" id="animalModalForm" tabindex="-1" role="dialog" aria-labelledby="Enregistrer un nouveau membre" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -236,7 +186,7 @@ else
 
     private HerdDTO currentHerd;
 
-    SfGrid<Animal> dataGrid;
+    AnimalGrid animalGrid;
 
     private List<Male> males;
 
@@ -262,7 +212,7 @@ else
     
     ToastModel _successToast = new ToastModel() {Title = "Succés!", Content = "Aniaml créé avec succés.", CssClass = "e-toast-success", Icon = "e-success toast-icons"};
     
-    protected async override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
         currentHerd = await herdRepository.GetHerdById(herdId).ContinueWith(herd => herd.Result.ToHerdDTO());
         animalDTO.Herd = currentHerd;
@@ -319,7 +269,7 @@ else
 
         animals.Add(newAnimal);
 
-        dataGrid.Refresh();
+        animalGrid.Refresh();
 
         await bootstrapService.HideModal("#animalModalForm");
 

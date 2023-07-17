@@ -26,11 +26,11 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
         }
 
 
-        public IEnumerable<Weighing> GetWeighingsByAnimalId(int animalId)
+        public async Task<List<Weighing>> GetWeighingsByAnimalId(int animalId)
         {
-            return _herdManagementDbContext.Weighings
+            return await _herdManagementDbContext.Weighings
                 .Where(weighing => weighing.AnimalId == animalId)
-                .Include(weighing => weighing.MeasurementUnit);
+                .Include(weighing => weighing.MeasurementUnit).ToListAsync();
         }
         
         public async Task<Weighing> GetLatestWeighingByAnimalId(int animalId)

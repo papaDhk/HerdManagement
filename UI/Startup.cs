@@ -43,7 +43,7 @@ namespace UI
             services.AddTransient<ISpecieBreedService, SpecieBreedService>();
             services.AddTransient<IReproductionService, ReproductionService>();
             services.AddTransient<IReproductionRepository, ReproductionRepository>();
-            services.AddTransient<IMeasurementUnitRepository, MeasurementUnitRepositoryEF>();
+            services.AddTransient<IMeasurementUnitRepository, MeasurementUnitRepositoryEf>();
             services.AddTransient<IFoodRepository, FoodRepositoryEf>();
             services.AddTransient<IWeighingRepository, WeighingRepository>();
             services.AddScoped<BootstrapService, BootstrapService>();

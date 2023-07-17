@@ -26,6 +26,7 @@ else
     <nav>
         <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
             <a class="nav-item nav-link active" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="true">Profil</a>
+            <a class="nav-item nav-link" id="nav-twins-tab" data-toggle="tab" href="#nav-twins" role="tab" aria-controls="nav-twins" aria-selected="false">Jumeaux</a>
             <a class="nav-item nav-link" id="nav-weightings-tab" data-toggle="tab" href="#nav-weightings" role="tab" aria-controls="nav-weightings" aria-selected="false">Pesées</a>
             <a class="nav-item nav-link" id="nav-characteristic-tab" data-toggle="tab" href="#nav-characteristic" role="tab" aria-controls="nav-characteristic" aria-selected="false">Caracteristiques</a>
             <a class="nav-item nav-link" id="nav-alimentation-tab" data-toggle="tab" href="#nav-alimentation" role="tab" aria-controls="nav-alimentation" aria-selected="false">Alimentation</a>
@@ -185,6 +186,10 @@ else
                 </EditForm>
             </div>
         </div>
+
+        <div class="tab-pane fade" id="nav-twins" role="tabpanel" aria-labelledby="nav-twins-tab">
+            <Twins AnimalId="@currentYoungAnimal.Id"></Twins>
+        </div> 
         <TabComingSoon idTab="nav-characteristic" />
         
         <div class="tab-pane fade" id="nav-alimentation" role="tabpanel" aria-labelledby="nav-alimentation-tab">
@@ -192,8 +197,9 @@ else
         </div>        
             
         <div class="tab-pane fade" id="nav-weightings" role="tabpanel" aria-labelledby="nav-weightings-tab">
-             <Weighings AnimalId="@currentYoungAnimal.Id"></Weighings>
-        </div>    </div>
+            <Weighings AnimalId="@currentYoungAnimal.Id"></Weighings>
+        </div>
+    </div>
 }
 
 

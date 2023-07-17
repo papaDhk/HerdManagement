@@ -13,11 +13,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HerdManagement.Infrastructure.Persistence.Repository
 {
-    public class MeasurementUnitRepositoryEF : IMeasurementUnitRepository
+    public class MeasurementUnitRepositoryEf : IMeasurementUnitRepository
     {
         private readonly HerdManagementDbContext _herdManagementDbContext;
         
-        public MeasurementUnitRepositoryEF(HerdManagementDbContext animalDbContext)
+        public MeasurementUnitRepositoryEf(HerdManagementDbContext animalDbContext)
         {
             _herdManagementDbContext = animalDbContext ?? throw new ArgumentNullException(nameof(animalDbContext));
             _herdManagementDbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
@@ -58,9 +58,9 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<MeasurementUnit> GetMeasurementUnitById(int id)
+        public Task<MeasurementUnit> GetMeasurementUnitById(int id)
         {
-           return _herdManagementDbContext.MeasurementUnits.FirstOrDefault(m => m.Id == id);
+           return Task.FromResult(_herdManagementDbContext.MeasurementUnits.FirstOrDefault(m => m.Id == id));
         }
 
         /// <summary>
@@ -68,20 +68,20 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
         /// </summary>
         /// <param name="label"></param>
         /// <returns></returns>
-        public async Task<MeasurementUnit> GetMeasurementUnitByLabel(string label)
+        public Task<MeasurementUnit> GetMeasurementUnitByLabel(string label)
         {
-            return string.IsNullOrWhiteSpace(label)
+            return Task.FromResult(string.IsNullOrWhiteSpace(label)
                 ? null
-                : _herdManagementDbContext.MeasurementUnits.FirstOrDefault(m => m.Label == label);
+                : _herdManagementDbContext.MeasurementUnits.FirstOrDefault(m => m.Label == label));
         }
 
         /// <summary>
         /// Get all measurementUnits
         /// </summary>
         /// <returns></returns>
-        public async Task<IEnumerable<MeasurementUnit>> GetAllMeasurementUnits()
+        public Task<IEnumerable<MeasurementUnit>> GetAllMeasurementUnits()
         {
-            return _herdManagementDbContext.MeasurementUnits.Select(m => m);
+            return Task.FromResult<IEnumerable<MeasurementUnit>>(_herdManagementDbContext.MeasurementUnits.Select(m => m));
         }
         
         //TODO

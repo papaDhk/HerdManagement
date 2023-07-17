@@ -1,0 +1,71 @@
+@using System.ComponentModel.DataAnnotations
+<SfGrid @ref=@dataGrid DataSource=@AnimalList Height="700px" Width="1550px" EnableVirtualization="true" AllowSorting="true" AllowPaging="false" Toolbar=@_toolbarItems AllowFiltering="true" TValue=Animal>
+    <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
+    <GridColumns>
+        <GridColumn Field=@nameof(Animal.Picture) HeaderText="Photo de profil" AllowFiltering="false">
+            <Template>
+                @{
+                    var animal = context as Animal;
+                    var imageUrl = string.Empty;
+                    if (animal?.Picture != null && animal.Picture.Length > 0)
+                    {
+                        imageUrl = $"data:image/png;base64,{Convert.ToBase64String(animal.Picture)}";
+                    }
+
+                }
+                <img src="@imageUrl" style="width: 150px; height: 150px;" class="img-thumbnail"/>
+            </Template>
+        </GridColumn>
+        <GridColumn Field=@nameof(Animal.Number) HeaderText="Numéro" TextAlign="TextAlign.Center">
+        </GridColumn>
+        <GridColumn Field=@nameof(Animal.Name) HeaderText="Nom" TextAlign="TextAlign.Center">
+        </GridColumn>
+        <GridColumn Field=@nameof(Animal.Sex) HeaderText="Sexe" TextAlign="TextAlign.Center">
+            <Template>
+                @{
+                    var animal = context as Animal;
+                }
+                <span>@Helper.GetDisplayName(animal?.Sex)</span>
+            </Template>
+        </GridColumn>
+        <GridColumn Field=@nameof(Animal.PresenceStatus) HeaderText="Présence" TextAlign="TextAlign.Center">
+            <Template>
+                @{
+                    var animal = context as Animal;
+                }
+                <span>@Helper.GetDisplayName(animal?.PresenceStatus)</span>
+            </Template>
+        </GridColumn>
+        <GridColumn Field=@nameof(Animal.AgeInString) HeaderText="Age" TextAlign="TextAlign.Center">
+        </GridColumn>
+        @if (!string.IsNullOrEmpty(HerdName))
+        {
+            <GridColumn>
+                <Template>
+                    @{
+                        var animal = (Animal)context;
+                    }
+                    <NavLink href=@animal.GetProfilePageUrl(HerdName) class="btn btn-primary btn-sm">Details</NavLink>
+                </Template>
+            </GridColumn>
+        }
+    </GridColumns>
+</SfGrid>
+
+@code {
+    SfGrid<Animal> dataGrid;
+    
+    [Required]
+    [Parameter]
+    public IEnumerable<Animal> AnimalList { get; set; }
+
+    [Parameter]
+    public string HerdName { get; set; }
+
+    private readonly string[] _toolbarItems = new[] { "Search" };
+
+    public void Refresh()
+    {
+        dataGrid.Refresh();
+    }
+}
