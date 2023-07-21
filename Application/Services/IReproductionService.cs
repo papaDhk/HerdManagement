@@ -1,10 +1,10 @@
-﻿using HerdManagement.Domain.Reproduction.Entities;
-using System;
+﻿using System;
 using System.Threading.Tasks;
-using Application.Data.DTO.Reproduction;
-using Application.Data.Messages;
+using Applicattion.Data.DTO.Reproduction;
+using Applicattion.Data.Messages;
+using HerdManagement.Domain.Reproduction.Entities;
 
-namespace Application.Services
+namespace Applicattion.Services
 {
     public interface IReproductionService
     {

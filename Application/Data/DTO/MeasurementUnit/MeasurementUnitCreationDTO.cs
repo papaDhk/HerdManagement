@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Application.Data.DTO.MeasurementUnit
+﻿namespace Applicattion.Data.DTO.MeasurementUnit
 {
     public class MeasurementUnitCreationDTO
     {

@@ -1,7 +1,6 @@
-﻿using Application.Data.DTO.SpecieBreed;
-using Application.Data.DTO.MeasurementUnit;
+﻿using Applicattion.Data.DTO.SpecieBreed;
 
-namespace Application.Data.DTO.Herd
+namespace Applicattion.Data.DTO.Herd
 {
     public class HerdDTO
     {

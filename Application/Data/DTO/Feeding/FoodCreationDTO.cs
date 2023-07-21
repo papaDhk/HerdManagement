@@ -1,4 +1,4 @@
-namespace Application.Data.DTO.Feeding;
+namespace Applicattion.Data.DTO.Feeding;
 
 public class FoodUpdateDTO
 {

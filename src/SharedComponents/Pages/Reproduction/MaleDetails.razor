@@ -1,4 +1,8 @@
 ﻿@page "/herds/{AnimalHerdName}/animals/male/{animalNumber:int}/{animalName}"
+@using Applicattion.Data.DTO.SpecieBreed
+@using Applicattion.Data.DTO.SpecieBreed.Assembler
+@using Applicattion.Services
+@using SharedComponents.Utils
 
 @inject ISpecieRepository specieRepository
 @inject NavigationManager navigationManager

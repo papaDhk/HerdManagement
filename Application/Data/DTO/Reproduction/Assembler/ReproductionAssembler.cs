@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using HerdManagement.Domain.Reproduction.Entities;
 
-namespace Application.Data.DTO.Reproduction.Assembler
+namespace Applicattion.Data.DTO.Reproduction.Assembler
 {
     public static class ReproductionAssembler
     {

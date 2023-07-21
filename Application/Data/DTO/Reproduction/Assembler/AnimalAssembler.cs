@@ -1,8 +1,8 @@
-﻿using Application.Data.DTO.Herd.Assembler;
-using Application.Data.DTO.SpecieBreed.Assembler;
+﻿using Applicattion.Data.DTO.Herd.Assembler;
+using Applicattion.Data.DTO.SpecieBreed.Assembler;
 using HerdManagement.Domain.Reproduction.Entities;
 
-namespace Application.Data.DTO.Reproduction.Assembler
+namespace Applicattion.Data.DTO.Reproduction.Assembler
 {
     public static class AnimalAssembler
     {

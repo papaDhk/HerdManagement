@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace Application.Data.Messages
+namespace Applicattion.Data.Messages
 {
     public class Response<T>
     {

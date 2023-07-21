@@ -1,6 +1,6 @@
 using HerdManagement.Domain.Common.Entities;
 
-namespace Application.Data.DTO.Feeding;
+namespace Applicattion.Data.DTO.Feeding;
 
 public class FoodDTO
 {

@@ -1,13 +1,6 @@
-﻿using Application.Data.DTO.SpecieBreed.Assembler;
-using HerdManagement.Domain.Reproduction.Entities;
-using HerdManagement.Domain.SpecieBreed.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using HerdManagement.Domain.Reproduction.Entities;
 
-namespace Application.Data.DTO.Reproduction.Assembler
+namespace Applicattion.Data.DTO.Reproduction.Assembler
 {
     public static class WeighingAssembler
     {

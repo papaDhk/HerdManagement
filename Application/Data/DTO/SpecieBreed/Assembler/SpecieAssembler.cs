@@ -1,10 +1,8 @@
-﻿using HerdManagement.Domain.SpecieBreed.Entities;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using HerdManagement.Domain.SpecieBreed.Entities;
 
-namespace Application.Data.DTO.SpecieBreed.Assembler
+namespace Applicattion.Data.DTO.SpecieBreed.Assembler
 {
     public static class SpecieAssembler
     {

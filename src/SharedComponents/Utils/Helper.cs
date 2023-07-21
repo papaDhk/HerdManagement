@@ -1,12 +1,8 @@
-﻿using HerdManagement.Domain.Reproduction.Entities;
+﻿using System.ComponentModel.DataAnnotations;
+using HerdManagement.Domain.Reproduction.Entities;
 using HerdManagement.Domain.Reproduction.Enumerations;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace UI
+namespace SharedComponents.Utils
 {
     public static class Helper
     {

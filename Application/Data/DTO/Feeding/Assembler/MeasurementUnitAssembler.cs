@@ -2,7 +2,7 @@
 using System.Linq;
 using HerdManagement.Domain.Feeding.Entities;
 
-namespace Application.Data.DTO.Feeding.Assembler
+namespace Applicattion.Data.DTO.Feeding.Assembler
 {
     public static class FoodAssembler
     {

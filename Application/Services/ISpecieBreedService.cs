@@ -1,14 +1,11 @@
-﻿using HerdManagement.Domain.SpecieBreed.Entities;
+﻿using System.Threading.Tasks;
+using Applicattion.Data.DTO.Herd;
+using Applicattion.Data.DTO.SpecieBreed;
+using Applicattion.Data.Messages;
+using HerdManagement.Domain.SpecieBreed.Entities;
 using HerdEntity = HerdManagement.Domain.Herd.Entities.Herd;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using Application.Data.DTO.Herd;
-using Application.Data.DTO.SpecieBreed;
-using Application.Data.Messages;
 
-namespace HerdManagement.Domain.SpecieBreed.Service
+namespace Applicattion.Services
 {
     public interface ISpecieBreedService
     {

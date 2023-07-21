@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Application.Data.DTO.MeasurementUnit;
 using MeasurementUnitEntity  = HerdManagement.Domain.Common.Entities.MeasurementUnit;
 
-namespace Application.Data.DTO.MeasurementUnitBreed.Assembler
+namespace Applicattion.Data.DTO.MeasurementUnit.Assembler
 {
     public static class MeasurementUnitAssembler
     {

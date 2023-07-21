@@ -1,4 +1,5 @@
 @using System.ComponentModel.DataAnnotations
+@using SharedComponents.Utils
 <SfGrid @ref=@dataGrid DataSource=@AnimalList Height="700px"  AllowSorting="true" AllowPaging="false" Toolbar=@_toolbarItems AllowFiltering="true" TValue=Animal>
     <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
     <GridColumns>

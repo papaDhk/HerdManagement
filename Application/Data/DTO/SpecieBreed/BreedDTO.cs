@@ -1,8 +1,7 @@
-﻿using HerdManagement.Domain.SpecieBreed.Entities;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace Application.Data.DTO.SpecieBreed
+namespace Applicattion.Data.DTO.SpecieBreed
 {
     public class BreedDTO
     {

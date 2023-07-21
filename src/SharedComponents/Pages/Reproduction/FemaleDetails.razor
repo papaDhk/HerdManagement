@@ -1,6 +1,13 @@
 ﻿@page "/herds/{AnimalHerdName}/animals/female/{animalNumber:int}/{animalName}"
 @using Action = Syncfusion.Blazor.Grids.Action
 @using Syncfusion.Blazor.Notifications
+@using SharedComponents.Utils
+@using Applicattion.Data.DTO.SpecieBreed
+@using Applicattion.Data.DTO.SpecieBreed.Assembler
+@using Applicattion.Data.Messages
+@using Applicattion.Services
+@using Applicattion.Data.DTO.Reproduction
+@using Applicattion.Data.DTO.Reproduction.Assembler
 
 @inject ISpecieRepository specieRepository
 @inject NavigationManager navigationManager

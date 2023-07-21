@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using Application.Data.DTO.Herd;
-using Application.Data.DTO.Herd.Assembler;
-using Application.Data.Messages;
-using HerdManagement.Domain.Herd.Entities;
+using Applicattion.Data.DTO.Herd;
+using Applicattion.Data.DTO.Herd.Assembler;
+using Applicattion.Data.Messages;
+using Applicattion.Services;
 using HerdManagement.Domain.SpecieBreed.Repository;
-using HerdManagement.Domain.SpecieBreed.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace App.Controllers.Herds
+namespace Web.Controllers.Herd
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -32,7 +30,7 @@ namespace App.Controllers.Herds
         [HttpGet]
         public async Task<ActionResult<IEnumerable<HerdDTO>>> Get()
         {
-            IEnumerable<Herd> herds = await _herdRepository.GetAllHerds();
+            IEnumerable<HerdManagement.Domain.Herd.Entities.Herd> herds = await _herdRepository.GetAllHerds();
 
             if (herds != null && herds.Any())
                 return Ok(herds.ToHerdDTOList());
@@ -44,7 +42,7 @@ namespace App.Controllers.Herds
         [HttpGet("{id}", Name = "Get")]
         public async Task<ActionResult<HerdDTO>> Get(int id)
         {
-            Herd findedHerd = await _herdRepository.GetHerdById(id);
+            HerdManagement.Domain.Herd.Entities.Herd findedHerd = await _herdRepository.GetHerdById(id);
 
             if (findedHerd.Id > 0)
             {
@@ -65,7 +63,7 @@ namespace App.Controllers.Herds
                 return BadRequest(name);
             }
 
-            IEnumerable<Herd> findedHerd = await _herdRepository.GetHerdByName(name);
+            IEnumerable<HerdManagement.Domain.Herd.Entities.Herd> findedHerd = await _herdRepository.GetHerdByName(name);
 
             if (findedHerd.Any())
             {
@@ -83,7 +81,7 @@ namespace App.Controllers.Herds
         {
             if (ModelState.IsValid)
             {
-                Response<Herd> response = await _specieBreedService.CreateHerd(herdCreationDTO);
+                Response<HerdManagement.Domain.Herd.Entities.Herd> response = await _specieBreedService.CreateHerd(herdCreationDTO);
 
                 if (response.IsOperationSuccessfull)
                 {
@@ -106,7 +104,7 @@ namespace App.Controllers.Herds
         {
             if (ModelState.IsValid)
             {
-                Response<Herd> response = await _specieBreedService.UpdateHerd(id, herdUpdateDTO);
+                Response<HerdManagement.Domain.Herd.Entities.Herd> response = await _specieBreedService.UpdateHerd(id, herdUpdateDTO);
 
                 if (response.IsOperationSuccessfull)
                 {
@@ -127,7 +125,7 @@ namespace App.Controllers.Herds
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
-            Herd herdToDelete = await _herdRepository.GetHerdById(id);
+            HerdManagement.Domain.Herd.Entities.Herd herdToDelete = await _herdRepository.GetHerdById(id);
             bool doesHerdExists = herdToDelete.Id == id;
             if (doesHerdExists)
             {

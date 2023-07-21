@@ -1,17 +1,17 @@
-﻿using HerdManagement.Domain.SpecieBreed.Entities;
-using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+using Applicattion.Data.DTO.SpecieBreed;
+using Applicattion.Data.DTO.SpecieBreed.Assembler;
+using Applicattion.Data.Messages;
+using Applicattion.Services;
+using HerdManagement.Domain.SpecieBreed.Entities;
 using HerdManagement.Domain.SpecieBreed.Repository;
-using HerdManagement.Domain.SpecieBreed.Service;
-using Application.Data.Messages;
-using Application.Data.DTO.SpecieBreed;
-using Application.Data.DTO.SpecieBreed.Assembler;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
-namespace App.Controllers.SpecieBreed
+namespace Web.Controllers.SpecieBreed
 {
     [Route("api/[controller]")]
     [ApiController]

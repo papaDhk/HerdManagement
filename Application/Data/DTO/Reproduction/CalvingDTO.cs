@@ -1,10 +1,8 @@
-﻿using Application.Data.DTO.SpecieBreed;
-using HerdManagement.Domain.Reproduction.Enumerations;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
+using HerdManagement.Domain.Reproduction.Enumerations;
 
-namespace Application.Data.DTO.Reproduction
+namespace Applicattion.Data.DTO.Reproduction
 {
     public class CalvingDTO
     {

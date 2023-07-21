@@ -1,5 +1,12 @@
 ﻿@page "/herds/{herdId:int}/{herdName}"
 @using Syncfusion.Blazor.Notifications
+@using SharedComponents.Utils
+@using Applicattion.Data.DTO.Herd
+@using Applicattion.Data.DTO.Herd.Assembler
+@using Applicattion.Data.DTO.Reproduction
+@using Applicattion.Data.DTO.SpecieBreed
+@using Applicattion.Data.DTO.SpecieBreed.Assembler
+@using Applicattion.Services
 
 @inject ISpecieRepository specieRepository
 @inject IBreedRepository breedRepository
