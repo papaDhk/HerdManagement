@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+
+    <ItemGroup>
+        <SupportedPlatform Include="browser" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.9" />
+        <PackageReference Include="Syncfusion.Blazor" Version="18.3.0.50" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="Pages\AnimalGrid.razor" />
+      <AdditionalFiles Include="Pages\Configurations\Configurations.razor" />
+      <AdditionalFiles Include="Pages\Herd\HerdDetails.razor" />
+      <AdditionalFiles Include="Pages\Herd\Herds.razor" />
+      <AdditionalFiles Include="Pages\Reproduction\AnimalFeeding.razor" />
+      <AdditionalFiles Include="Pages\Reproduction\FemaleDetails.razor" />
+      <AdditionalFiles Include="Pages\Reproduction\LittleAnimalDetails.razor" />
+      <AdditionalFiles Include="Pages\Reproduction\MaleDetails.razor" />
+      <AdditionalFiles Include="Pages\Reproduction\ProgenyList.razor" />
+      <AdditionalFiles Include="Pages\Reproduction\Twins.razor" />
+      <AdditionalFiles Include="Pages\Reproduction\Weighings.razor" />
+      <AdditionalFiles Include="Pages\SpecieBreed\BreedDetail.razor" />
+      <AdditionalFiles Include="Pages\SpecieBreed\Breeds.razor" />
+      <AdditionalFiles Include="Pages\SpecieBreed\SpecieDetails.razor" />
+      <AdditionalFiles Include="Pages\SpecieBreed\Species.razor" />
+      <AdditionalFiles Include="Shared\MainLayout.razor" />
+      <AdditionalFiles Include="Shared\NavMenu.razor" />
+      <AdditionalFiles Include="Shared\SurveyPrompt.razor" />
+      <AdditionalFiles Include="Shared\TabComingSoon.razor" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Application\Application.csproj" />
+      <ProjectReference Include="..\Domain\Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="wwwroot\background.png" />
+      <_ContentIncludedByDefault Remove="wwwroot\exampleJsInterop.js" />
+    </ItemGroup>
+
+</Project>
