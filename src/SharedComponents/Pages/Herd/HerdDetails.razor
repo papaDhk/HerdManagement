@@ -73,6 +73,10 @@ else
                             <div class="col-sm-9">
                                 <InputNumber id="number" class="form-control" placeholder="numero de l'animal" @bind-Value="animalDTO.Number" />
                                 <ValidationMessage For="@(() => animalDTO.Number)" />
+                                @if (isNumberAlreadyUsed)
+                                {
+                                    <div class="validation-message">Il existe déja un animal avec ce numéro. Veiller à donner un numéro unique à chaque animal</div>
+                                }
                             </div>
                         </div>
                         <div class="form-group row">
@@ -214,6 +218,8 @@ else
     private bool canNotBeFather;
 
     private bool canNotBeMother;
+    private bool isNumberAlreadyUsed;
+
     
     private SfToast _toast;
     
@@ -261,6 +267,11 @@ else
 
     private async Task SaveAnimalAsync()
     {
+        isNumberAlreadyUsed = animals.Any(a => a.Number == animalDTO.Number);
+        
+        if(isNumberAlreadyUsed)
+            return;
+        
         canNotBeMother = animalDTO.MotherId > 0 && !reproductionService.CanBeMotherOfAnimalBornIn(animalDTO.MotherId, animalDTO.BirthDate);
 
         canNotBeFather = animalDTO.FatherId > 0 && !reproductionService.CanBeFatherOfAnimalBornIn(animalDTO.FatherId, animalDTO.BirthDate);
@@ -307,5 +318,5 @@ else
         int selectedMotherId = int.Parse(changedEventArgs.Value);
         canNotBeMother = !reproductionService.CanBeMotherOfAnimalBornIn(selectedMotherId, animalDTO.BirthDate);
     }
-
+    
 }
