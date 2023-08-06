@@ -12,6 +12,7 @@ namespace HerdManagement.Domain.SpecieBreed.Entities
         public string Label { get; set; }
 
         public Specie Specie { get; set; }
+        public int SpecieId { get; set; }
 
         public List<BreedCharacteristic> BreedCharacteristics { get; set; }
 

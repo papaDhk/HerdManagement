@@ -15,6 +15,7 @@ namespace Applicattion.Data.DTO.SpecieBreed.Assembler
             {
                 Label = breedCreationDTO.Label,
                 Specie = new Specie { Id = breedCreationDTO.SpecieId },
+                SpecieId = breedCreationDTO.SpecieId
             };
         }
 
@@ -28,6 +29,7 @@ namespace Applicattion.Data.DTO.SpecieBreed.Assembler
                 Id = breedId,
                 Label = breedUpdateDTO.Label,
                 Specie = new Specie { Id = breedUpdateDTO.SpecieId },
+                SpecieId = breedUpdateDTO.SpecieId
             };
         }
 
@@ -40,7 +42,7 @@ namespace Applicattion.Data.DTO.SpecieBreed.Assembler
             {
                 Id = breed.Id,
                 Label = breed.Label,
-                Specie = breed.Specie?.ToSpecieDTO(),
+                Specie = breed.Specie?.ToSpecieDTO()
             };
         }
 
@@ -51,6 +53,7 @@ namespace Applicattion.Data.DTO.SpecieBreed.Assembler
                 Id = breedDTO.Id,
                 Label = breedDTO.Label,
                 Specie = breedDTO.Specie?.ToSpecie(),
+                SpecieId = breedDTO.Specie.Id
             };
         }
 

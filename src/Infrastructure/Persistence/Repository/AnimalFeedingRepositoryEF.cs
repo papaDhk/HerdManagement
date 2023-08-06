@@ -8,11 +8,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HerdManagement.Infrastructure.Persistence.Repository
 {
-    public class AnimalFeedingRepository : IAnimalFeedingRepository
+    public class AnimalFeedingRepositoryEF : IAnimalFeedingRepository
     {
         private readonly HerdManagementDbContext _herdManagementDbContext;
 
-        public AnimalFeedingRepository(HerdManagementDbContext herdManagementDbContext)
+        public AnimalFeedingRepositoryEF(HerdManagementDbContext herdManagementDbContext)
         {
             _herdManagementDbContext = herdManagementDbContext;
             _herdManagementDbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;

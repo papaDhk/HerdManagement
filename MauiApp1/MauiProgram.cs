@@ -49,16 +49,16 @@ public static class MauiProgram
         builder.Services.AddTransient<ISpecieRepository, SpecieRepository>();
         builder.Services.AddTransient<IBreedRepository, BreedRepository>();
         builder.Services.AddTransient<IHerdRepository, HerdRepositoryEF>();
-        builder.Services.AddTransient<IAnimalRepository, AnimalRepository>();
+        builder.Services.AddTransient<IAnimalRepository, AnimalRepositoryEF>();
         builder.Services.AddTransient<ISpecieBreedService, SpecieBreedService>();
         builder.Services.AddTransient<IReproductionService, ReproductionService>();
-        builder.Services.AddTransient<IReproductionRepository, ReproductionRepository>();
+        builder.Services.AddTransient<IReproductionRepository, ReproductionRepositoryEF>();
         builder.Services.AddTransient<IMeasurementUnitRepository, MeasurementUnitRepositoryEf>();
         builder.Services.AddTransient<IFoodRepository, FoodRepositoryEf>();
-        builder.Services.AddTransient<IWeighingRepository, WeighingRepository>();
+        builder.Services.AddTransient<IWeighingRepository, WeighingRepositoryEF>();
         builder.Services.AddScoped<BootstrapService, BootstrapService>();
         builder.Services.AddTransient<ICharacteristicRepository, CharacteristicRepository>();
-        builder.Services.AddTransient<IAnimalFeedingRepository, AnimalFeedingRepository>();
+        builder.Services.AddTransient<IAnimalFeedingRepository, AnimalFeedingRepositoryEF>();
         builder.Services.AddTransient<IFoodRepository, FoodRepositoryEf>();
         builder.Services.AddSyncfusionBlazor();
 

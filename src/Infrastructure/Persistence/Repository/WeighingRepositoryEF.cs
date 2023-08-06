@@ -15,11 +15,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HerdManagement.Infrastructure.Persistence.Repository
 {
-    public class WeighingRepository : IWeighingRepository
+    public class WeighingRepositoryEF : IWeighingRepository
     {
         private readonly HerdManagementDbContext _herdManagementDbContext;
         
-        public WeighingRepository(HerdManagementDbContext animalDbContext)
+        public WeighingRepositoryEF(HerdManagementDbContext animalDbContext)
         {
             _herdManagementDbContext = animalDbContext ?? throw new ArgumentNullException(nameof(animalDbContext));
             _herdManagementDbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;

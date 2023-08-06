@@ -10,11 +10,11 @@ using HerdManagement.Domain.Reproduction.Repository;
 
 namespace HerdManagement.Infrastructure.Persistence.Repository
 {
-    public class AnimalRepository : IAnimalRepository
+    public class AnimalRepositoryEF : IAnimalRepository
     {
         private readonly HerdManagementDbContext _animalDbContext;
 
-        public AnimalRepository(HerdManagementDbContext animalDbContext)
+        public AnimalRepositoryEF(HerdManagementDbContext animalDbContext)
         {
             _animalDbContext = animalDbContext ?? throw new ArgumentNullException(nameof(animalDbContext));
             _animalDbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;

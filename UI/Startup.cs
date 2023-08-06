@@ -1,3 +1,4 @@
+using System;
 using Applicattion.Services;
 using HerdManagement.Domain.Characteristic.Repositories;
 using HerdManagement.Domain.Reproduction.Repository;
@@ -21,34 +22,41 @@ namespace UI
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            var folder = Environment.SpecialFolder.LocalApplicationData;
+            var path = Environment.GetFolderPath(folder);
+            DbPath = System.IO.Path.Join(path, "herdDataBase.db");
         }
 
-        public IConfiguration Configuration { get; }
+        public string DbPath { get; set; }
+
+        private IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<HerdManagementDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("HERD_CATALOG"), options => options.MigrationsAssembly("UI"))
+                options.UseSqlite($"Data Source={DbPath}", options => options.MigrationsAssembly("UI"))
                 , ServiceLifetime.Transient
             );
 
+            
+            
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddTransient<ISpecieRepository, SpecieRepository>();
-            services.AddTransient<IBreedRepository, BreedRepository>();
+            services.AddTransient<ISpecieRepository, SpecieRepositoryEF>();
+            services.AddTransient<IBreedRepository, BreedRepositoryEf>();
             services.AddTransient<IHerdRepository, HerdRepositoryEF>();
-            services.AddTransient<IAnimalRepository, AnimalRepository>();
+            services.AddTransient<IAnimalRepository, AnimalRepositoryEF>();
             services.AddTransient<ISpecieBreedService, SpecieBreedService>();
             services.AddTransient<IReproductionService, ReproductionService>();
-            services.AddTransient<IReproductionRepository, ReproductionRepository>();
+            services.AddTransient<IReproductionRepository, ReproductionRepositoryEF>();
             services.AddTransient<IMeasurementUnitRepository, MeasurementUnitRepositoryEf>();
             services.AddTransient<IFoodRepository, FoodRepositoryEf>();
-            services.AddTransient<IWeighingRepository, WeighingRepository>();
+            services.AddTransient<IWeighingRepository, WeighingRepositoryEF>();
             services.AddScoped<BootstrapService, BootstrapService>();
             services.AddTransient<ICharacteristicRepository, CharacteristicRepository>();
-            services.AddTransient<IAnimalFeedingRepository, AnimalFeedingRepository>();
+            services.AddTransient<IAnimalFeedingRepository, AnimalFeedingRepositoryEF>();
             services.AddTransient<IFoodRepository, FoodRepositoryEf>();
             services.AddSyncfusionBlazor();
         }

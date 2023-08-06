@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace HerdManagement.Infrastructure.Persistence.Repository
 {
-    public class ReproductionRepository : IReproductionRepository
+    public class ReproductionRepositoryEF : IReproductionRepository
     {
         private readonly HerdManagementDbContext _animalDbContext;
 
-        public ReproductionRepository(HerdManagementDbContext animalDbContext)
+        public ReproductionRepositoryEF(HerdManagementDbContext animalDbContext)
         {
             _animalDbContext = animalDbContext ?? throw new ArgumentNullException(nameof(animalDbContext));
             _animalDbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;

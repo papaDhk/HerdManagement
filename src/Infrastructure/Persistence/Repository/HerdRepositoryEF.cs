@@ -43,9 +43,7 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
         {
             _herdManagementDbContext.Remove(new Herd{Id = herdId});
 
-            await _herdManagementDbContext.SaveChangesAsync();
-
-            return 1;
+            return await _herdManagementDbContext.SaveChangesAsync();
         }
 
         public Task<Herd> GetHerdById(int id)
@@ -72,11 +70,11 @@ namespace HerdManagement.Infrastructure.Persistence.Repository
             }
             _herdManagementDbContext.Herds.Update(herd);
 
-            await _herdManagementDbContext.SaveChangesAsync();
+            var result = await _herdManagementDbContext.SaveChangesAsync();
             
             _herdManagementDbContext.UntrackEntities();
 
-            return 1;
+            return result;
         }
     }
 }

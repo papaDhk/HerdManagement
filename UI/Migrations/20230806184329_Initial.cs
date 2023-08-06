@@ -1,22 +1,39 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
+#nullable disable
+
 namespace UI.Migrations
 {
-    public partial class reinitialize : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Foods",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Label = table.Column<string>(type: "TEXT", nullable: true),
+                    Description = table.Column<string>(type: "TEXT", nullable: true),
+                    MeasurementUnitCategory = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Foods", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "MeasurementUnits",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Label = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Symbol = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Commentary = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Category = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Label = table.Column<string>(type: "TEXT", nullable: true),
+                    Symbol = table.Column<string>(type: "TEXT", nullable: true),
+                    Commentary = table.Column<string>(type: "TEXT", nullable: true),
+                    Category = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -24,76 +41,76 @@ namespace UI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Specie",
+                name: "Species",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Label = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ChildhoodDurationInDays = table.Column<int>(type: "int", nullable: false),
-                    PregnancyDurationInDays = table.Column<int>(type: "int", nullable: false),
-                    MinimumTimeSpanBetweenCalvingAndHeatInDays = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Label = table.Column<string>(type: "TEXT", nullable: true),
+                    ChildhoodDurationInDays = table.Column<int>(type: "INTEGER", nullable: false),
+                    PregnancyDurationInDays = table.Column<int>(type: "INTEGER", nullable: false),
+                    MinimumTimeSpanBetweenCalvingAndHeatInDays = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Specie", x => x.Id);
+                    table.PrimaryKey("PK_Species", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Breed",
+                name: "Breeds",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Label = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SpecieId = table.Column<int>(type: "int", nullable: true)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Label = table.Column<string>(type: "TEXT", nullable: true),
+                    SpecieId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Breed", x => x.Id);
+                    table.PrimaryKey("PK_Breeds", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Breed_Specie_SpecieId",
+                        name: "FK_Breeds_Species_SpecieId",
                         column: x => x.SpecieId,
-                        principalTable: "Specie",
+                        principalTable: "Species",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Herd",
+                name: "Herds",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Color = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LivingMembersNumber = table.Column<long>(type: "bigint", nullable: false),
-                    SpecieId = table.Column<int>(type: "int", nullable: true)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", nullable: true),
+                    Description = table.Column<string>(type: "TEXT", nullable: true),
+                    Color = table.Column<string>(type: "TEXT", nullable: true),
+                    LivingMembersNumber = table.Column<long>(type: "INTEGER", nullable: false),
+                    SpecieId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Herd", x => x.Id);
+                    table.PrimaryKey("PK_Herds", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Herd_Specie_SpecieId",
+                        name: "FK_Herds_Species_SpecieId",
                         column: x => x.SpecieId,
-                        principalTable: "Specie",
+                        principalTable: "Species",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
                 name: "SpecieCharacteristics",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    SpecieId = table.Column<int>(type: "int", nullable: true),
-                    Label = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Type = table.Column<int>(type: "int", nullable: false),
-                    UnitId = table.Column<int>(type: "int", nullable: true),
-                    Commentary = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ValueList = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    SpecieId = table.Column<int>(type: "INTEGER", nullable: true),
+                    Label = table.Column<string>(type: "TEXT", nullable: true),
+                    Type = table.Column<int>(type: "INTEGER", nullable: false),
+                    UnitId = table.Column<int>(type: "INTEGER", nullable: true),
+                    Commentary = table.Column<string>(type: "TEXT", nullable: true),
+                    ValueList = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -102,78 +119,110 @@ namespace UI.Migrations
                         name: "FK_SpecieCharacteristics_MeasurementUnits_UnitId",
                         column: x => x.UnitId,
                         principalTable: "MeasurementUnits",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_SpecieCharacteristics_Specie_SpecieId",
+                        name: "FK_SpecieCharacteristics_Species_SpecieId",
                         column: x => x.SpecieId,
-                        principalTable: "Specie",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalTable: "Species",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
                 name: "BreedCharacteristics",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    BreedId = table.Column<int>(type: "int", nullable: true),
-                    Label = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Type = table.Column<int>(type: "int", nullable: false),
-                    UnitId = table.Column<int>(type: "int", nullable: true),
-                    Commentary = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ValueList = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    BreedId = table.Column<int>(type: "INTEGER", nullable: true),
+                    Label = table.Column<string>(type: "TEXT", nullable: true),
+                    Type = table.Column<int>(type: "INTEGER", nullable: false),
+                    UnitId = table.Column<int>(type: "INTEGER", nullable: true),
+                    Commentary = table.Column<string>(type: "TEXT", nullable: true),
+                    ValueList = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_BreedCharacteristics", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_BreedCharacteristics_Breed_BreedId",
+                        name: "FK_BreedCharacteristics_Breeds_BreedId",
                         column: x => x.BreedId,
-                        principalTable: "Breed",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalTable: "Breeds",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_BreedCharacteristics_MeasurementUnits_UnitId",
                         column: x => x.UnitId,
                         principalTable: "MeasurementUnits",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
                 name: "Animals",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Number = table.Column<int>(type: "int", nullable: false),
-                    Sex = table.Column<int>(type: "int", nullable: false),
-                    BirthDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Picture = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
-                    Origin = table.Column<int>(type: "int", nullable: false),
-                    Weight = table.Column<long>(type: "bigint", nullable: false),
-                    PresenceStatus = table.Column<int>(type: "int", nullable: false),
-                    DeathDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    BreedId = table.Column<int>(type: "int", nullable: false),
-                    HerdId = table.Column<int>(type: "int", nullable: false),
-                    category_type = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", nullable: true),
+                    Number = table.Column<int>(type: "INTEGER", nullable: false),
+                    Sex = table.Column<int>(type: "INTEGER", nullable: false),
+                    BirthDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Picture = table.Column<byte[]>(type: "BLOB", nullable: true),
+                    Origin = table.Column<int>(type: "INTEGER", nullable: false),
+                    Weight = table.Column<uint>(type: "INTEGER", nullable: false),
+                    PresenceStatus = table.Column<int>(type: "INTEGER", nullable: false),
+                    DeathDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    BreedId = table.Column<int>(type: "INTEGER", nullable: false),
+                    HerdId = table.Column<int>(type: "INTEGER", nullable: false),
+                    category_type = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Animals", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Animals_Breed_BreedId",
+                        name: "FK_Animals_Breeds_BreedId",
                         column: x => x.BreedId,
-                        principalTable: "Breed",
+                        principalTable: "Breeds",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Animals_Herd_HerdId",
+                        name: "FK_Animals_Herds_HerdId",
                         column: x => x.HerdId,
-                        principalTable: "Herd",
+                        principalTable: "Herds",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AnimalFeedings",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    AnimalId = table.Column<int>(type: "INTEGER", nullable: false),
+                    DateTime = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    FoodId = table.Column<int>(type: "INTEGER", nullable: false),
+                    MeasurementUnitId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Quantity = table.Column<decimal>(type: "TEXT", nullable: false),
+                    Cost = table.Column<decimal>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AnimalFeedings", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AnimalFeedings_Animals_AnimalId",
+                        column: x => x.AnimalId,
+                        principalTable: "Animals",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AnimalFeedings_Foods_FoodId",
+                        column: x => x.FoodId,
+                        principalTable: "Foods",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AnimalFeedings_MeasurementUnits_MeasurementUnitId",
+                        column: x => x.MeasurementUnitId,
+                        principalTable: "MeasurementUnits",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -182,12 +231,12 @@ namespace UI.Migrations
                 name: "BreedCharacteristicValues",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    BreedCharacteristicId = table.Column<int>(type: "int", nullable: false),
-                    AnimalId = table.Column<int>(type: "int", nullable: true),
-                    SelectedValue = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    BreedCharacteristicId = table.Column<int>(type: "INTEGER", nullable: false),
+                    AnimalId = table.Column<int>(type: "INTEGER", nullable: true),
+                    SelectedValue = table.Column<string>(type: "TEXT", nullable: true),
+                    Date = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -196,8 +245,7 @@ namespace UI.Migrations
                         name: "FK_BreedCharacteristicValues_Animals_AnimalId",
                         column: x => x.AnimalId,
                         principalTable: "Animals",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_BreedCharacteristicValues_BreedCharacteristics_BreedCharacteristicId",
                         column: x => x.BreedCharacteristicId,
@@ -210,13 +258,13 @@ namespace UI.Migrations
                 name: "Reproductions",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FemaleId = table.Column<int>(type: "int", nullable: false),
-                    MaleId = table.Column<int>(type: "int", nullable: false),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Type = table.Column<int>(type: "int", nullable: false),
-                    Commentary = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    FemaleId = table.Column<int>(type: "INTEGER", nullable: false),
+                    MaleId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Date = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Type = table.Column<int>(type: "INTEGER", nullable: false),
+                    Commentary = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -226,25 +274,25 @@ namespace UI.Migrations
                         column: x => x.FemaleId,
                         principalTable: "Animals",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Reproductions_Animals_MaleId",
                         column: x => x.MaleId,
                         principalTable: "Animals",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
                 name: "SpecieCharacteristicValues",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    SpecieCharacteristicId = table.Column<int>(type: "int", nullable: false),
-                    AnimalId = table.Column<int>(type: "int", nullable: true),
-                    SelectedValue = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    SpecieCharacteristicId = table.Column<int>(type: "INTEGER", nullable: false),
+                    AnimalId = table.Column<int>(type: "INTEGER", nullable: true),
+                    SelectedValue = table.Column<string>(type: "TEXT", nullable: true),
+                    Date = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -253,8 +301,7 @@ namespace UI.Migrations
                         name: "FK_SpecieCharacteristicValues_Animals_AnimalId",
                         column: x => x.AnimalId,
                         principalTable: "Animals",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_SpecieCharacteristicValues_SpecieCharacteristics_SpecieCharacteristicId",
                         column: x => x.SpecieCharacteristicId,
@@ -267,12 +314,12 @@ namespace UI.Migrations
                 name: "Weighings",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AnimalId = table.Column<int>(type: "int", nullable: false),
-                    MeasurementUnitId = table.Column<int>(type: "int", nullable: false),
-                    DateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Value = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    AnimalId = table.Column<int>(type: "INTEGER", nullable: false),
+                    MeasurementUnitId = table.Column<int>(type: "INTEGER", nullable: false),
+                    DateTime = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Value = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -295,14 +342,14 @@ namespace UI.Migrations
                 name: "Calvings",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Commentary = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ReproductionId = table.Column<int>(type: "int", nullable: false),
-                    MaleId = table.Column<int>(type: "int", nullable: false),
-                    FemaleId = table.Column<int>(type: "int", nullable: false),
-                    AnimalId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Date = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Commentary = table.Column<string>(type: "TEXT", nullable: true),
+                    ReproductionId = table.Column<int>(type: "INTEGER", nullable: false),
+                    MaleId = table.Column<int>(type: "INTEGER", nullable: false),
+                    FemaleId = table.Column<int>(type: "INTEGER", nullable: false),
+                    AnimalId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -312,13 +359,13 @@ namespace UI.Migrations
                         column: x => x.AnimalId,
                         principalTable: "Animals",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Calvings_Animals_FemaleId",
                         column: x => x.FemaleId,
                         principalTable: "Animals",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Calvings_Reproductions_ReproductionId",
                         column: x => x.ReproductionId,
@@ -331,11 +378,11 @@ namespace UI.Migrations
                 name: "ReproductionStates",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ReproductionId = table.Column<int>(type: "int", nullable: false),
-                    State = table.Column<int>(type: "int", nullable: false),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ReproductionId = table.Column<int>(type: "INTEGER", nullable: false),
+                    State = table.Column<int>(type: "INTEGER", nullable: false),
+                    Date = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -349,6 +396,21 @@ namespace UI.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_AnimalFeedings_AnimalId",
+                table: "AnimalFeedings",
+                column: "AnimalId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AnimalFeedings_FoodId",
+                table: "AnimalFeedings",
+                column: "FoodId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AnimalFeedings_MeasurementUnitId",
+                table: "AnimalFeedings",
+                column: "MeasurementUnitId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Animals_BreedId",
                 table: "Animals",
                 column: "BreedId");
@@ -357,11 +419,6 @@ namespace UI.Migrations
                 name: "IX_Animals_HerdId",
                 table: "Animals",
                 column: "HerdId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Breed_SpecieId",
-                table: "Breed",
-                column: "SpecieId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BreedCharacteristics_BreedId",
@@ -384,6 +441,11 @@ namespace UI.Migrations
                 column: "BreedCharacteristicId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Breeds_SpecieId",
+                table: "Breeds",
+                column: "SpecieId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Calvings_AnimalId",
                 table: "Calvings",
                 column: "AnimalId",
@@ -400,8 +462,8 @@ namespace UI.Migrations
                 column: "ReproductionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Herd_SpecieId",
-                table: "Herd",
+                name: "IX_Herds_SpecieId",
+                table: "Herds",
                 column: "SpecieId");
 
             migrationBuilder.CreateIndex(
@@ -453,6 +515,9 @@ namespace UI.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "AnimalFeedings");
+
+            migrationBuilder.DropTable(
                 name: "BreedCharacteristicValues");
 
             migrationBuilder.DropTable(
@@ -466,6 +531,9 @@ namespace UI.Migrations
 
             migrationBuilder.DropTable(
                 name: "Weighings");
+
+            migrationBuilder.DropTable(
+                name: "Foods");
 
             migrationBuilder.DropTable(
                 name: "BreedCharacteristics");
@@ -483,13 +551,13 @@ namespace UI.Migrations
                 name: "MeasurementUnits");
 
             migrationBuilder.DropTable(
-                name: "Breed");
+                name: "Breeds");
 
             migrationBuilder.DropTable(
-                name: "Herd");
+                name: "Herds");
 
             migrationBuilder.DropTable(
-                name: "Specie");
+                name: "Species");
         }
     }
 }
